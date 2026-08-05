@@ -1,10 +1,10 @@
+import { ArrivalScene } from '@/widgets/arrival-scene';
 import { ExperienceLayout } from '@/widgets/experience-layout';
-import { Hero } from '@/widgets/hero';
 
 export default function Home() {
   return (
     <ExperienceLayout>
-      <Hero />
+      <ArrivalScene />
     </ExperienceLayout>
   );
 }

@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-geist-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,73 +48,96 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * AetherAnime semantic theme — CSS-variable bridge.
+ *
+ * These variables are the web integration of the design tokens defined in
+ * `shared/config/theme/colors.ts`, which remains the single source of truth.
+ * Every value below mirrors a named color role from that module (the role is
+ * noted in the trailing comment). CSS cannot import TypeScript, so until a
+ * generation step exists these two files MUST be kept in sync by hand — change
+ * `colors.ts` first, then reflect the value here.
+ *
+ * shadcn's own semantic roles are respected: `--primary` is the brand indigo,
+ * while `--accent` stays a subtle *elevated surface* (its shadcn role is the
+ * hover/active background, not an emphasis color). The neon brand accent
+ * (`colors.accent`) is surfaced through `--ring` so focus and emphasis carry
+ * the brand without turning every ghost-hover cyan.
+ *
+ * The palette is dark-first and immersive ("the world beyond the screen").
+ * `colors.ts` declares one semantic palette, so `:root` (light/default) and
+ * `.dark` intentionally resolve to the same brand values — there is no separate
+ * light palette in the source of truth to mirror, and inventing one here would
+ * re-introduce the very drift this integration removes. Dark mode is the
+ * default (`next-themes defaultTheme="dark"`) and remains fully intact.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --background: #070b14; /* colors.background */
+  --foreground: #f8fafc; /* colors.text */
+  --card: #111827; /* colors.surface */
+  --card-foreground: #f8fafc; /* colors.text */
+  --popover: #1b2437; /* colors.surfaceElevated */
+  --popover-foreground: #f8fafc; /* colors.text */
+  --primary: #6c63ff; /* colors.primary */
+  --primary-foreground: #f8fafc; /* colors.text */
+  --secondary: #1b2437; /* colors.surfaceElevated */
+  --secondary-foreground: #f8fafc; /* colors.text */
+  --muted: #111827; /* colors.surface */
+  --muted-foreground: #94a3b8; /* colors.textMuted */
+  --accent: #1b2437; /* colors.surfaceElevated (shadcn hover-surface role) */
+  --accent-foreground: #f8fafc; /* colors.text */
+  --destructive: #ef4444; /* colors.danger */
+  --border: #1b2437; /* colors.surfaceElevated */
+  --input: #1b2437; /* colors.surfaceElevated */
+  --ring: #00f5d4; /* colors.accent (brand emphasis / focus) */
+  --chart-1: #6c63ff; /* colors.primary */
+  --chart-2: #00f5d4; /* colors.accent */
+  --chart-3: #22c55e; /* colors.success */
+  --chart-4: #f59e0b; /* colors.warning */
+  --chart-5: #ef4444; /* colors.danger */
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #111827; /* colors.surface */
+  --sidebar-foreground: #f8fafc; /* colors.text */
+  --sidebar-primary: #6c63ff; /* colors.primary */
+  --sidebar-primary-foreground: #f8fafc; /* colors.text */
+  --sidebar-accent: #1b2437; /* colors.surfaceElevated */
+  --sidebar-accent-foreground: #f8fafc; /* colors.text */
+  --sidebar-border: #1b2437; /* colors.surfaceElevated */
+  --sidebar-ring: #00f5d4; /* colors.accent */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #070b14; /* colors.background */
+  --foreground: #f8fafc; /* colors.text */
+  --card: #111827; /* colors.surface */
+  --card-foreground: #f8fafc; /* colors.text */
+  --popover: #1b2437; /* colors.surfaceElevated */
+  --popover-foreground: #f8fafc; /* colors.text */
+  --primary: #6c63ff; /* colors.primary */
+  --primary-foreground: #f8fafc; /* colors.text */
+  --secondary: #1b2437; /* colors.surfaceElevated */
+  --secondary-foreground: #f8fafc; /* colors.text */
+  --muted: #111827; /* colors.surface */
+  --muted-foreground: #94a3b8; /* colors.textMuted */
+  --accent: #1b2437; /* colors.surfaceElevated (shadcn hover-surface role) */
+  --accent-foreground: #f8fafc; /* colors.text */
+  --destructive: #ef4444; /* colors.danger */
+  --border: #1b2437; /* colors.surfaceElevated */
+  --input: #1b2437; /* colors.surfaceElevated */
+  --ring: #00f5d4; /* colors.accent (brand emphasis / focus) */
+  --chart-1: #6c63ff; /* colors.primary */
+  --chart-2: #00f5d4; /* colors.accent */
+  --chart-3: #22c55e; /* colors.success */
+  --chart-4: #f59e0b; /* colors.warning */
+  --chart-5: #ef4444; /* colors.danger */
+  --sidebar: #111827; /* colors.surface */
+  --sidebar-foreground: #f8fafc; /* colors.text */
+  --sidebar-primary: #6c63ff; /* colors.primary */
+  --sidebar-primary-foreground: #f8fafc; /* colors.text */
+  --sidebar-accent: #1b2437; /* colors.surfaceElevated */
+  --sidebar-accent-foreground: #f8fafc; /* colors.text */
+  --sidebar-border: #1b2437; /* colors.surfaceElevated */
+  --sidebar-ring: #00f5d4; /* colors.accent */
 }
 
 @layer base {

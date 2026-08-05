@@ -23,6 +23,9 @@ coverage
 # vscode
 .vscode/*
 
+# brainstorm visual companion sessions
+.superpowers/
+
 # operating system
 .DS_Store
 Thumbs.db
