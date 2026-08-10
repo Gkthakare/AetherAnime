@@ -1,5 +1,6 @@
+import { notFound } from 'next/navigation';
 import { ExperienceLayout } from '@/widgets/experience-layout';
-import { toWorldSlug } from '@/shared/lib/navigation';
+import { isWorldSlug, toWorldSlug } from '@/shared/lib/navigation';
 import { spacing } from '@/shared/config/theme';
 
 type WorldEntryPageProps = {
@@ -20,8 +21,12 @@ function titleFromSlug(slug: string): string {
  */
 export default async function WorldEntryPage({ params }: WorldEntryPageProps) {
   const { destination } = await params;
-  const slug = toWorldSlug(destination);
-  const title = titleFromSlug(slug || 'aetheranime');
+
+  if (!isWorldSlug(destination)) {
+    notFound();
+  }
+
+  const title = titleFromSlug(toWorldSlug(destination));
 
   return (
     <ExperienceLayout>
@@ -30,13 +35,11 @@ export default async function WorldEntryPage({ params }: WorldEntryPageProps) {
         className="relative flex min-h-full w-full flex-col items-center justify-center text-center"
         style={{ gap: spacing.lg, paddingInline: spacing.xl }}
       >
-        <p className="text-sm tracking-[0.12em] text-ring uppercase">
-          Entered
-        </p>
-        <h1 className="text-4xl font-medium tracking-tight text-foreground md:text-5xl">
+        <p className="text-ring text-sm tracking-[0.12em] uppercase">Entered</p>
+        <h1 className="text-foreground text-4xl font-medium tracking-tight md:text-5xl">
           {title}
         </h1>
-        <p className="max-w-md text-sm text-muted-foreground md:text-base">
+        <p className="text-muted-foreground max-w-md text-sm md:text-base">
           The threshold has answered. This world shell awaits its Engine.
         </p>
       </section>
