@@ -21,7 +21,7 @@ export interface PortalCTAProps
   onAccept?: () => void;
   /**
    * Fires once when Settling finishes and the seal returns to Idle.
-   * Sprint-002: scene stays on Arrival. Future: swap for navigate.
+   * Arrival may navigate (World Transition) without the portal owning routes.
    */
   onComplete?: () => void;
 }

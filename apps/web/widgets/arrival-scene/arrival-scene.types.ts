@@ -21,10 +21,10 @@
  * - **inviting** — Portal acknowledges the user. Light gathers. Permission.
  * - **accepting** — User commits. Irreversible beat. Interaction locks.
  * - **crossing** — Threshold opens. Seal leads; world responds in cascade.
- * - **settling** — Surge resolves into afterglow; then Idle (or future navigate).
+ * - **settling** — Surge resolves into afterglow; then Idle or World Transition.
  *
- * Sprint-002 completion returns to Idle on Arrival. Future completion may
- * navigate after Settling without renaming these phases.
+ * Completion consequence is separable: Director may navigate after Settling
+ * without renaming these phases.
  */
 export type ArrivalPhase =
   | 'idle'
@@ -47,7 +47,7 @@ export type ArrivalPhase =
  * | `accept`    | User commits — Accepting begins                                |
  * | `cross`     | Threshold opens — Crossing begins                              |
  * | `settle`    | Surge resolves — Settling begins                               |
- * | `complete`  | Ceremony finished — return to Idle                             |
+ * | `complete`  | Ceremony finished — Idle + optional World Transition     |
  */
 export type ArrivalPhaseEvent =
   | 'notice'

@@ -29,8 +29,8 @@ function wait(seconds: number): Promise<void> {
  * PortalCTA — Impossible Threshold invitation to Enter {destination}.
  *
  * Call to Adventure, not Call to Action. Owns interaction and local phase
- * lifecycle. Visual structure is `PortalGeometry` (idle geometry only in
- * Sprint-003 Task-001). Ceremony motion for geometry is deferred.
+ * lifecycle. Visual structure + idle + phase/ceremony response:
+ * `PortalGeometry` (motion values from `portal-cta.motion.ts`).
  *
  * Layering: ExperienceLayout → ArrivalScene → PortalCTA (z-content).
  */
@@ -145,7 +145,7 @@ export function PortalCTA({
           style={{ gap: spacing.lg }}
         >
           <span aria-hidden="true">
-            <PortalGeometry />
+            <PortalGeometry phase={phase} reduceMotion={!!reduceMotion} />
           </span>
 
           <span className="text-sm tracking-[0.08em] text-ring md:text-base">

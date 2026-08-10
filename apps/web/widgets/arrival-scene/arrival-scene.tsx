@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
+import { worldHref } from '@/shared/lib/navigation';
 import { AtmosphereLayer } from '@/widgets/atmosphere-layer';
 import { Hero } from '@/widgets/hero';
 import { PortalCTA } from '@/widgets/portal-cta';
@@ -13,6 +15,9 @@ import {
 } from './arrival-scene.motion';
 import type { ArrivalPhase, ArrivalPhaseEvent } from './arrival-scene.types';
 
+/** Arrival destination — shared by invitation label and World Transition. */
+const ARRIVAL_DESTINATION = 'AetherAnime';
+
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -23,15 +28,17 @@ function prefersReducedMotion(): boolean {
  *
  * Owns canonical `ArrivalPhase` and dispatches lifecycle events into
  * `reduceArrivalPhase`. Portal initiates via callbacks; Hero and Atmosphere
- * subscribe only to `ArrivalPhase`. No Framer Motion here — performers own
- * their visuals.
+ * subscribe only to `ArrivalPhase`. World Transition runs on `onComplete`
+ * after Settling — never during Crossing.
  *
  * Layering: ExperienceLayout (shell) → ArrivalScene (director) → widgets.
  */
 export function ArrivalScene() {
+  const router = useRouter();
   const [phase, setPhase] = useState<ArrivalPhase>('idle');
   const phaseRef = useRef<ArrivalPhase>('idle');
   const ceremonyAbortRef = useRef<AbortController | null>(null);
+  const transitionedRef = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -51,6 +58,7 @@ export function ArrivalScene() {
     ceremonyAbortRef.current?.abort();
     const controller = new AbortController();
     ceremonyAbortRef.current = controller;
+    transitionedRef.current = false;
 
     void dispatchArrivalCeremony(dispatch, {
       reducedMotion: prefersReducedMotion(),
@@ -65,6 +73,11 @@ export function ArrivalScene() {
     ceremonyAbortRef.current?.abort();
     ceremonyAbortRef.current = null;
     dispatch('complete');
+
+    // Consequence after full ceremony (Accepting → Crossing → Settling → Idle).
+    if (transitionedRef.current) return;
+    transitionedRef.current = true;
+    router.push(worldHref(ARRIVAL_DESTINATION));
   };
 
   return (
@@ -78,7 +91,7 @@ export function ArrivalScene() {
       <Hero phase={phase} />
 
       <PortalCTA
-        destination="AetherAnime"
+        destination={ARRIVAL_DESTINATION}
         onAccept={handleAccept}
         onComplete={handleComplete}
       />

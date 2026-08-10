@@ -52,16 +52,22 @@ These principles outrank local taste and short-term feature pressure.
 | Limit | Rule |
 | --- | --- |
 | Simultaneously moving elements | **Maximum 3** noticeable movers in a composition (Arrival: three Atmosphere haze planes at rest). |
-| Continuous ambient animation | **Atmosphere only.** Other widgets may breathe on interaction, not forever. |
-| Portal | **Primary motion.** Leads every invitation ceremony. |
+| Continuous ambient animation | **Atmosphere** is the default continuous ambient system. See **Living Threshold exception** below. |
+| Portal | **Primary motion.** Leads every invitation ceremony. Idle presence follows `PORTAL_MOTION.md`. |
 | Hero | **Subtle yield only.** Never performs the ceremony. |
 | Maximum noticeable Hero movement | **3px** translate (or equivalent optical yield). |
-| Portal scale during Crossing | About **1.10–1.12** peak scale on the primary ring language. |
+| Portal scale during Crossing | About **1.10–1.12** peak scale on the primary ring language (legacy ring note); Impossible Threshold Crossing must not use whole-portal scale pulse as identity. |
 | Allowed animation properties | **Transform and opacity only.** |
 | Layout animation | **Forbidden** as part of experience choreography. |
-| Infinite loops | Only for ambient Atmosphere drift. No unnecessary infinite loops on interactive chrome. |
+| Infinite loops | Ambient Atmosphere drift by default. Interactive chrome must not run unnecessary infinite loops. Portal idle loops only under the Living Threshold exception. |
 | Cascade | Portal → Atmosphere → Hero. Offsets create response; sync reads as UI kit. |
 | Timing philosophy | Short Crossing, longer Settling memory. Curiosity lasts longer in spirit than spectacle. |
+
+### Living Threshold exception (Portal Engine only)
+
+The Portal Engine may own a **maximum of two** continuous ambient transform/opacity loops provided they remain below conscious perception and never resemble loading, breathing, rotation, or button animation.
+
+This exception applies only to the Living Threshold / Impossible Threshold idle presence. It does not authorize ambient loops on arbitrary UI chrome. Full motion law: `docs/design/PORTAL_MOTION.md`.
 
 Numeric durations live in the Motion Foundation and widget motion modules. This budget defines *limits*, not keyframes.
 
