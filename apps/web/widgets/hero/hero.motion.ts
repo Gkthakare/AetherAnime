@@ -9,12 +9,10 @@
 
 import type { Transition } from 'framer-motion';
 
-import { DELAY, EASING } from '@/shared/lib/motion';
 import {
-  cinematicTransition,
-  fastTransition,
-  normalTransition,
-  slowTransition,
+  DELAY,
+  createEchoPhaseTransitions,
+  echoPhaseTransitionReduced,
 } from '@/shared/lib/motion';
 
 import type { ArrivalPhase } from '../arrival-scene/arrival-scene.types';
@@ -51,16 +49,8 @@ export const heroPhaseMotionReduced: Record<ArrivalPhase, HeroPhaseMotion> = {
  * Phase transitions. `DELAY.SHORT` lets Atmosphere echo before Hero yields
  * (cascade: Portal → Atmosphere → Hero).
  */
-export const heroPhaseTransition: Record<ArrivalPhase, Transition> = {
-  idle: { ...slowTransition, delay: DELAY.SHORT, ease: EASING.exit },
-  aware: { ...fastTransition, delay: DELAY.SHORT },
-  inviting: { ...fastTransition, delay: DELAY.SHORT },
-  accepting: { ...normalTransition, delay: DELAY.SHORT },
-  crossing: { ...cinematicTransition, delay: DELAY.SHORT },
-  settling: { ...slowTransition, delay: DELAY.SHORT, ease: EASING.exit },
-};
+export const heroPhaseTransition: Record<ArrivalPhase, Transition> =
+  createEchoPhaseTransitions(DELAY.SHORT);
 
-export const heroPhaseTransitionReduced: Transition = {
-  ...fastTransition,
-  delay: DELAY.NONE,
-};
+export const heroPhaseTransitionReduced: Transition =
+  echoPhaseTransitionReduced;

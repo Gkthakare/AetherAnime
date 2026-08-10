@@ -11,20 +11,21 @@
 
 import type { Transition } from 'framer-motion';
 
-import { DISTANCE, DURATION, EASING } from '@/shared/lib/motion';
+import {
+  CEREMONY_SEQUENCE,
+  CEREMONY_SEQUENCE_REDUCED,
+  DISTANCE,
+  DURATION,
+  EASING,
+  isCeremonyPhase,
+} from '@/shared/lib/motion';
 
 import type { PortalPhase } from './portal-cta.types';
 import { PORTAL_FIELD } from './portal-geometry.constants';
 
-/** Phases during which activation must be locked. */
-const LOCKED_PHASES: ReadonlySet<PortalPhase> = new Set([
-  'accepting',
-  'crossing',
-  'settling',
-]);
-
+/** True while the ceremony is committed and activation must be locked. */
 export function isPortalLocked(phase: PortalPhase): boolean {
-  return LOCKED_PHASES.has(phase);
+  return isCeremonyPhase(phase);
 }
 
 /** True when Living Threshold ambient loops should run (full motion + idle). */
@@ -36,21 +37,13 @@ export function isPortalAmbientIdle(
 }
 
 /**
- * Accept sequence dwell per phase (seconds), composed from foundation durations.
- * Timing philosophy: short Crossing, longer Settling memory.
+ * Accept sequence dwell per phase (seconds) — the foundation's ceremony clock,
+ * shared with the Director so both sides exhale together.
  */
-export const PORTAL_SEQUENCE = {
-  accepting: DURATION.NORMAL,
-  crossing: DURATION.NORMAL,
-  settling: DURATION.CINEMATIC,
-} as const;
+export const PORTAL_SEQUENCE = CEREMONY_SEQUENCE;
 
 /** Abbreviated dwells when `prefers-reduced-motion` is set. */
-export const PORTAL_SEQUENCE_REDUCED = {
-  accepting: DURATION.FAST,
-  crossing: DURATION.FAST,
-  settling: DURATION.NORMAL,
-} as const;
+export const PORTAL_SEQUENCE_REDUCED = CEREMONY_SEQUENCE_REDUCED;
 
 /** Mount reveal for the invitation block (transform + opacity only). */
 export const portalEnterTransition: Transition = {
@@ -140,29 +133,29 @@ function addPose(a: PlatePose, b: PlatePose): PlatePose {
   return { x: a.x + b.x, y: a.y + b.y };
 }
 
-/** Near plate sits left of singularity — gravity bias +x / slight +y. */
-function nearGravityBias(
-  phase: PortalPhase,
-  reduceMotion = false,
-): PlatePose {
-  const g = portalGravityAmount(
-    PORTAL_GRAVITY_PLATE_INTENSITY[phase],
-    reduceMotion,
-  );
-  return { x: g, y: g * 0.4 };
+type GravityBias = (phase: PortalPhase, reduceMotion?: boolean) => PlatePose;
+
+/**
+ * Inward bias for a plate, signed by which side of the singularity it sits on.
+ * The vertical component stays a fraction of the horizontal pull so plates lean
+ * toward the core rather than sliding along it.
+ */
+function plateGravityBias(towardCore: 1 | -1): GravityBias {
+  return (phase, reduceMotion = false) => {
+    const g =
+      portalGravityAmount(
+        PORTAL_GRAVITY_PLATE_INTENSITY[phase],
+        reduceMotion,
+      ) * towardCore;
+    return { x: g, y: g * 0.4 };
+  };
 }
 
+/** Near plate sits left of singularity — gravity bias +x / slight +y. */
+const nearGravityBias = plateGravityBias(1);
+
 /** Far plate sits right of singularity — gravity bias −x / slight −y. */
-function farGravityBias(
-  phase: PortalPhase,
-  reduceMotion = false,
-): PlatePose {
-  const g = portalGravityAmount(
-    PORTAL_GRAVITY_PLATE_INTENSITY[phase],
-    reduceMotion,
-  );
-  return { x: -g, y: -g * 0.4 };
-}
+const farGravityBias = plateGravityBias(-1);
 
 function gravityDensity(
   phase: PortalPhase,
@@ -176,18 +169,42 @@ function gravityDensity(
   return Math.min(1, Math.max(0, base + gain * i));
 }
 
+/** Build a value for every PortalPhase. */
+function mapPhases<T>(build: (phase: PortalPhase) => T): Record<PortalPhase, T> {
+  return {
+    idle: build('idle'),
+    inviting: build('inviting'),
+    accepting: build('accepting'),
+    crossing: build('crossing'),
+    settling: build('settling'),
+  };
+}
+
+/** Same value on every phase — a layer that holds still through the ceremony. */
+function holdPhases<T>(value: T): Record<PortalPhase, T> {
+  return mapPhases(() => value);
+}
+
 function mapPhasePoses(
   base: Record<PortalPhase, PlatePose>,
-  bias: (phase: PortalPhase, reduce: boolean) => PlatePose,
+  bias: GravityBias,
   reduce: boolean,
 ): Record<PortalPhase, PlatePose> {
-  return {
-    idle: addPose(base.idle, bias('idle', reduce)),
-    inviting: addPose(base.inviting, bias('inviting', reduce)),
-    accepting: addPose(base.accepting, bias('accepting', reduce)),
-    crossing: addPose(base.crossing, bias('crossing', reduce)),
-    settling: addPose(base.settling, bias('settling', reduce)),
-  };
+  return mapPhases((phase) => addPose(base[phase], bias(phase, reduce)));
+}
+
+/**
+ * Per-phase opacity under gravity: each layer declares only its resting density
+ * per phase, and the shared gain applies the inward pull.
+ */
+function mapPhaseOpacity(
+  base: Record<PortalPhase, number>,
+  gain: number,
+  reduce = false,
+): Record<PortalPhase, OpacityPose> {
+  return mapPhases((phase) => ({
+    opacity: gravityDensity(phase, base[phase], gain, reduce),
+  }));
 }
 
 /** Idle gravity whisper — bias ambient keyframes toward the singularity. */
@@ -324,17 +341,7 @@ export const portalPlateNearPhase: Record<PortalPhase, PlatePose> =
 
 /** Reduced: hierarchy via gravity, travel scaled down. */
 export const portalPlateNearPhaseReduced: Record<PortalPhase, PlatePose> =
-  mapPhasePoses(
-    {
-      idle: portalPlateNearRest,
-      inviting: portalPlateNearRest,
-      accepting: portalPlateNearRest,
-      crossing: portalPlateNearRest,
-      settling: portalPlateNearRest,
-    },
-    nearGravityBias,
-    true,
-  );
+  mapPhasePoses(holdPhases(portalPlateNearRest), nearGravityBias, true);
 
 const portalPlateFarBase: Record<PortalPhase, PlatePose> = {
   idle: {
@@ -364,111 +371,49 @@ export const portalPlateFarPhase: Record<PortalPhase, PlatePose> =
   mapPhasePoses(portalPlateFarBase, farGravityBias, false);
 
 export const portalPlateFarPhaseReduced: Record<PortalPhase, PlatePose> =
-  mapPhasePoses(
-    {
-      idle: portalPlateFarBase.idle,
-      inviting: portalPlateFarBase.idle,
-      accepting: portalPlateFarBase.idle,
-      crossing: portalPlateFarBase.idle,
-      settling: portalPlateFarBase.idle,
-    },
-    farGravityBias,
-    true,
-  );
+  mapPhasePoses(holdPhases(portalPlateFarBase.idle), farGravityBias, true);
 
 /**
  * L3 seam — gather + gravity attraction (density). Crossing still yields open.
  */
-export const portalSeamPhase: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity('idle', 0.82, PORTAL_GRAVITY_DENSITY.seam),
-  },
-  inviting: {
-    opacity: gravityDensity('inviting', 0.95, PORTAL_GRAVITY_DENSITY.seam),
-  },
-  accepting: {
-    opacity: gravityDensity('accepting', 1, PORTAL_GRAVITY_DENSITY.seam),
-  },
-  crossing: {
-    opacity: gravityDensity('crossing', 0.52, PORTAL_GRAVITY_DENSITY.seam),
-  },
-  settling: {
-    opacity: gravityDensity('settling', 0.78, PORTAL_GRAVITY_DENSITY.seam),
-  },
+const PORTAL_SEAM_DENSITY: Record<PortalPhase, number> = {
+  idle: 0.82,
+  inviting: 0.95,
+  accepting: 1,
+  crossing: 0.52,
+  settling: 0.78,
 };
 
-export const portalSeamPhaseReduced: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity('idle', 0.82, PORTAL_GRAVITY_DENSITY.seam, true),
-  },
-  inviting: {
-    opacity: gravityDensity(
-      'inviting',
-      0.92,
-      PORTAL_GRAVITY_DENSITY.seam,
-      true,
-    ),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      0.98,
-      PORTAL_GRAVITY_DENSITY.seam,
-      true,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      0.62,
-      PORTAL_GRAVITY_DENSITY.seam,
-      true,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      0.82,
-      PORTAL_GRAVITY_DENSITY.seam,
-      true,
-    ),
-  },
+/** Reduced motion keeps the hierarchy but narrows the density spread. */
+const PORTAL_SEAM_DENSITY_REDUCED: Record<PortalPhase, number> = {
+  idle: 0.82,
+  inviting: 0.92,
+  accepting: 0.98,
+  crossing: 0.62,
+  settling: 0.82,
 };
+
+export const portalSeamPhase: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(PORTAL_SEAM_DENSITY, PORTAL_GRAVITY_DENSITY.seam);
+
+export const portalSeamPhaseReduced: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(
+    PORTAL_SEAM_DENSITY_REDUCED,
+    PORTAL_GRAVITY_DENSITY.seam,
+    true,
+  );
 
 /** L2 hairline — gravity densifies support light toward the core. */
-export const portalHairlinePhase: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity('idle', 0.35, PORTAL_GRAVITY_DENSITY.hairline),
-  },
-  inviting: {
-    opacity: gravityDensity(
-      'inviting',
-      0.5,
-      PORTAL_GRAVITY_DENSITY.hairline,
-    ),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      0.62,
-      PORTAL_GRAVITY_DENSITY.hairline,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      0.28,
-      PORTAL_GRAVITY_DENSITY.hairline,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      0.4,
-      PORTAL_GRAVITY_DENSITY.hairline,
-    ),
-  },
+const PORTAL_HAIRLINE_DENSITY: Record<PortalPhase, number> = {
+  idle: 0.35,
+  inviting: 0.5,
+  accepting: 0.62,
+  crossing: 0.28,
+  settling: 0.4,
 };
+
+export const portalHairlinePhase: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(PORTAL_HAIRLINE_DENSITY, PORTAL_GRAVITY_DENSITY.hairline);
 
 export const portalHairlinePhaseReduced: Record<PortalPhase, OpacityPose> =
   portalHairlinePhase;
@@ -477,203 +422,67 @@ export const portalHairlinePhaseReduced: Record<PortalPhase, OpacityPose> =
  * L4 singularity — invitation density under gravity. Crossing still opens
  * (opacity yield). Never positional bounce.
  */
-export const portalSingularityPhase: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity(
-      'idle',
-      0.85,
-      PORTAL_GRAVITY_DENSITY.singularity,
-    ),
-  },
-  inviting: {
-    opacity: gravityDensity(
-      'inviting',
-      0.95,
-      PORTAL_GRAVITY_DENSITY.singularity,
-    ),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      1,
-      PORTAL_GRAVITY_DENSITY.singularity,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      0.28,
-      PORTAL_GRAVITY_DENSITY.singularity,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      0.9,
-      PORTAL_GRAVITY_DENSITY.singularity,
-    ),
-  },
+const PORTAL_SINGULARITY_DENSITY: Record<PortalPhase, number> = {
+  idle: 0.85,
+  inviting: 0.95,
+  accepting: 1,
+  crossing: 0.28,
+  settling: 0.9,
 };
 
-export const portalSingularityPhaseReduced: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity(
-      'idle',
-      0.85,
-      PORTAL_GRAVITY_DENSITY.singularity,
-      true,
-    ),
-  },
-  inviting: {
-    opacity: gravityDensity(
-      'inviting',
-      0.92,
-      PORTAL_GRAVITY_DENSITY.singularity,
-      true,
-    ),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      0.98,
-      PORTAL_GRAVITY_DENSITY.singularity,
-      true,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      0.4,
-      PORTAL_GRAVITY_DENSITY.singularity,
-      true,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      0.88,
-      PORTAL_GRAVITY_DENSITY.singularity,
-      true,
-    ),
-  },
+const PORTAL_SINGULARITY_DENSITY_REDUCED: Record<PortalPhase, number> = {
+  idle: 0.85,
+  inviting: 0.92,
+  accepting: 0.98,
+  crossing: 0.4,
+  settling: 0.88,
 };
+
+export const portalSingularityPhase: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(
+    PORTAL_SINGULARITY_DENSITY,
+    PORTAL_GRAVITY_DENSITY.singularity,
+  );
+
+export const portalSingularityPhaseReduced: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(
+    PORTAL_SINGULARITY_DENSITY_REDUCED,
+    PORTAL_GRAVITY_DENSITY.singularity,
+    true,
+  );
 
 /**
  * Atmospheric field — gravity densifies Soft Aether pull (opacity only).
+ * Densities are offsets from the resting field so the field never drifts away
+ * from its geometry constant.
  */
-export const portalFieldPhase: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity(
-      'idle',
-      PORTAL_FIELD.opacity,
-      PORTAL_GRAVITY_DENSITY.field,
-    ),
-  },
-  inviting: {
-    opacity: gravityDensity(
-      'inviting',
-      PORTAL_FIELD.opacity + 0.07,
-      PORTAL_GRAVITY_DENSITY.field,
-    ),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      PORTAL_FIELD.opacity + 0.17,
-      PORTAL_GRAVITY_DENSITY.field,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      PORTAL_FIELD.opacity + 0.27,
-      PORTAL_GRAVITY_DENSITY.field,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      PORTAL_FIELD.opacity + 0.03,
-      PORTAL_GRAVITY_DENSITY.field,
-    ),
-  },
+const PORTAL_FIELD_DENSITY: Record<PortalPhase, number> = {
+  idle: PORTAL_FIELD.opacity,
+  inviting: PORTAL_FIELD.opacity + 0.07,
+  accepting: PORTAL_FIELD.opacity + 0.17,
+  crossing: PORTAL_FIELD.opacity + 0.27,
+  settling: PORTAL_FIELD.opacity + 0.03,
 };
 
-export const portalFieldPhaseReduced: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity(
-      'idle',
-      PORTAL_FIELD.opacity,
-      PORTAL_GRAVITY_DENSITY.field,
-      true,
-    ),
-  },
-  inviting: {
-    opacity: gravityDensity(
-      'inviting',
-      PORTAL_FIELD.opacity + 0.07,
-      PORTAL_GRAVITY_DENSITY.field,
-      true,
-    ),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      PORTAL_FIELD.opacity + 0.17,
-      PORTAL_GRAVITY_DENSITY.field,
-      true,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      PORTAL_FIELD.opacity + 0.27,
-      PORTAL_GRAVITY_DENSITY.field,
-      true,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      PORTAL_FIELD.opacity + 0.03,
-      PORTAL_GRAVITY_DENSITY.field,
-      true,
-    ),
-  },
-};
+export const portalFieldPhase: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(PORTAL_FIELD_DENSITY, PORTAL_GRAVITY_DENSITY.field);
+
+export const portalFieldPhaseReduced: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(PORTAL_FIELD_DENSITY, PORTAL_GRAVITY_DENSITY.field, true);
 
 /**
  * Chamber perception — gravity deepens void slightly (opacity only; no translate).
  */
-export const portalChamberPhase: Record<PortalPhase, OpacityPose> = {
-  idle: {
-    opacity: gravityDensity('idle', 1, -PORTAL_GRAVITY_DENSITY.chamber),
-  },
-  inviting: {
-    opacity: gravityDensity('inviting', 1, -PORTAL_GRAVITY_DENSITY.chamber),
-  },
-  accepting: {
-    opacity: gravityDensity(
-      'accepting',
-      0.92,
-      -PORTAL_GRAVITY_DENSITY.chamber,
-    ),
-  },
-  crossing: {
-    opacity: gravityDensity(
-      'crossing',
-      0.72,
-      -PORTAL_GRAVITY_DENSITY.chamber,
-    ),
-  },
-  settling: {
-    opacity: gravityDensity(
-      'settling',
-      0.96,
-      -PORTAL_GRAVITY_DENSITY.chamber,
-    ),
-  },
+const PORTAL_CHAMBER_DENSITY: Record<PortalPhase, number> = {
+  idle: 1,
+  inviting: 1,
+  accepting: 0.92,
+  crossing: 0.72,
+  settling: 0.96,
 };
+
+export const portalChamberPhase: Record<PortalPhase, OpacityPose> =
+  mapPhaseOpacity(PORTAL_CHAMBER_DENSITY, -PORTAL_GRAVITY_DENSITY.chamber);
 
 export const portalChamberPhaseReduced: Record<PortalPhase, OpacityPose> =
   portalChamberPhase;

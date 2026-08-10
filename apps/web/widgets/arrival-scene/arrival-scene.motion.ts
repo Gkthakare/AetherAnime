@@ -8,11 +8,17 @@
  * 1. Dispatching lifecycle events via `reduceArrivalPhase` (Director), then
  * 2. Performers reading `ArrivalPhase` / `ARRIVAL_ORCHESTRATION` locally.
  *
- * Sequence dwells reuse Motion Foundation `DURATION` only — same tokens as
- * Portal's accept sequence — so ceremony stays in sync without importing Portal.
+ * Sequence dwells reuse the Motion Foundation ceremony clock — the same values
+ * Portal's accept sequence reads — so ceremony stays in sync without importing
+ * Portal.
  */
 
-import { DURATION } from '@/shared/lib/motion';
+import { wait } from '@/shared/lib/async';
+import {
+  CEREMONY_SEQUENCE,
+  CEREMONY_SEQUENCE_REDUCED,
+  isCeremonyPhase,
+} from '@/shared/lib/motion';
 
 import type {
   ArrivalOrchestrationFrame,
@@ -30,15 +36,9 @@ export const ARRIVAL_PHASE_ORDER = [
   'settling',
 ] as const satisfies ReadonlyArray<ArrivalPhase>;
 
-/** Phases during which the invitation ceremony must not restart. */
-const LOCKED_PHASES: ReadonlySet<ArrivalPhase> = new Set([
-  'accepting',
-  'crossing',
-  'settling',
-]);
-
+/** True while the invitation ceremony is committed and must not restart. */
 export function isArrivalLocked(phase: ArrivalPhase): boolean {
-  return LOCKED_PHASES.has(phase);
+  return isCeremonyPhase(phase);
 }
 
 /**
@@ -123,41 +123,15 @@ export function getArrivalOrchestration(
 
 /**
  * Dwell before dispatching the *next* lifecycle event after entering a phase.
- * Mirrors `PORTAL_SEQUENCE` foundation tokens so Director and Portal share one
- * emotional clock (short Crossing, longer Settling).
+ * Shares the foundation's ceremony clock with Portal (short Crossing, longer
+ * Settling) so neither side owns the other's timing.
  */
-export const ARRIVAL_SEQUENCE = {
-  accepting: DURATION.NORMAL,
-  crossing: DURATION.NORMAL,
-  settling: DURATION.CINEMATIC,
-} as const;
+export const ARRIVAL_SEQUENCE = CEREMONY_SEQUENCE;
 
 /** Same emotional beats; shortened dwells when reduced motion is preferred. */
-export const ARRIVAL_SEQUENCE_REDUCED = {
-  accepting: DURATION.FAST,
-  crossing: DURATION.FAST,
-  settling: DURATION.NORMAL,
-} as const;
+export const ARRIVAL_SEQUENCE_REDUCED = CEREMONY_SEQUENCE_REDUCED;
 
 export type ArrivalCeremonyDispatch = (event: ArrivalPhaseEvent) => void;
-
-function wait(seconds: number, signal?: AbortSignal): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (signal?.aborted) {
-      reject(new DOMException('Aborted', 'AbortError'));
-      return;
-    }
-    const id = setTimeout(() => resolve(), seconds * 1000);
-    signal?.addEventListener(
-      'abort',
-      () => {
-        clearTimeout(id);
-        reject(new DOMException('Aborted', 'AbortError'));
-      },
-      { once: true },
-    );
-  });
-}
 
 /**
  * Dispatch the accept → cross → settle event chain.
@@ -188,7 +162,5 @@ export async function dispatchArrivalCeremony(
 
 /** Whether a phase should drive Hero / Atmosphere ceremony responses. */
 export function isArrivalCeremonyPhase(phase: ArrivalPhase): boolean {
-  return (
-    phase === 'accepting' || phase === 'crossing' || phase === 'settling'
-  );
+  return isCeremonyPhase(phase);
 }

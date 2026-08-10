@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 
-import { heroReveal } from '@/shared/lib/motion';
+import { heroReveal, phaseTransition, phaseValue } from '@/shared/lib/motion';
 import { Surface } from '@/shared/ui/surface';
 
 import {
@@ -23,13 +23,19 @@ import type { HeroProps } from './hero.types';
  * Layering: ExperienceLayout → ArrivalScene → Hero (z-content).
  */
 export function Hero({ phase = 'idle' }: HeroProps) {
-  const reduceMotion = useReducedMotion();
-  const pose = reduceMotion
-    ? heroPhaseMotionReduced[phase]
-    : heroPhaseMotion[phase];
-  const transition = reduceMotion
-    ? heroPhaseTransitionReduced
-    : heroPhaseTransition[phase];
+  const reduceMotion = !!useReducedMotion();
+  const pose = phaseValue(
+    phase,
+    reduceMotion,
+    heroPhaseMotion,
+    heroPhaseMotionReduced,
+  );
+  const transition = phaseTransition(
+    phase,
+    reduceMotion,
+    heroPhaseTransition,
+    heroPhaseTransitionReduced,
+  );
 
   return (
     <Surface variant="transparent">

@@ -1,12 +1,21 @@
 'use client';
 
+import type { Transition } from 'framer-motion';
 import { motion, useReducedMotion } from 'framer-motion';
 
 import { zIndex } from '@/shared/config/theme';
+import {
+  isCeremonyPhase,
+  phaseTransition,
+  phaseValue,
+} from '@/shared/lib/motion';
 import { cn } from '@/lib/utils';
 
-import type { ArrivalPhase } from '../arrival-scene/arrival-scene.types';
-
+import type {
+  AtmosphereLayerPose,
+  DriftMotion,
+  DriftTransition,
+} from './atmosphere-layer.motion';
 import {
   atmosphereEnter,
   atmosphereEnterTransition,
@@ -22,12 +31,6 @@ import {
   indigoNearTransition,
 } from './atmosphere-layer.motion';
 import type { AtmosphereLayerProps } from './atmosphere-layer.types';
-
-function isCeremonyPhase(phase: ArrivalPhase): boolean {
-  return (
-    phase === 'accepting' || phase === 'crossing' || phase === 'settling'
-  );
-}
 
 /**
  * AtmosphereLayer — living environmental depth behind Arrival content.
@@ -45,14 +48,21 @@ export function AtmosphereLayer({
   className,
   ...props
 }: AtmosphereLayerProps) {
-  const reduceMotion = useReducedMotion();
-  const ceremony = isCeremonyPhase(phase);
-  const poses = reduceMotion
-    ? atmospherePhaseMotionReduced[phase]
-    : atmospherePhaseMotion[phase];
-  const phaseTransition = reduceMotion
-    ? atmospherePhaseTransitionReduced
-    : atmospherePhaseTransition[phase];
+  const reduceMotion = !!useReducedMotion();
+  /** Drift pauses on a ceremony pose (and always under reduced motion). */
+  const hold = reduceMotion || isCeremonyPhase(phase);
+  const poses = phaseValue(
+    phase,
+    reduceMotion,
+    atmospherePhaseMotion,
+    atmospherePhaseMotionReduced,
+  );
+  const ceremonyTransition = phaseTransition(
+    phase,
+    reduceMotion,
+    atmospherePhaseTransition,
+    atmospherePhaseTransitionReduced,
+  );
 
   return (
     <div
@@ -83,63 +93,36 @@ export function AtmosphereLayer({
         transition={atmosphereEnterTransition}
       >
         {/* Moving 1/3 — far indigo haze */}
-        <motion.div
+        <AtmospherePlane
           className="absolute inset-[-12%]"
-          initial={false}
-          animate={
-            reduceMotion || ceremony
-              ? poses.indigoFar
-              : indigoFarDrift
-          }
-          transition={
-            reduceMotion || ceremony
-              ? phaseTransition
-              : indigoFarTransition
-          }
-          style={{
-            background:
-              'radial-gradient(ellipse 70% 55% at 48% 42%, color-mix(in oklab, var(--primary) 28%, transparent), transparent 68%)',
-          }}
+          background="radial-gradient(ellipse 70% 55% at 48% 42%, color-mix(in oklab, var(--primary) 28%, transparent), transparent 68%)"
+          hold={hold}
+          pose={poses.indigoFar}
+          drift={indigoFarDrift}
+          holdTransition={ceremonyTransition}
+          driftTransition={indigoFarTransition}
         />
 
         {/* Moving 2/3 — near indigo haze (counter-phase) */}
-        <motion.div
+        <AtmospherePlane
           className="absolute inset-[-10%]"
-          initial={false}
-          animate={
-            reduceMotion || ceremony
-              ? poses.indigoNear
-              : indigoNearDrift
-          }
-          transition={
-            reduceMotion || ceremony
-              ? phaseTransition
-              : indigoNearTransition
-          }
-          style={{
-            background:
-              'radial-gradient(ellipse 55% 45% at 58% 48%, color-mix(in oklab, var(--primary) 20%, transparent), transparent 65%)',
-          }}
+          background="radial-gradient(ellipse 55% 45% at 58% 48%, color-mix(in oklab, var(--primary) 20%, transparent), transparent 65%)"
+          hold={hold}
+          pose={poses.indigoNear}
+          drift={indigoNearDrift}
+          holdTransition={ceremonyTransition}
+          driftTransition={indigoNearTransition}
         />
 
         {/* Moving 3/3 — restrained cyan accent */}
-        <motion.div
+        <AtmospherePlane
           className="absolute inset-[-8%]"
-          initial={false}
-          animate={
-            reduceMotion || ceremony
-              ? poses.cyanAccent
-              : cyanAccentDrift
-          }
-          transition={
-            reduceMotion || ceremony
-              ? phaseTransition
-              : cyanAccentTransition
-          }
-          style={{
-            background:
-              'radial-gradient(ellipse 40% 32% at 42% 55%, color-mix(in oklab, var(--ring) 16%, transparent), transparent 70%)',
-          }}
+          background="radial-gradient(ellipse 40% 32% at 42% 55%, color-mix(in oklab, var(--ring) 16%, transparent), transparent 70%)"
+          hold={hold}
+          pose={poses.cyanAccent}
+          drift={cyanAccentDrift}
+          holdTransition={ceremonyTransition}
+          driftTransition={cyanAccentTransition}
         />
       </motion.div>
 
@@ -152,5 +135,43 @@ export function AtmosphereLayer({
         }}
       />
     </div>
+  );
+}
+
+interface AtmospherePlaneProps {
+  /** Layout only — the plane's inset within the atmosphere. */
+  className: string;
+  background: string;
+  /** When true the plane holds a ceremony pose instead of drifting. */
+  hold: boolean;
+  pose: AtmosphereLayerPose;
+  drift: DriftMotion;
+  holdTransition: Transition;
+  driftTransition: DriftTransition;
+}
+
+/**
+ * One moving depth plane.
+ *
+ * Every plane behaves identically — ambient drift at rest, a held pose during
+ * ceremony — and differs only in its gradient and drift values.
+ */
+function AtmospherePlane({
+  className,
+  background,
+  hold,
+  pose,
+  drift,
+  holdTransition,
+  driftTransition,
+}: AtmospherePlaneProps) {
+  return (
+    <motion.div
+      className={className}
+      initial={false}
+      animate={hold ? pose : drift}
+      transition={hold ? holdTransition : driftTransition}
+      style={{ background }}
+    />
   );
 }

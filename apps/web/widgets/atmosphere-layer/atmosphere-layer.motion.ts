@@ -19,9 +19,8 @@ import {
   DELAY,
   EASING,
   cinematicTransition,
-  fastTransition,
-  normalTransition,
-  slowTransition,
+  createEchoPhaseTransitions,
+  echoPhaseTransitionReduced,
 } from '@/shared/lib/motion';
 
 import type { ArrivalPhase } from '../arrival-scene/arrival-scene.types';
@@ -59,17 +58,47 @@ export const atmosphereEnterTransition: Transition = {
   delay: DELAY.NONE,
 };
 
-type DriftMotion = {
+export type DriftMotion = {
   opacity: number[];
   x: string[];
   y: string[];
 };
 
-type DriftTransition = {
+export type DriftTransition = {
   opacity: Transition;
   x: Transition;
   y: Transition;
 };
+
+/**
+ * Drift transition for one plane.
+ *
+ * Every plane sways on the same recipe — a continuous opacity loop plus
+ * cinematic x / y loops — and differs only in period. `yFactor` detunes the
+ * vertical loop so x and y never resolve together into a single pulse.
+ */
+function createDriftTransition(
+  period: number,
+  yFactor: number,
+): DriftTransition {
+  return {
+    opacity: {
+      duration: period,
+      repeat: Infinity,
+      ease: 'easeInOut',
+    },
+    x: {
+      duration: period,
+      repeat: Infinity,
+      ease: EASING.cinematic,
+    },
+    y: {
+      duration: period * yFactor,
+      repeat: Infinity,
+      ease: EASING.cinematic,
+    },
+  };
+}
 
 /**
  * Far indigo haze — deepest moving plane.
@@ -81,23 +110,10 @@ export const indigoFarDrift: DriftMotion = {
   y: ['0%', '-0.9%', '0.5%', '0.2%', '0%'],
 };
 
-export const indigoFarTransition: DriftTransition = {
-  opacity: {
-    duration: DRIFT.far,
-    repeat: Infinity,
-    ease: 'easeInOut',
-  },
-  x: {
-    duration: DRIFT.far,
-    repeat: Infinity,
-    ease: EASING.cinematic,
-  },
-  y: {
-    duration: DRIFT.far * 1.1,
-    repeat: Infinity,
-    ease: EASING.cinematic,
-  },
-};
+export const indigoFarTransition: DriftTransition = createDriftTransition(
+  DRIFT.far,
+  1.1,
+);
 
 /**
  * Near indigo haze — mid-depth plane.
@@ -109,23 +125,10 @@ export const indigoNearDrift: DriftMotion = {
   y: ['0%', '0.8%', '-0.4%', '-0.3%', '0%'],
 };
 
-export const indigoNearTransition: DriftTransition = {
-  opacity: {
-    duration: DRIFT.near,
-    repeat: Infinity,
-    ease: 'easeInOut',
-  },
-  x: {
-    duration: DRIFT.near,
-    repeat: Infinity,
-    ease: EASING.cinematic,
-  },
-  y: {
-    duration: DRIFT.near * 0.95,
-    repeat: Infinity,
-    ease: EASING.cinematic,
-  },
-};
+export const indigoNearTransition: DriftTransition = createDriftTransition(
+  DRIFT.near,
+  0.95,
+);
 
 /**
  * Restrained cyan accent — cool highlight, never a bloom.
@@ -137,25 +140,12 @@ export const cyanAccentDrift: DriftMotion = {
   y: ['0%', '-0.6%', '0.4%', '-0.2%', '0%'],
 };
 
-export const cyanAccentTransition: DriftTransition = {
-  opacity: {
-    duration: DRIFT.accent,
-    repeat: Infinity,
-    ease: 'easeInOut',
-  },
-  x: {
-    duration: DRIFT.accent,
-    repeat: Infinity,
-    ease: EASING.cinematic,
-  },
-  y: {
-    duration: DRIFT.accent * 1.05,
-    repeat: Infinity,
-    ease: EASING.cinematic,
-  },
-};
+export const cyanAccentTransition: DriftTransition = createDriftTransition(
+  DRIFT.accent,
+  1.05,
+);
 
-type AtmosphereLayerPose = {
+export type AtmosphereLayerPose = {
   opacity: number;
   x: number | string;
   y: number | string;
@@ -168,6 +158,16 @@ type AtmosphereCeremonyPose = {
 };
 
 /**
+ * Resting pose — no travel, Soft Aether at its rest opacities.
+ * Shared by every pre-ceremony phase (idle / aware / inviting).
+ */
+const ATMOSPHERE_REST_POSE: AtmosphereCeremonyPose = {
+  indigoFar: { opacity: ATMOSPHERE_REST.indigoFar, x: 0, y: 0 },
+  indigoNear: { opacity: ATMOSPHERE_REST.indigoNear, x: 0, y: 0 },
+  cyanAccent: { opacity: ATMOSPHERE_REST.cyanAccent, x: 0, y: 0 },
+};
+
+/**
  * Ceremony holds — light gathers / cyan strengthens / drift pauses.
  * Opacity deltas stay small so Soft Aether never overpowers the seal.
  */
@@ -175,21 +175,9 @@ export const atmospherePhaseMotion: Record<
   ArrivalPhase,
   AtmosphereCeremonyPose
 > = {
-  idle: {
-    indigoFar: { opacity: ATMOSPHERE_REST.indigoFar, x: 0, y: 0 },
-    indigoNear: { opacity: ATMOSPHERE_REST.indigoNear, x: 0, y: 0 },
-    cyanAccent: { opacity: ATMOSPHERE_REST.cyanAccent, x: 0, y: 0 },
-  },
-  aware: {
-    indigoFar: { opacity: ATMOSPHERE_REST.indigoFar, x: 0, y: 0 },
-    indigoNear: { opacity: ATMOSPHERE_REST.indigoNear, x: 0, y: 0 },
-    cyanAccent: { opacity: ATMOSPHERE_REST.cyanAccent, x: 0, y: 0 },
-  },
-  inviting: {
-    indigoFar: { opacity: ATMOSPHERE_REST.indigoFar, x: 0, y: 0 },
-    indigoNear: { opacity: ATMOSPHERE_REST.indigoNear, x: 0, y: 0 },
-    cyanAccent: { opacity: ATMOSPHERE_REST.cyanAccent, x: 0, y: 0 },
-  },
+  idle: ATMOSPHERE_REST_POSE,
+  aware: ATMOSPHERE_REST_POSE,
+  inviting: ATMOSPHERE_REST_POSE,
   accepting: {
     indigoFar: { opacity: 0.54, x: '0.2%', y: '-0.15%' },
     indigoNear: { opacity: 0.42, x: '-0.15%', y: '0.1%' },
@@ -233,16 +221,8 @@ export const atmospherePhaseMotionReduced: Record<
 };
 
 /** Atmosphere leads the cascade — no delay (Hero uses DELAY.SHORT). */
-export const atmospherePhaseTransition: Record<ArrivalPhase, Transition> = {
-  idle: { ...slowTransition, delay: DELAY.NONE, ease: EASING.exit },
-  aware: { ...fastTransition, delay: DELAY.NONE },
-  inviting: { ...fastTransition, delay: DELAY.NONE },
-  accepting: { ...normalTransition, delay: DELAY.NONE },
-  crossing: { ...cinematicTransition, delay: DELAY.NONE },
-  settling: { ...slowTransition, delay: DELAY.NONE, ease: EASING.exit },
-};
+export const atmospherePhaseTransition: Record<ArrivalPhase, Transition> =
+  createEchoPhaseTransitions(DELAY.NONE);
 
-export const atmospherePhaseTransitionReduced: Transition = {
-  ...fastTransition,
-  delay: DELAY.NONE,
-};
+export const atmospherePhaseTransitionReduced: Transition =
+  echoPhaseTransitionReduced;
