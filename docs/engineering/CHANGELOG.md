@@ -1,3 +1,40 @@
+## 2026-08-10 — Security · Hardening Pass
+
+**Task:** Security audit remediation
+
+**Purpose:** Close the actionable findings from a repository-wide security scan (secrets, injection, input validation, dependencies, headers). No visual or motion behavior changes.
+
+### Files Changed
+
+- `apps/web/next.config.ts`
+- `apps/web/app/world/[destination]/page.tsx`
+- `apps/web/shared/lib/navigation/world-transition.ts`
+- `apps/web/shared/lib/navigation/index.ts`
+- `apps/web/package.json`, `apps/web/package-lock.json`
+- `docs/engineering/CHANGELOG.md`
+
+### Architecture Decisions
+
+- Baseline response security headers (CSP, HSTS, frame/sniff/referrer/permissions) live in `next.config.ts` and apply to every route; `poweredByHeader` disabled.
+- `/world/[destination]` rejects any segment that is not already a canonical slug (`notFound()`), and slugs are length-bounded via `MAX_WORLD_SLUG_LENGTH`.
+- `shadcn` (a CLI) moved to `devDependencies` so its transitive server stack is not part of the runtime tree.
+
+### Performance Impact
+
+- None measurable; header emission only.
+
+### Breaking Changes
+
+- Non-canonical `/world/...` segments (uppercase, spaces, trailing separators) now 404 instead of rendering a normalized title.
+
+### Verification
+
+- `npx tsc --noEmit`, `npm run lint`, `npm run build` clean.
+- `npm audit`: 12 vulnerabilities (9 high, 3 moderate) → 0.
+- `curl -I /world/hidden-grove` shows all headers; `/world/Hidden%20Grove` returns 404.
+
+---
+
 ## 2026-08-05 — Sprint-003 · Milestone-I · Task-013
 
 **Task:** Engineering Agent System

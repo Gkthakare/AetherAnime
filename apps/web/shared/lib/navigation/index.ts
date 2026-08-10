@@ -2,4 +2,9 @@
  * Navigation helpers — World Transition and future route hand-offs.
  */
 
-export { toWorldSlug, worldHref } from './world-transition';
+export {
+  MAX_WORLD_SLUG_LENGTH,
+  isWorldSlug,
+  toWorldSlug,
+  worldHref,
+} from './world-transition';
