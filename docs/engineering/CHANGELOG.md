@@ -1,3 +1,62 @@
+## 2026-08-10 — Sprint-003 · Milestone-I · Task-014
+
+**Task:** Unit Test Foundation
+
+**Purpose:** The web app shipped with no test runner (the Husky `pre-commit` hook already called `npm test`, which did not exist) and therefore 0% coverage. Adds Vitest plus unit tests for the least-covered modules — the whole Theme / Graphics / Motion foundation, Portal Gravity and Particle Engines, ceremony lifecycle, and the Director. No application behavior changes.
+
+### Files Changed
+
+- `apps/web/vitest.config.ts` (new)
+- `apps/web/vitest.setup.ts` (new)
+- `apps/web/lib/utils.test.ts` (new)
+- `apps/web/shared/config/theme/theme.test.ts` (new)
+- `apps/web/shared/lib/graphics/graphics.test.ts` (new)
+- `apps/web/shared/lib/motion/motion.test.ts` (new)
+- `apps/web/shared/lib/navigation/world-transition.test.ts` (new)
+- `apps/web/shared/ui/surface/surface.test.tsx` (new)
+- `apps/web/shared/ui/surface/surface.variants.test.ts` (new)
+- `apps/web/widgets/arrival-scene/arrival-scene.motion.test.ts` (new)
+- `apps/web/widgets/arrival-scene/arrival-scene.test.tsx` (new)
+- `apps/web/widgets/atmosphere-layer/atmosphere-layer.motion.test.ts` (new)
+- `apps/web/widgets/experience-layout/experience-layout.test.tsx` (new)
+- `apps/web/widgets/hero/hero.motion.test.ts` (new)
+- `apps/web/widgets/hero/hero.test.tsx` (new)
+- `apps/web/widgets/portal-cta/portal-cta.motion.test.ts` (new)
+- `apps/web/widgets/portal-cta/portal-cta.test.tsx` (new)
+- `apps/web/widgets/portal-cta/portal-cta.reduced-motion.test.tsx` (new)
+- `apps/web/widgets/portal-cta/portal-geometry.constants.test.ts` (new)
+- `apps/web/widgets/portal-cta/portal-particle.motion.test.ts` (new)
+- `apps/web/package.json`
+- `docs/engineering/CHANGELOG.md`
+
+### Architecture Decisions
+
+- Tests are colocated with their module (`x.ts` → `x.test.ts`), matching the existing `x.motion.ts` / `x.types.ts` colocation.
+- Default environment is `node`; component tests opt into jsdom per file via a `@vitest-environment` docblock, so foundation tests stay DOM-free.
+- Tests assert canon invariants (composition from foundation tokens, lifecycle order, ambient-loop count, Experience Budget, reduced-motion hierarchy) rather than snapshotting values, so retuning a token does not break the suite.
+- Reduced motion lives in its own test file because Framer Motion reads the media query once per module registry.
+- `vitest.setup.ts` stubs `matchMedia` (absent in jsdom) reporting full motion.
+
+### Performance Impact
+
+- None at runtime; test-only dependencies.
+
+### Breaking Changes
+
+- None. Node ≥ 20.19 is now required locally (Vitest 4 config loading needs `require(esm)`); recorded in `engines`.
+
+### Future Dependencies
+
+- Portal / Arrival choreography changes should extend the phase-map tests rather than add new snapshots.
+- Uncovered by design for now: `app/**` route entries, `shared/providers/**`, and the vendored `components/ui/button.tsx`.
+
+### Verification
+
+- `npm run test:coverage` — 18 files, 204 tests passing; 91% statements / 90% branches over `app`, `components`, `lib`, `shared`, `widgets`.
+- `npx tsc --noEmit`, `npm run lint`, `npx prettier --check` clean.
+
+---
+
 ## 2026-08-05 — Sprint-003 · Milestone-I · Task-013
 
 **Task:** Engineering Agent System
