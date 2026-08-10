@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation';
+
 import { ExperienceLayout } from '@/widgets/experience-layout';
 import { toWorldSlug } from '@/shared/lib/navigation';
 import { spacing } from '@/shared/config/theme';
@@ -21,7 +23,11 @@ function titleFromSlug(slug: string): string {
 export default async function WorldEntryPage({ params }: WorldEntryPageProps) {
   const { destination } = await params;
   const slug = toWorldSlug(destination);
-  const title = titleFromSlug(slug || 'aetheranime');
+
+  // An unaddressable destination is a missing world, not a default one.
+  if (slug.length === 0) notFound();
+
+  const title = titleFromSlug(slug);
 
   return (
     <ExperienceLayout>

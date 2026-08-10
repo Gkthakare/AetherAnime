@@ -14,8 +14,19 @@ export function toWorldSlug(destination: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-/** App Router href for a world entry shell after Portal Settling completes. */
+/**
+ * App Router href for a world entry shell after Portal Settling completes.
+ *
+ * A destination with no addressable characters has no world to open. Throwing
+ * keeps that a visible programming error instead of quietly sending the user
+ * through the threshold into a different world than the one they accepted.
+ */
 export function worldHref(destination: string): string {
   const slug = toWorldSlug(destination);
-  return slug.length > 0 ? `/world/${slug}` : '/world/aetheranime';
+  if (slug.length === 0) {
+    throw new Error(
+      `worldHref: destination "${destination}" has no addressable slug.`,
+    );
+  }
+  return `/world/${slug}`;
 }
