@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 import { spacing, zIndex } from '@/shared/config/theme';
+import { wait } from '@/shared/lib/async';
 import { DISTANCE } from '@/shared/lib/motion';
 import { Surface } from '@/shared/ui/surface';
 import { cn } from '@/lib/utils';
@@ -18,12 +19,6 @@ import {
 import type { PortalCTAProps, PortalPhase } from './portal-cta.types';
 
 const DEFAULT_DESTINATION = 'AetherAnime';
-
-function wait(seconds: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, seconds * 1000);
-  });
-}
 
 /**
  * PortalCTA — Impossible Threshold invitation to Enter {destination}.

@@ -1,3 +1,48 @@
+## 2026-08-10 — Refactor · Shared ceremony utilities
+
+**Task:** Deduplicate phase-keyed motion across Portal / Atmosphere / Hero / Director
+
+**Purpose:** Behavior-neutral structure work. The ceremony clock, the committed-phase predicate, the echo transition table, the abortable dwell, and the reduced-motion pick were each re-declared per widget; they now live in the shared foundation. Portal's per-layer density maps are derived from declared densities instead of repeated `gravityDensity` call sites.
+
+### Files Changed
+
+- `apps/web/shared/lib/motion/ceremony.ts` (new)
+- `apps/web/shared/lib/motion/phase.ts` (new)
+- `apps/web/shared/lib/async/wait.ts` (new)
+- `apps/web/shared/lib/async/index.ts` (new)
+- `apps/web/shared/lib/motion/index.ts`
+- `apps/web/widgets/arrival-scene/arrival-scene.motion.ts`
+- `apps/web/widgets/atmosphere-layer/atmosphere-layer.motion.ts`
+- `apps/web/widgets/atmosphere-layer/atmosphere-layer.tsx`
+- `apps/web/widgets/hero/hero.motion.ts`
+- `apps/web/widgets/hero/hero.tsx`
+- `apps/web/widgets/portal-cta/portal-cta.motion.ts`
+- `apps/web/widgets/portal-cta/portal-cta.tsx`
+- `apps/web/widgets/portal-cta/portal-geometry.tsx`
+- `docs/engineering/CHANGELOG.md`
+
+### Architecture Decisions
+
+- Values keyed by phase name (dwells, committed-phase set, echo transitions) belong to the Motion Foundation; phase *ownership* is unchanged — scenes still declare their own phase unions and performers still subscribe to their Director.
+- `ARRIVAL_SEQUENCE` / `PORTAL_SEQUENCE` and `isArrivalLocked` / `isArrivalCeremonyPhase` / `isPortalLocked` remain the public names; they now delegate to the shared ceremony module.
+- Hero and Atmosphere derive their phase transition tables from `createEchoPhaseTransitions(delay)`, so the cascade order stays a single delay argument (Atmosphere `DELAY.NONE`, Hero `DELAY.SHORT`).
+- Atmosphere's three depth planes render through one internal `AtmospherePlane`; only gradient and drift values differ per plane.
+
+### Performance Impact
+
+- None. Ambient loop count, particle pool, phase pose values, and transitions are unchanged.
+
+### Breaking Changes
+
+- None. No exported symbol was removed or renamed.
+
+### Verification
+
+- `tsc --noEmit`, `eslint`, and `next build` green.
+- Behavior neutrality checked by compiling the motion modules before and after and diffing every exported value: identical.
+
+---
+
 ## 2026-08-05 — Sprint-003 · Milestone-I · Task-013
 
 **Task:** Engineering Agent System

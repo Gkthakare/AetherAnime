@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 
+import { phaseTransition, phaseValue } from '@/shared/lib/motion';
 import { cn } from '@/lib/utils';
 
 import {
@@ -50,45 +51,66 @@ export function PortalGeometry({
   phase = 'idle',
 }: PortalGeometryProps) {
   const ambient = isPortalAmbientIdle(phase, reduceMotion);
-  const phaseTransition = reduceMotion
-    ? portalPhaseTransitionReduced
-    : portalPhaseTransition[phase];
+  const responseTransition = phaseTransition(
+    phase,
+    reduceMotion,
+    portalPhaseTransition,
+    portalPhaseTransitionReduced,
+  );
 
   const plateNearAnimate = ambient
     ? portalPlateNearIdle
-    : reduceMotion
-      ? portalPlateNearPhaseReduced[phase]
-      : portalPlateNearPhase[phase];
+    : phaseValue(
+        phase,
+        reduceMotion,
+        portalPlateNearPhase,
+        portalPlateNearPhaseReduced,
+      );
   const plateNearTransition = ambient
     ? portalPlateNearIdleTransition
-    : phaseTransition;
+    : responseTransition;
 
-  const plateFarAnimate = reduceMotion
-    ? portalPlateFarPhaseReduced[phase]
-    : portalPlateFarPhase[phase];
+  const plateFarAnimate = phaseValue(
+    phase,
+    reduceMotion,
+    portalPlateFarPhase,
+    portalPlateFarPhaseReduced,
+  );
 
   const seamAnimate = ambient
     ? portalSeamIdle
-    : reduceMotion
-      ? portalSeamPhaseReduced[phase]
-      : portalSeamPhase[phase];
-  const seamTransition = ambient ? portalSeamIdleTransition : phaseTransition;
+    : phaseValue(phase, reduceMotion, portalSeamPhase, portalSeamPhaseReduced);
+  const seamTransition = ambient
+    ? portalSeamIdleTransition
+    : responseTransition;
 
-  const hairlineAnimate = reduceMotion
-    ? portalHairlinePhaseReduced[phase]
-    : portalHairlinePhase[phase];
+  const hairlineAnimate = phaseValue(
+    phase,
+    reduceMotion,
+    portalHairlinePhase,
+    portalHairlinePhaseReduced,
+  );
 
-  const singularityAnimate = reduceMotion
-    ? portalSingularityPhaseReduced[phase]
-    : portalSingularityPhase[phase];
+  const singularityAnimate = phaseValue(
+    phase,
+    reduceMotion,
+    portalSingularityPhase,
+    portalSingularityPhaseReduced,
+  );
 
-  const fieldAnimate = reduceMotion
-    ? portalFieldPhaseReduced[phase]
-    : portalFieldPhase[phase];
+  const fieldAnimate = phaseValue(
+    phase,
+    reduceMotion,
+    portalFieldPhase,
+    portalFieldPhaseReduced,
+  );
 
-  const chamberAnimate = reduceMotion
-    ? portalChamberPhaseReduced[phase]
-    : portalChamberPhase[phase];
+  const chamberAnimate = phaseValue(
+    phase,
+    reduceMotion,
+    portalChamberPhase,
+    portalChamberPhaseReduced,
+  );
 
   return (
     <div
@@ -106,7 +128,7 @@ export function PortalGeometry({
         }}
         initial={false}
         animate={fieldAnimate}
-        transition={phaseTransition}
+        transition={responseTransition}
       />
 
       <motion.div
@@ -134,7 +156,7 @@ export function PortalGeometry({
         }}
         initial={false}
         animate={plateFarAnimate}
-        transition={phaseTransition}
+        transition={responseTransition}
       />
 
       <motion.div
@@ -146,7 +168,7 @@ export function PortalGeometry({
         }}
         initial={false}
         animate={chamberAnimate}
-        transition={phaseTransition}
+        transition={responseTransition}
       />
 
       <PortalParticleField phase={phase} reduceMotion={reduceMotion} />
@@ -182,7 +204,7 @@ export function PortalGeometry({
         }}
         initial={false}
         animate={hairlineAnimate}
-        transition={phaseTransition}
+        transition={responseTransition}
       />
 
       <motion.div
@@ -194,7 +216,7 @@ export function PortalGeometry({
         }}
         initial={false}
         animate={singularityAnimate}
-        transition={phaseTransition}
+        transition={responseTransition}
       />
     </div>
   );
