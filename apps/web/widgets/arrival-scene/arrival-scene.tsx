@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { isAbortError, reportError } from '@/shared/lib/errors';
 import { worldHref } from '@/shared/lib/navigation';
 import { AtmosphereLayer } from '@/widgets/atmosphere-layer';
 import { Hero } from '@/widgets/hero';
@@ -20,6 +21,7 @@ const ARRIVAL_DESTINATION = 'AetherAnime';
 
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
+  if (typeof window.matchMedia !== 'function') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
@@ -64,8 +66,16 @@ export function ArrivalScene() {
       reducedMotion: prefersReducedMotion(),
       signal: controller.signal,
     }).catch((error: unknown) => {
-      if (error instanceof DOMException && error.name === 'AbortError') return;
-      throw error;
+      // Aborts are expected control flow (unmount, restart).
+      if (isAbortError(error)) return;
+
+      // Rethrowing here would only become an unobserved rejection: no error
+      // boundary sees a failed timer. Report it, then release the lock so the
+      // invitation stays usable instead of freezing mid-ceremony.
+      reportError('ArrivalScene.ceremony', error, {
+        phase: phaseRef.current,
+      });
+      dispatch('complete');
     });
   };
 
@@ -77,7 +87,16 @@ export function ArrivalScene() {
     // Consequence after full ceremony (Accepting → Crossing → Settling → Idle).
     if (transitionedRef.current) return;
     transitionedRef.current = true;
-    router.push(worldHref(ARRIVAL_DESTINATION));
+
+    try {
+      router.push(worldHref(ARRIVAL_DESTINATION));
+    } catch (error) {
+      // Allow a retry rather than stranding the user on a spent invitation.
+      transitionedRef.current = false;
+      reportError('ArrivalScene.worldTransition', error, {
+        destination: ARRIVAL_DESTINATION,
+      });
+    }
   };
 
   return (

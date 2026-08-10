@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 import { spacing, zIndex } from '@/shared/config/theme';
+import { isAbortError, reportError } from '@/shared/lib/errors';
 import { DISTANCE } from '@/shared/lib/motion';
 import { Surface } from '@/shared/ui/surface';
 import { cn } from '@/lib/utils';
@@ -19,9 +20,21 @@ import type { PortalCTAProps, PortalPhase } from './portal-cta.types';
 
 const DEFAULT_DESTINATION = 'AetherAnime';
 
-function wait(seconds: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, seconds * 1000);
+function wait(seconds: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(new DOMException('Aborted', 'AbortError'));
+      return;
+    }
+    const id = setTimeout(() => resolve(), seconds * 1000);
+    signal.addEventListener(
+      'abort',
+      () => {
+        clearTimeout(id);
+        reject(new DOMException('Aborted', 'AbortError'));
+      },
+      { once: true },
+    );
   });
 }
 
@@ -51,6 +64,14 @@ export function PortalCTA({
   const locked = isPortalLocked(phase);
   const busy = locked;
 
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
+
   const setPortalPhase = useCallback((next: PortalPhase) => {
     phaseRef.current = next;
     setPhase(next);
@@ -73,23 +94,41 @@ export function PortalCTA({
   const runSequence = useCallback(async () => {
     if (disabled || isPortalLocked(phaseRef.current)) return;
 
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     // Lock synchronously before awaits so duplicate activations cannot stack.
     setPortalPhase('accepting');
-    onAccept?.();
 
-    const sequence = reduceMotion ? PORTAL_SEQUENCE_REDUCED : PORTAL_SEQUENCE;
+    try {
+      onAccept?.();
 
-    await wait(sequence.accepting);
+      const sequence = reduceMotion ? PORTAL_SEQUENCE_REDUCED : PORTAL_SEQUENCE;
 
-    setPortalPhase('crossing');
-    await wait(sequence.crossing);
+      await wait(sequence.accepting, controller.signal);
 
-    setPortalPhase('settling');
-    await wait(sequence.settling);
+      setPortalPhase('crossing');
+      await wait(sequence.crossing, controller.signal);
 
-    setPortalPhase('idle');
-    onComplete?.();
-  }, [disabled, onAccept, onComplete, reduceMotion, setPortalPhase]);
+      setPortalPhase('settling');
+      await wait(sequence.settling, controller.signal);
+
+      setPortalPhase('idle');
+      onComplete?.();
+    } catch (error) {
+      // Unmount / restart: leave phase alone, nothing is listening any more.
+      if (isAbortError(error)) return;
+
+      // A throwing consumer callback (or timer) previously vanished into an
+      // unobserved rejection and left the seal locked forever. Report it and
+      // return to Idle so the invitation can be activated again.
+      reportError('PortalCTA.sequence', error, {
+        destination,
+        phase: phaseRef.current,
+      });
+      setPortalPhase('idle');
+    }
+  }, [destination, disabled, onAccept, onComplete, reduceMotion, setPortalPhase]);
 
   return (
     <Surface

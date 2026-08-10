@@ -1,3 +1,54 @@
+## 2026-08-10 — Sprint-003 · Milestone-I · Task-014
+
+**Task:** Error Handling Foundation
+
+**Purpose:** Stop ceremony and data failures from disappearing. Async ceremony rejections were either rethrown into unobserved promise rejections or dropped entirely, leaving the Portal locked out of Idle; invalid world destinations silently resolved to a different world; render failures had no boundary and React Query cache errors had no sink.
+
+### Files Changed
+
+- `apps/web/shared/lib/errors/normalize.ts` (new)
+- `apps/web/shared/lib/errors/report.ts` (new)
+- `apps/web/shared/lib/errors/index.ts` (new)
+- `apps/web/app/error.tsx` (new)
+- `apps/web/app/global-error.tsx` (new)
+- `apps/web/widgets/arrival-scene/arrival-scene.tsx`
+- `apps/web/widgets/portal-cta/portal-cta.tsx`
+- `apps/web/shared/lib/navigation/world-transition.ts`
+- `apps/web/app/world/[destination]/page.tsx`
+- `apps/web/shared/providers/query-provider.tsx`
+- `docs/engineering/CHANGELOG.md`
+
+### Architecture Decisions
+
+- One error foundation (`@/shared/lib/errors`): `toError` / `isAbortError` normalization plus a single `reportError(scope, error, detail)` channel with a swappable reporter, so telemetry lands in one place later.
+- Cancellation stays control flow: aborted ceremonies resolve silently; only genuine failures are reported.
+- Failure must not outlive itself: a failed ceremony returns Portal and Director to Idle instead of leaving the invitation locked in `accepting` / `crossing` / `settling`.
+- Portal ceremony timers are abort-aware and cancelled on unmount, so a pending sequence no longer resumes into an unmounted tree.
+- Unaddressable destinations are errors, not defaults: `worldHref` throws and `/world/[destination]` renders 404 rather than substituting `aetheranime`.
+
+### Performance Impact
+
+- None. No new loops, listeners on idle paths, or motion work; the ceremony gains one `AbortController` per activation.
+
+### Breaking Changes
+
+- `worldHref('')` (or any destination without addressable characters) now throws instead of returning `/world/aetheranime`.
+- `/world/[destination]` returns 404 for an unaddressable slug instead of a generic world shell.
+
+### Future Dependencies
+
+- Register a real reporter via `setErrorReporter` when telemetry lands.
+- World Engine may add segment-level `error.tsx` boundaries under `app/world`.
+
+### Verification
+
+- `tsc --noEmit` — pass
+- `npm run lint` — pass
+- `npm run build` — pass
+- Visual QA skipped: new boundary UI reuses existing theme tokens; no motion or identity surface changed.
+
+---
+
 ## 2026-08-05 — Sprint-003 · Milestone-I · Task-013
 
 **Task:** Engineering Agent System
