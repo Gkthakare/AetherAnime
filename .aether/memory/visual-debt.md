@@ -6,7 +6,7 @@ Confirmed visual shortcomings only. Each entry was observed, not speculated.
 
 
 
-Last verified: TASK-077 (deploy paused on auth; visual debt unchanged from TASK-076)
+Last verified: TASK-080 (contain field + arrival ceremony shipped)
 
 
 
@@ -22,11 +22,11 @@ Last verified: TASK-077 (deploy paused on auth; visual debt unchanged from TASK-
 
 
 
-- **Per-title Class C Destination environment masters remain deferred.** [[TASK-075]] / [[TASK-076]] use each anime’s own `poster` as the environmental field — not Class C plates. Class C stays closed.
+- **Per-title Class C Destination environment masters remain deferred.** [[TASK-075]] / [[TASK-080]] use each anime’s own `poster` as the environmental field — not Class C plates. Class C stays closed.
 
 
 
-- **Option D field recognizability is poster-dependent.** Dark/low-chroma catalog posters read more as color atmosphere than character-recognizable blur in still frames; high-chroma discovered art (e.g. JJK) reads clearer. Not a hierarchy failure; not Class C. No new feature task.
+- **Option D field recognizability remains poster-dependent.** [[TASK-080]] `contain` + vignette reduces crop-wall reading; dark/low-chroma posters can still read mainly as color atmosphere in still frames. Not a hierarchy failure; not Class C.
 
 
 
@@ -42,4 +42,4 @@ Only add an entry you have actually looked at. "Could be nicer" is not debt. Rem
 
 
 
-[[current-state]] · [[visual-language]] · [[TASK-054]] · [[TASK-055]] · [[TASK-060]] · [[TASK-064]] · [[TASK-069]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]]
+[[current-state]] · [[visual-language]] · [[TASK-054]] · [[TASK-055]] · [[TASK-060]] · [[TASK-064]] · [[TASK-069]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-080]]

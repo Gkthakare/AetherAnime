@@ -3,6 +3,7 @@ export { resolveInitialAnimeArrival } from './anime.repository';
 export { resolveAnime } from './anime.resolver';
 export { planAnimeAsk, retrieveForStructuredIntent } from './anime.semantic-intent';
 export type { StructuredAnimeIntent } from './anime.semantic-intent';
+export { rankDiscoveryByAskRelevance } from './anime.semantic-profile';
 export { requestSemanticIntent } from './anime.semantic-request';
 export { canonicalizeDiscoveryCandidate } from './anime.discovery';
 export type { AnimeDiscoveryCandidate } from './anime.discovery';

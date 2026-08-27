@@ -289,9 +289,11 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
 
   return (
     <motion.div
+      key={anime.id}
       data-slot="anime-destination"
       data-anime-id={anime.id}
       data-anime-slug={anime.slug}
+      data-destination-arrival={anime.id}
       data-watch-now={canWatch ? 'verified' : 'unavailable'}
       data-watch-crunchyroll={crunchyroll?.status ?? 'unknown'}
       data-destination-artwork={anime.poster ? 'poster' : 'seal'}

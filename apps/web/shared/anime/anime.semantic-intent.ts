@@ -99,6 +99,9 @@ const WATCHLIST_EXCLUSION =
   /haven'?t saved|not on my watchlist|not saved yet/i;
 const DESCRIPTIVE =
   /\b(overpowered|protagonist|but darker)\b|^i want something\b/i;
+/** Plot-shaped asks: "about a …", "who becomes/gains/…" — not exact titles. */
+const PLOT_SHAPED =
+  /\babout\s+an?\b|\bwho\b.{0,48}\b(becomes|becoming|gains|gets|learns|faces|fights|discovers)\b/i;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (value == null || typeof value !== 'object' || Array.isArray(value)) {
@@ -191,6 +194,7 @@ function hasSimilarModifier(text: string): boolean {
 
 function looksLikeDescriptiveRequest(text: string): boolean {
   if (DESCRIPTIVE.test(text)) return true;
+  if (PLOT_SHAPED.test(text)) return true;
   const intent = parseAnimeIntent(text);
   if (intent.kind === 'similar') return false;
   return /\bsomething\b/i.test(text) && /\b(with|dark|want)\b/i.test(text);
@@ -302,6 +306,7 @@ function uniqueCandidates(
 export async function retrieveForStructuredIntent(
   intent: StructuredAnimeIntent,
   deps: SemanticRetrievalDeps,
+  askText?: string,
 ): Promise<ReadonlyArray<AnimeDiscoveryCandidate>> {
   let seedMalId: number | null = null;
   let retrieved: AnimeDiscoveryCandidate[] = [];
@@ -328,6 +333,7 @@ export async function retrieveForStructuredIntent(
     uniqueCandidates(retrieved),
     intent,
     seedMalId,
+    askText,
   );
   if (intent.exclusions.watchlisted) {
     const blocked = new Set(deps.watchlistedSlugs ?? []);

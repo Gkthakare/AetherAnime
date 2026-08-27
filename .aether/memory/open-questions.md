@@ -23,14 +23,17 @@ Genuinely unresolved. **Do not answer these here** — answering one is a decisi
 | Destination all-anime artwork contract | Answered — validated `poster` may be local or MAL CDN URL; **implemented** | [[TASK-074]] |
 | V1 visual / product acceptance after Option D | Answered — accepted with deferred polish; freeze holds | [[TASK-076]] |
 | V1 first production deploy attempt | Answered — paused; CLI logged out; not LIVE | [[TASK-077]] |
+| Vercel auth & project link resume | Answered — still logged out at TASK-078 time | [[TASK-078]] |
+| Vercel project link + env readiness | Answered — linked `aetheranime` / `apps/web`; Production env empty | [[TASK-079]] |
+| Navigator descriptive relevance + Destination contain/arrival | Answered — implemented | [[TASK-080]] |
 
 ## Intentionally deferred (outside V1 / future product decision)
 
-### First Vercel production deploy (auth)
+### First Vercel production deploy (Production env)
 
-Host is Vercel. [[TASK-077]] confirmed `npx vercel whoami` → **Logged out**. User must `npx vercel login`, then `npx vercel whoami`, link with Root Directory `apps/web`, set server-only Production env vars from `.env.example`, then `cd apps/web && npx vercel --prod`.
+Project `aetheranime` is linked with Root Directory `apps/web`. Auth OK. **Production environment variables are not configured on Vercel** (all required names missing). User must set Production values in Vercel (names from `apps/web/.env.example`), then a later task may `cd apps/web && npx vercel --prod`.
 
-*Classification:* **ops blocker — user action** ([[TASK-072]] · [[TASK-077]]).
+*Classification:* **ops blocker — user action** ([[TASK-072]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]]).
 
 ### Arrive-from-memory / Horizon interaction
 

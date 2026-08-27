@@ -1,14 +1,25 @@
 /**
- * AnimeDestination motion — poster-led pull-in, 400–900ms settle.
+ * AnimeDestination motion — arrival-keyed one-shot (TASK-080).
  *
- * Sequence (with navigator resolve beat of DURATION.FAST):
- *   poster → identity → body → actions
- * Opacity + transform only. No loops, no layout animation.
+ * Sequence within ~1.2–1.6s cinematic window (after RealmCrossing starts):
+ *   atmosphere (existing) → FG poster → identity → body → actions → static
+ * Opacity + transform only. No loops. Replays only when arrival identity changes.
  */
 
 import type { Transition, Variants } from 'framer-motion';
 
-import { DELAY, DISTANCE, DURATION, EASING, SCALE } from '@/shared/lib/motion';
+import { DISTANCE, DURATION, EASING, SCALE } from '@/shared/lib/motion';
+
+/**
+ * Delays (seconds) keyed so FG poster follows atmosphere emerge (~0.58 of 1.2s).
+ * Total path settle stays within ~1.5s.
+ */
+export const ANIME_DESTINATION_ARRIVAL_DELAY = {
+  poster: 0.35,
+  identity: 0.55,
+  body: 0.75,
+  actions: 0.95,
+} as const;
 
 export const animeDestinationEnterTransition: Transition = {
   duration: DURATION.FAST,
@@ -28,7 +39,7 @@ export const animeDestinationEnterTo = {
   opacity: 1,
 } as const;
 
-/** Poster is the visual anchor — first, slightly scaled into place. */
+/** Poster is the visual anchor — follows atmosphere field presence. */
 export const animeDestinationPoster: Variants = {
   hidden: { opacity: 0, y: DISTANCE.SM, scale: SCALE.FROM },
   show: {
@@ -38,7 +49,7 @@ export const animeDestinationPoster: Variants = {
     transition: {
       duration: DURATION.NORMAL,
       ease: EASING.cinematic,
-      delay: DELAY.NONE,
+      delay: ANIME_DESTINATION_ARRIVAL_DELAY.poster,
     },
   },
 };
@@ -60,7 +71,7 @@ export const animeDestinationIdentity: Variants = {
     transition: {
       duration: DURATION.NORMAL,
       ease: EASING.entrance,
-      delay: DELAY.SHORT,
+      delay: ANIME_DESTINATION_ARRIVAL_DELAY.identity,
     },
   },
 };
@@ -73,7 +84,7 @@ export const animeDestinationBody: Variants = {
     transition: {
       duration: DURATION.NORMAL,
       ease: EASING.entrance,
-      delay: DELAY.SHORT + DELAY.SHORT,
+      delay: ANIME_DESTINATION_ARRIVAL_DELAY.body,
     },
   },
 };
@@ -86,7 +97,7 @@ export const animeDestinationActions: Variants = {
     transition: {
       duration: DURATION.NORMAL,
       ease: EASING.entrance,
-      delay: DELAY.LONG,
+      delay: ANIME_DESTINATION_ARRIVAL_DELAY.actions,
     },
   },
 };

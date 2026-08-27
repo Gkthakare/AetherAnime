@@ -198,7 +198,8 @@ describe('arrival atmosphere motion language', () => {
       (travel.scale as number[]).at(-1),
       ARRIVAL_ATMOSPHERE_SCALE.settled,
     );
-    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.settled > 1);
+    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.settled >= 1);
+    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.settled <= 1.02);
     assert.ok(ARRIVAL_ATMOSPHERE_SCALE.enter > ARRIVAL_ATMOSPHERE_SCALE.settled);
   });
 });
@@ -355,17 +356,14 @@ describe('TASK-038 immersive poster-derived atmosphere', () => {
     assert.doesNotMatch(cssSource, /mix-blend-mode:\s*screen/);
     assert.match(cssSource, /mask-image:\s*radial-gradient/);
     assert.match(viewSource, /ARRIVAL_ATMOSPHERE_PROJECTION/);
-    assert.match(ARRIVAL_ATMOSPHERE_PROJECTION, /inset-\[-/);
-    const overscan = Number.parseInt(
-      ARRIVAL_ATMOSPHERE_PROJECTION.match(/inset-\[-(\d+)%\]/)?.[1] ?? '0',
-      10,
-    );
-    assert.ok(overscan >= 20);
-    assert.ok(overscan < 40);
+    assert.match(ARRIVAL_ATMOSPHERE_PROJECTION, /inset-0/);
+    assert.doesNotMatch(ARRIVAL_ATMOSPHERE_PROJECTION, /inset-\[-2[0-9]%\]/);
+    assert.match(viewSource, /object-contain/);
+    assert.doesNotMatch(viewSource, /object-cover/);
     assert.ok(ARRIVAL_ATMOSPHERE_OPACITY.settle >= 0.7);
     assert.ok(ARRIVAL_ATMOSPHERE_OPACITY.settle <= 0.9);
-    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.enter <= 1.12);
-    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.settled >= 1.04);
+    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.enter <= 1.08);
+    assert.ok(ARRIVAL_ATMOSPHERE_SCALE.settled <= 1.02);
     assert.ok(ARRIVAL_ATMOSPHERE_SCALE.settled < ARRIVAL_ATMOSPHERE_SCALE.enter);
     assert.match(ARRIVAL_ATMOSPHERE_OFFSET.x, /%/);
     assert.match(ARRIVAL_ATMOSPHERE_OFFSET.y, /%/);

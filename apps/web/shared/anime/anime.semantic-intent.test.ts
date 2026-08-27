@@ -119,6 +119,23 @@ describe('planAnimeAsk — deterministic first', () => {
     assert.equal(plan.llmCalls, 1);
   });
 
+  test('plot-shaped hunter ask routes to semantic, not title navigate', () => {
+    const plan = planAnimeAsk(
+      'anime about a hunter who becomes stronger through a mysterious system',
+    );
+    assert.equal(plan.kind, 'semantic');
+    assert.equal(plan.llmCalls, 1);
+    if (plan.kind === 'semantic') {
+      assert.match(plan.input, /hunter/i);
+    }
+  });
+
+  test('exact title Solo Leveling still arrives without semantic', () => {
+    const plan = planAnimeAsk('Solo Leveling');
+    assert.equal(plan.kind, 'arrive');
+    assert.equal(plan.llmCalls, 0);
+  });
+
   test('similar with a modifier requires one semantic call', () => {
     const plan = planAnimeAsk('something like Fate Zero but darker');
     assert.equal(plan.kind, 'semantic');

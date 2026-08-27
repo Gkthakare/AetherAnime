@@ -119,7 +119,8 @@ describe('TASK-075 Option D anime environmental field', () => {
     assert.match(cssSource, /--arrival-atmosphere-settle:\s*0\.(7|8|9)/);
     assert.doesNotMatch(cssSource, /mix-blend-mode:\s*screen/);
     assert.match(cssSource, /mask-image:\s*radial-gradient/);
-    assert.match(ARRIVAL_ATMOSPHERE_PROJECTION, /inset-\[-/);
+    assert.match(ARRIVAL_ATMOSPHERE_PROJECTION, /inset-0/);
+    assert.match(viewSource, /object-contain/);
     assert.ok(ARRIVAL_ATMOSPHERE_OPACITY.settle >= 0.7);
   });
 

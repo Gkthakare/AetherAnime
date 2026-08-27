@@ -18,6 +18,7 @@ import {
   normalizeVoiceQuery,
   planAnimeAsk,
   readWatchlist,
+  rankDiscoveryByAskRelevance,
   subscribeWatchlist,
   requestAnimeDiscovery,
   requestDiscoveredAnime,
@@ -259,12 +260,16 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
               .then(async (intent) => {
                 if (controller.signal.aborted) return;
                 if (!intent) {
-                  setState({ phase: 'unintelligible', query: trimmed });
+                  const deps = discoveryDeps(controller.signal);
+                  const searched = await deps.searchByTitle(trimmed.slice(0, 80));
+                  const ranked = rankDiscoveryByAskRelevance(searched, trimmed);
+                  showCandidates(ranked, 'unintelligible');
                   return;
                 }
                 const candidates = await retrieveForStructuredIntent(
                   intent,
                   discoveryDeps(controller.signal),
+                  plan.input,
                 );
                 showCandidates(candidates, 'unintelligible');
               })

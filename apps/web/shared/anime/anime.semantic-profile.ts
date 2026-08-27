@@ -116,9 +116,87 @@ const SYNOPSIS_PHRASES: ReadonlyArray<{
   pattern: RegExp;
 }> = [
   { tag: 'revenge', pattern: /\b(revenge|vengeance|avenges|avenged)\b/i },
-  { tag: 'underdog', pattern: /\b(weakest|underdog)\b/i },
-  { tag: 'overpowered', pattern: /\boverpowered\b/i },
+  {
+    tag: 'underdog',
+    pattern: /\b(weakest|underdog|hunter)\b/i,
+  },
+  {
+    tag: 'overpowered',
+    pattern: /\b(overpowered|level[\s-]*up|levels?\s+up)\b/i,
+  },
+  {
+    tag: 'mysterious',
+    pattern: /\b(mysterious|dungeon|system|gate|double\s+dungeon)\b/i,
+  },
 ];
+
+/** Soft lexical boost — never the primary score driver. */
+const LEXICAL_SCORE = {
+  perHit: 1,
+  max: 2,
+} as const;
+
+const LEXICAL_STOPWORDS = new Set([
+  'a',
+  'an',
+  'the',
+  'and',
+  'or',
+  'of',
+  'to',
+  'in',
+  'on',
+  'for',
+  'with',
+  'from',
+  'into',
+  'through',
+  'anime',
+  'about',
+  'who',
+  'whom',
+  'that',
+  'which',
+  'becomes',
+  'become',
+  'becoming',
+  'stronger',
+  'strong',
+  'show',
+  'me',
+  'want',
+  'something',
+  'like',
+  'please',
+  'looking',
+  'find',
+  'series',
+  'story',
+  'where',
+  'when',
+  'what',
+  'how',
+  'is',
+  'are',
+  'was',
+  'were',
+  'has',
+  'have',
+  'had',
+  'his',
+  'her',
+  'their',
+  'its',
+  'this',
+  'those',
+  'these',
+  'very',
+  'really',
+  'just',
+  'also',
+  'more',
+  'most',
+]);
 
 const CONTRADICTIONS: ReadonlyArray<readonly [SemanticTag, SemanticTag]> = [
   ['wholesome', 'dark'],
@@ -162,6 +240,79 @@ export function normalizeSemanticToken(raw: string): SemanticTag | null {
   const key = raw.trim().toLowerCase().replace(/\s+/g, ' ');
   if (key.length === 0 || /https?:|javascript:|data:/i.test(key)) return null;
   return SYNONYMS[key] ?? (isSemanticTag(key) ? key : null);
+}
+
+/** Content-bearing tokens for soft lexical overlap — stopwords removed. */
+export function contentTokensForLexical(raw: string): string[] {
+  const parts = raw
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .split(/\s+/)
+    .map((part) => part.trim())
+    .filter((part) => part.length >= 3 && !LEXICAL_STOPWORDS.has(part));
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const part of parts) {
+    if (seen.has(part)) continue;
+    seen.add(part);
+    out.push(part);
+  }
+  return out;
+}
+
+function lexicalOverlapScore(
+  candidate: AnimeDiscoveryCandidate,
+  askText: string | undefined,
+): number {
+  if (!askText || askText.trim().length === 0) return 0;
+  const tokens = contentTokensForLexical(askText);
+  if (tokens.length === 0) return 0;
+  const haystack = [
+    candidate.title,
+    candidate.alternateTitle ?? '',
+    candidate.synopsis ?? '',
+    ...candidate.genres,
+  ]
+    .join(' ')
+    .toLowerCase();
+  let hits = 0;
+  for (const token of tokens) {
+    if (haystack.includes(token)) hits += 1;
+  }
+  return Math.min(LEXICAL_SCORE.max, hits * LEXICAL_SCORE.perHit);
+}
+
+/** Soft recommend intent built only from ask tokens that map to known tags. */
+export function structuredIntentFromAskText(
+  askText: string,
+): StructuredAnimeIntent {
+  const themes: string[] = [];
+  const seen = new Set<string>();
+  for (const token of contentTokensForLexical(askText)) {
+    const tag = normalizeSemanticToken(token);
+    if (!tag || seen.has(tag)) continue;
+    seen.add(tag);
+    themes.push(tag);
+  }
+  // Motif words that are not synonym keys still seed themes when present.
+  if (/\bhunter\b/i.test(askText) && !seen.has('underdog')) {
+    themes.push('underdog');
+  }
+  if (/\bmysterious\b/i.test(askText) && !seen.has('mysterious')) {
+    themes.push('mysterious');
+  }
+  return {
+    type: 'recommend',
+    title: null,
+    seedTitle: null,
+    constraints: {
+      genres: [],
+      themes,
+      protagonistTraits: [],
+      tone: [],
+    },
+    exclusions: { watchlisted: false },
+  };
 }
 
 function requestedTags(intent: StructuredAnimeIntent): SemanticTag[] {
@@ -245,6 +396,7 @@ function contradicts(profile: AnimeSemanticProfile, requested: SemanticTag): boo
 export function scoreSemanticCandidate(
   candidate: AnimeDiscoveryCandidate,
   intent: StructuredAnimeIntent,
+  askText?: string,
 ): SemanticScore {
   const profile = buildAnimeSemanticProfile(candidate);
   const tags = requestedTags(intent);
@@ -260,9 +412,10 @@ export function scoreSemanticCandidate(
     };
   });
 
-  const total = judgements.reduce((sum, judgement) => {
+  const tagTotal = judgements.reduce((sum, judgement) => {
     return sum + SCORE[judgement.kind];
   }, 0);
+  const total = tagTotal + lexicalOverlapScore(candidate, askText);
 
   return { total, judgements };
 }
@@ -284,11 +437,12 @@ export function rankBySemanticPreference(
   candidates: ReadonlyArray<AnimeDiscoveryCandidate>,
   intent: StructuredAnimeIntent,
   seedMalId: number | null,
+  askText?: string,
 ): Array<AnimeDiscoveryCandidate & { matchReason: string | null }> {
   const scored = candidates
     .filter((candidate) => candidate.malId !== seedMalId)
     .map((candidate) => {
-      const score = scoreSemanticCandidate(candidate, intent);
+      const score = scoreSemanticCandidate(candidate, intent, askText);
       return {
         candidate,
         score: score.total,
@@ -311,4 +465,20 @@ export function rankBySemanticPreference(
     kept.push({ ...entry.candidate, matchReason: entry.matchReason });
   }
   return kept;
+}
+
+/**
+ * Safety net when structured intent is unavailable: rank discovery hits by
+ * ask-derived tags + soft lexical/synopsis overlap (no live MAL dependency).
+ */
+export function rankDiscoveryByAskRelevance(
+  candidates: ReadonlyArray<AnimeDiscoveryCandidate>,
+  askText: string,
+): Array<AnimeDiscoveryCandidate & { matchReason: string | null }> {
+  return rankBySemanticPreference(
+    candidates,
+    structuredIntentFromAskText(askText),
+    null,
+    askText,
+  );
 }

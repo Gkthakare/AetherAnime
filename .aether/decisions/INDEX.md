@@ -36,6 +36,9 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-075]] | Destination Option D | Anime poster environmental field; WE subordinate |
 | [[TASK-076]] | V1 visual / product acceptance | Accepted with deferred polish; V1 freeze holds |
 | [[TASK-077]] | V1 production deploy | Paused — Vercel CLI logged out; user must login |
+| [[TASK-078]] | Vercel auth & project link | Auth still required; link not started; no deploy |
+| [[TASK-079]] | Vercel project + env readiness | Linked `aetheranime` / `apps/web`; Production env empty; deploy blocked |
+| [[TASK-080]] | Navigator + Destination art/arrival | Plot semantic path; contain field; identity-keyed ceremony |
 
 ## Clusters
 

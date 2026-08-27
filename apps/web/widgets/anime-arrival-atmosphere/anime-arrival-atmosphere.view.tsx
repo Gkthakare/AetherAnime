@@ -47,6 +47,7 @@ export function AnimeArrivalAtmosphere({
       ? `aether-arrival-atmosphere ${DURATION.CINEMATIC}s linear forwards`
       : `aether-arrival-atmosphere-reduced ${DURATION.NORMAL}s linear forwards`;
     playAnimation(ref.current, animation);
+    // Replay only when Destination poster identity changes — not on ordinary re-renders.
   }, [presentation.active, presentation.spatial, presentation.source]);
 
   if (!presentation.active || !presentation.source) return null;
@@ -76,7 +77,7 @@ export function AnimeArrivalAtmosphere({
           alt=""
           fill
           sizes={ARRIVAL_ATMOSPHERE_SIZES}
-          className="object-cover"
+          className="object-contain"
         />
       </div>
     </div>

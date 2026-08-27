@@ -1,121 +1,127 @@
-/**
- * TASK-075 / TASK-073 Option D — anime poster as Destination environment.
- *
- * One oversized poster field: soft blur (recognizable), high settle opacity,
- * spatial mask. Not TASK-060's faint screen wash. Not a full-bleed wallpaper.
- *
- * Reduced motion keeps the settled field without spatial travel.
- */
-
-@keyframes aether-arrival-atmosphere {
-  0% {
-    opacity: 0;
-    transform: translate(
-        var(--arrival-atmosphere-offset-x),
-        var(--arrival-atmosphere-offset-y)
-      )
-      scale(var(--arrival-atmosphere-scale-enter));
-  }
-  33% {
-    opacity: 0;
-    transform: translate(
-        var(--arrival-atmosphere-offset-x),
-        var(--arrival-atmosphere-offset-y)
-      )
-      scale(1.085);
-  }
-  58% {
-    opacity: var(--arrival-atmosphere-emerge);
-    transform: translate(
-        var(--arrival-atmosphere-offset-x),
-        var(--arrival-atmosphere-offset-y)
-      )
-      scale(1.07);
-  }
-  100% {
-    opacity: var(--arrival-atmosphere-settle);
-    transform: translate(
-        var(--arrival-atmosphere-offset-x),
-        var(--arrival-atmosphere-offset-y)
-      )
-      scale(var(--arrival-atmosphere-scale-settled));
-  }
-}
-
-@keyframes aether-arrival-atmosphere-reduced {
-  0% {
-    opacity: 0;
-    transform: translate(
-        var(--arrival-atmosphere-offset-x),
-        var(--arrival-atmosphere-offset-y)
-      )
-      scale(var(--arrival-atmosphere-scale-settled));
-  }
-  100% {
-    opacity: var(--arrival-atmosphere-settle);
-    transform: translate(
-        var(--arrival-atmosphere-offset-x),
-        var(--arrival-atmosphere-offset-y)
-      )
-      scale(var(--arrival-atmosphere-scale-settled));
-  }
-}
-
-.aether-arrival-atmosphere-wash {
-  --arrival-atmosphere-emerge: 0.55;
-  --arrival-atmosphere-settle: 0.82;
-  opacity: 0;
-  transform-origin: center;
-  filter: blur(var(--arrival-atmosphere-blur));
-}
-
-.aether-arrival-atmosphere-wash img {
-  object-position: 34% 42%;
-}
-
-[data-slot='anime-arrival-atmosphere'] {
-  -webkit-mask-image: radial-gradient(
-    ellipse 88% 78% at 38% 42%,
-    #000 18%,
-    #000 48%,
-    transparent 78%
-  );
-  mask-image: radial-gradient(
-    ellipse 88% 78% at 38% 42%,
-    #000 18%,
-    #000 48%,
-    transparent 78%
-  );
-}
-
-@media (max-width: 767px) {
-  [data-slot='anime-arrival-atmosphere'] {
-    -webkit-mask-image: radial-gradient(
-      ellipse 96% 72% at 50% 32%,
-      #000 14%,
-      #000 42%,
-      transparent 72%
-    );
-    mask-image: radial-gradient(
-      ellipse 96% 72% at 50% 32%,
-      #000 14%,
-      #000 42%,
-      transparent 72%
-    );
-  }
-
-  .aether-arrival-atmosphere-wash {
-    --arrival-atmosphere-settle: 0.7;
-  }
-
-  .aether-arrival-atmosphere-wash img {
-    object-position: 50% 28%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .aether-arrival-atmosphere-wash {
-    animation-name: aether-arrival-atmosphere-reduced !important;
-  }
-}
-
+/**
+ * TASK-080 / TASK-075 Option D — anime poster as Destination environment.
+ *
+ * Full-viewport field; image uses object-fit contain (preserve AR). Soft blur,
+ * radial vignette blends unused regions into the world — no letterbox bars.
+ *
+ * Reduced motion keeps the settled field without spatial travel.
+ */
+
+@keyframes aether-arrival-atmosphere {
+  0% {
+    opacity: 0;
+    transform: translate(
+        var(--arrival-atmosphere-offset-x),
+        var(--arrival-atmosphere-offset-y)
+      )
+      scale(var(--arrival-atmosphere-scale-enter));
+  }
+  33% {
+    opacity: 0;
+    transform: translate(
+        var(--arrival-atmosphere-offset-x),
+        var(--arrival-atmosphere-offset-y)
+      )
+      scale(1.03);
+  }
+  58% {
+    opacity: var(--arrival-atmosphere-emerge);
+    transform: translate(
+        var(--arrival-atmosphere-offset-x),
+        var(--arrival-atmosphere-offset-y)
+      )
+      scale(1.015);
+  }
+  100% {
+    opacity: var(--arrival-atmosphere-settle);
+    transform: translate(
+        var(--arrival-atmosphere-offset-x),
+        var(--arrival-atmosphere-offset-y)
+      )
+      scale(var(--arrival-atmosphere-scale-settled));
+  }
+}
+
+@keyframes aether-arrival-atmosphere-reduced {
+  0% {
+    opacity: 0;
+    transform: translate(
+        var(--arrival-atmosphere-offset-x),
+        var(--arrival-atmosphere-offset-y)
+      )
+      scale(var(--arrival-atmosphere-scale-settled));
+  }
+  100% {
+    opacity: var(--arrival-atmosphere-settle);
+    transform: translate(
+        var(--arrival-atmosphere-offset-x),
+        var(--arrival-atmosphere-offset-y)
+      )
+      scale(var(--arrival-atmosphere-scale-settled));
+  }
+}
+
+.aether-arrival-atmosphere-wash {
+  --arrival-atmosphere-emerge: 0.55;
+  --arrival-atmosphere-settle: 0.82;
+  opacity: 0;
+  transform-origin: center;
+  filter: blur(var(--arrival-atmosphere-blur));
+  /* Absorb contain letterbox into Destination grade rather than hard bars. */
+  background: radial-gradient(
+    ellipse 70% 65% at 50% 42%,
+    rgba(8, 14, 28, 0.15) 0%,
+    rgba(4, 8, 16, 0.55) 55%,
+    rgba(2, 4, 10, 0.85) 100%
+  );
+}
+
+.aether-arrival-atmosphere-wash img {
+  object-position: center center;
+}
+
+[data-slot='anime-arrival-atmosphere'] {
+  -webkit-mask-image: radial-gradient(
+    ellipse 98% 92% at 50% 44%,
+    #000 22%,
+    #000 52%,
+    transparent 82%
+  );
+  mask-image: radial-gradient(
+    ellipse 98% 92% at 50% 44%,
+    #000 22%,
+    #000 52%,
+    transparent 82%
+  );
+}
+
+@media (max-width: 767px) {
+  [data-slot='anime-arrival-atmosphere'] {
+    -webkit-mask-image: radial-gradient(
+      ellipse 100% 88% at 50% 36%,
+      #000 18%,
+      #000 48%,
+      transparent 78%
+    );
+    mask-image: radial-gradient(
+      ellipse 100% 88% at 50% 36%,
+      #000 18%,
+      #000 48%,
+      transparent 78%
+    );
+  }
+
+  .aether-arrival-atmosphere-wash {
+    --arrival-atmosphere-settle: 0.7;
+  }
+
+  .aether-arrival-atmosphere-wash img {
+    object-position: center 32%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aether-arrival-atmosphere-wash {
+    animation-name: aether-arrival-atmosphere-reduced !important;
+  }
+}

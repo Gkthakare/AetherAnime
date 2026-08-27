@@ -4,14 +4,20 @@ import { describe, test } from 'node:test';
 import type { AnimeDiscoveryCandidate } from './anime.discovery';
 import {
   buildAnimeSemanticProfile,
+  contentTokensForLexical,
   explainSemanticMatch,
   isSemanticTag,
   normalizeSemanticToken,
+  rankBySemanticPreference,
+  rankDiscoveryByAskRelevance,
   scoreSemanticCandidate,
   SEMANTIC_TAGS,
 } from './anime.semantic-profile';
 import type { StructuredAnimeIntent } from './anime.semantic-intent';
 import { retrieveForStructuredIntent } from './anime.semantic-intent';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const HORROR: AnimeDiscoveryCandidate = {
   malId: 19,
@@ -52,6 +58,49 @@ const COMEDY: AnimeDiscoveryCandidate = {
   genres: ['Action', 'Comedy', 'Sci-Fi'],
   studios: ['Sunrise'],
   synopsis: 'Odd jobs and jokes in an occupied Edo.',
+};
+
+const SCHOOL_ROMANCE: AnimeDiscoveryCandidate = {
+  malId: 4224,
+  title: 'Toradora!',
+  alternateTitle: null,
+  year: 2008,
+  type: 'tv',
+  episodeCount: 25,
+  status: 'finished',
+  genres: ['Comedy', 'Romance', 'School'],
+  studios: ['J.C.Staff'],
+  synopsis: 'A soft-spoken boy and a fierce girl navigate high school misunderstandings.',
+};
+
+const WAR_DRAMA: AnimeDiscoveryCandidate = {
+  malId: 10087,
+  title: 'Fate/Zero',
+  alternateTitle: null,
+  year: 2011,
+  type: 'tv',
+  episodeCount: 25,
+  status: 'finished',
+  genres: ['Action', 'Fantasy', 'Drama'],
+  studios: ['ufotable'],
+  synopsis:
+    'The war that precedes the war — ideals collide before the next generation inherits the night.',
+};
+
+const HUNTER_ASK =
+  'anime about a hunter who becomes stronger through a mysterious system';
+
+const HUNTER_INTENT: StructuredAnimeIntent = {
+  type: 'recommend',
+  title: null,
+  seedTitle: null,
+  constraints: {
+    genres: [],
+    themes: ['mysterious'],
+    protagonistTraits: ['underdog'],
+    tone: [],
+  },
+  exclusions: { watchlisted: false },
 };
 
 const DARK_OP: StructuredAnimeIntent = {
@@ -227,5 +276,65 @@ describe('retrieveForStructuredIntent uses semantic ranking', () => {
       false,
     );
     assert.equal(ranked[0]?.malId, 19);
+  });
+});
+
+describe('TASK-080 lexical soft score and hunter fixture', () => {
+  test('stopwords do not dominate content tokens', () => {
+    const tokens = contentTokensForLexical(HUNTER_ASK);
+    assert.ok(tokens.includes('hunter'));
+    assert.ok(tokens.includes('mysterious'));
+    assert.ok(tokens.includes('system'));
+    assert.equal(tokens.includes('anime'), false);
+    assert.equal(tokens.includes('about'), false);
+    assert.equal(tokens.includes('who'), false);
+    assert.equal(tokens.includes('becomes'), false);
+    assert.equal(tokens.includes('stronger'), false);
+  });
+
+  test('tag evidence remains primary over lexical soft score', () => {
+    const withAsk = scoreSemanticCandidate(HORROR, DARK_OP, HUNTER_ASK);
+    const actionWithAsk = scoreSemanticCandidate(
+      ACTION_FANTASY,
+      DARK_OP,
+      HUNTER_ASK,
+    );
+    assert.ok(withAsk.total > actionWithAsk.total);
+  });
+
+  test('deterministic fixture ranks Solo Leveling in top 3 for hunter ask', () => {
+    const fixture = [
+      SCHOOL_ROMANCE,
+      COMEDY,
+      WAR_DRAMA,
+      ACTION_FANTASY,
+    ];
+    const ranked = rankBySemanticPreference(
+      fixture,
+      HUNTER_INTENT,
+      null,
+      HUNTER_ASK,
+    );
+    const index = ranked.findIndex((row) => row.malId === 52299);
+    assert.ok(index >= 0 && index < 3, `Solo rank index=${index}`);
+    assert.equal(ranked[0]?.malId, 52299);
+  });
+
+  test('semantic-unavailable safety net still ranks Solo via ask relevance', () => {
+    const fixture = [SCHOOL_ROMANCE, COMEDY, WAR_DRAMA, ACTION_FANTASY];
+    const ranked = rankDiscoveryByAskRelevance(fixture, HUNTER_ASK);
+    const index = ranked.findIndex((row) => row.malId === 52299);
+    assert.ok(index >= 0 && index < 3);
+  });
+
+  test('source has no hardcoded hunter-query to solo-leveling map', () => {
+    const dir = dirname(fileURLToPath(import.meta.url));
+    const profile = readFileSync(join(dir, 'anime.semantic-profile.ts'), 'utf8');
+    const intent = readFileSync(join(dir, 'anime.semantic-intent.ts'), 'utf8');
+    const blob = `${profile}\n${intent}`;
+    assert.doesNotMatch(
+      blob,
+      /hunter who becomes stronger[\s\S]{0,80}solo-leveling|solo-leveling[\s\S]{0,80}hunter who becomes stronger/i,
+    );
   });
 });

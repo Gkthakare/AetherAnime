@@ -1,5 +1,5 @@
 /**
- * Arrival atmosphere motion — poster-derived projection during TASK-031.
+ * Arrival atmosphere motion — poster-derived projection (TASK-080 contain field).
  *
  * Opacity + scale only. Blur stays constant so the poster never flashes
  * sharp. CSS owns the beat. No timers, no navigation delay.
@@ -7,15 +7,17 @@
 
 import { DURATION } from '@/shared/lib/motion';
 
-/** Subtle remaining travel after the oversized projection is already in place. */
+/** Subtle settle travel — not crop-era overscan scale. */
 export const ARRIVAL_ATMOSPHERE_SCALE = {
-  enter: 1.1,
-  settled: 1.06,
+  enter: 1.04,
+  settled: 1.0,
 } as const;
 
-/** Viewport overscan — environmental, not tied to foreground poster width. */
-export const ARRIVAL_ATMOSPHERE_PROJECTION =
-  'absolute inset-[-28%]' as const;
+/**
+ * Full-viewport field. Contain fit preserves poster AR; vignette blends
+ * unused regions into the Destination grade (no letterbox bars).
+ */
+export const ARRIVAL_ATMOSPHERE_PROJECTION = 'absolute inset-0' as const;
 
 /**
  * Optimizer hint for the environmental field. Keep decode budget bounded;
@@ -25,8 +27,8 @@ export const ARRIVAL_ATMOSPHERE_SIZES =
   '(max-width: 767px) 100vw, 1100px' as const;
 
 export const ARRIVAL_ATMOSPHERE_OFFSET = {
-  x: '-1.5%',
-  y: '-1%',
+  x: '0%',
+  y: '0%',
 } as const;
 
 /** 0 / ~400 / ~700 / 1200ms of DURATION.CINEMATIC. */
@@ -49,8 +51,8 @@ export function arrivalAtmosphereTravel(reduceMotion: boolean): {
   return {
     scale: [
       ARRIVAL_ATMOSPHERE_SCALE.enter,
-      1.085,
-      1.07,
+      1.03,
+      1.015,
       ARRIVAL_ATMOSPHERE_SCALE.settled,
     ],
   };
