@@ -2,7 +2,6 @@
 
 import { ReactNode } from 'react';
 
-import { QueryProvider } from './query-provider';
 import { ThemeProvider } from './theme-provider';
 
 type AppProviderProps = {
@@ -12,11 +11,5 @@ type AppProviderProps = {
 export function AppProvider({
   children,
 }: AppProviderProps) {
-  return (
-    <ThemeProvider>
-      <QueryProvider>
-        {children}
-      </QueryProvider>
-    </ThemeProvider>
-  );
+  return <ThemeProvider>{children}</ThemeProvider>;
 }

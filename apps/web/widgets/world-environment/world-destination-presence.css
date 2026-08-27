@@ -1,0 +1,214 @@
+/**
+ * TASK-060 — Destination environmental presence (hybrid WorldEnvironment).
+ * TASK-075 — when anime artwork is present, subordinate generic geography
+ * so the validated poster field authors the place.
+ *
+ * Gated on arrived Destination only (`data-world-anime`). Idle geography,
+ * Memory Horizon, living Idle presence, and TASK-059 crossings stay out.
+ *
+ * Spatial model after arrival:
+ *   FAR    — remains hidden (TASK-058-E Idle gate; do not restore)
+ *   MIDDLE — quieter world continuity; further quieted when artwork present
+ *   NEAR   — stronger local contact / haze footing
+ *   FIELD  — TASK-075 anime environmental poster (AnimeArrivalAtmosphere)
+ *
+ * Static only. No continuous motion. No will-change. No new plates.
+ */
+
+/* MIDDLE — recognizable continuity, quieter + more intimate */
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-image'] {
+  opacity: 0.84;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-image']
+  img {
+  object-position: 40% 46%;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-scene'][data-world-anime]
+    [data-slot='world-environment-image'] {
+    opacity: 0.86;
+  }
+
+  [data-slot='world-scene'][data-world-anime]
+    [data-slot='world-environment-image']
+    img {
+    object-position: 50% 40%;
+  }
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-midground-architecture'] {
+  opacity: 0.42;
+}
+
+/* Depth compression — edges fall away; place gathers inward */
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-living']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    ellipse 72% 68% at 36% 40%,
+    transparent 0%,
+    transparent 38%,
+    rgba(3, 7, 17, 0.28) 72%,
+    rgba(3, 7, 17, 0.58) 100%
+  );
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-scene'][data-world-anime]
+    [data-slot='world-environment-living']::after {
+    background: radial-gradient(
+      ellipse 82% 74% at 50% 38%,
+      transparent 0%,
+      transparent 42%,
+      rgba(3, 7, 17, 0.22) 72%,
+      rgba(3, 7, 17, 0.48) 100%
+    );
+  }
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-scene'][data-world-anime]
+    [data-slot='world-environment-living']::after {
+    background: radial-gradient(
+      ellipse 68% 64% at 34% 42%,
+      transparent 0%,
+      transparent 40%,
+      rgba(3, 7, 17, 0.3) 74%,
+      rgba(3, 7, 17, 0.6) 100%
+    );
+  }
+}
+
+/* NEAR — stronger arrived-place contact */
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-foreground-architecture'] {
+  opacity: 1;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-foreground-architecture']
+  img {
+  filter: blur(1.5px);
+  object-position: 35% 70%;
+  opacity: 0.98;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  .aether-living-haze {
+  height: 54%;
+  bottom: -14%;
+  opacity: 1;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  .aether-living-haze::before {
+  content: '';
+  position: absolute;
+  left: 4%;
+  right: 28%;
+  bottom: 18%;
+  height: 42%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 75% 60% at 28% 78%,
+    rgba(14, 22, 48, 0.55) 0%,
+    rgba(22, 34, 68, 0.28) 42%,
+    transparent 74%
+  );
+  opacity: 0.85;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-scene'][data-world-anime]
+    .aether-living-haze::before {
+    left: 8%;
+    right: 18%;
+    bottom: 22%;
+    height: 36%;
+    background: radial-gradient(
+      ellipse 70% 55% at 48% 80%,
+      rgba(14, 22, 48, 0.5) 0%,
+      rgba(22, 34, 68, 0.24) 45%,
+      transparent 72%
+    );
+    opacity: 0.78;
+  }
+}
+
+/* Authored destination wash — denser place light over genre tokens */
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-destination-atmosphere'] {
+  filter: saturate(1.08) brightness(1.06);
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-identity-atmosphere'] {
+  filter: saturate(1.05) brightness(1.04);
+}
+
+/* Dimensional light settles quieter — place, not Idle breath core */
+[data-slot='world-scene'][data-world-anime]
+  .aether-living-light {
+  opacity: 0.55;
+  inset: 22% 18%;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-scene'][data-world-anime]
+    .aether-living-light {
+    inset: 20% 14%;
+    opacity: 0.48;
+  }
+}
+
+/* Stronger frame falloff — intimate place, not open world */
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment-vignette'] {
+  filter: brightness(0.88) contrast(1.04);
+}
+
+/*
+ * TASK-075 — anime artwork present: generic Destination geography becomes
+ * framing only. Null/absent artwork keeps the TASK-060 opacities above.
+ */
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment'][data-anime-artwork='present']
+  [data-slot='world-environment-image'] {
+  opacity: 0.22;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment'][data-anime-artwork='present']
+  [data-slot='world-environment-midground-architecture'] {
+  opacity: 0.18;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment'][data-anime-artwork='present']
+  [data-slot='world-environment-foreground-architecture'] {
+  opacity: 0.55;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-environment'][data-anime-artwork='present']
+  [data-slot='world-environment-foreground-architecture']
+  img {
+  opacity: 0.62;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-scene'][data-world-anime]
+    [data-slot='world-environment'][data-anime-artwork='present']
+    [data-slot='world-environment-image'] {
+    opacity: 0.26;
+  }
+}

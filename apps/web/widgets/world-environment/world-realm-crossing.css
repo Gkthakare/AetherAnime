@@ -1,0 +1,147 @@
+/**
+ * TASK-031 realm crossing — one-shot CSS beat.
+ *
+ * Framer keyframes were collapsing to the default 300ms tween. These
+ * animations hold DURATION.CINEMATIC (1.2s) so the peak is perceptible.
+ */
+
+@keyframes aether-realm-veil {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.72;
+  }
+  67% {
+    opacity: 0.86;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes aether-realm-climate {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.48;
+  }
+  67% {
+    opacity: 0.62;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes aether-realm-aperture {
+  0% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+  15% {
+    opacity: 0.58;
+    transform: scale(1.12);
+  }
+  50% {
+    opacity: 0.82;
+    transform: scale(0.9);
+  }
+  67% {
+    opacity: 0.94;
+    transform: scale(0.72);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.24);
+  }
+}
+
+@keyframes aether-realm-gate {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  15% {
+    opacity: 0.4;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.16);
+  }
+  67% {
+    opacity: 1;
+    transform: scale(1.42);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes aether-realm-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.78);
+  }
+  15% {
+    opacity: 0.42;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 0.78;
+    transform: scale(1.02);
+  }
+  67% {
+    opacity: 0.95;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes aether-realm-env {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  15% {
+    transform: scale(1.02) translateY(-4px);
+  }
+  50% {
+    transform: scale(1.055) translateY(-8px);
+  }
+  67% {
+    transform: scale(1.09) translateY(-6px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes aether-realm-reduced {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.42;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aether-realm-env {
+    animation: none !important;
+  }
+}

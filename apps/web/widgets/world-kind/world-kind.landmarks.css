@@ -1,0 +1,508 @@
+/**
+ * TASK-054 — World Idle landmarks occupy space.
+ *
+ * Iteration B: dimensional crossing. Current stays near and grounded;
+ * ahead sits farther along a quiet ground seam. Arrival recede is excluded.
+ * No keyframes, no portal copies, no HUD graph.
+ */
+
+[data-slot='world-shell'][data-world-arrival='idle'] [data-kind-landmarks] {
+  position: relative;
+  min-height: 5rem;
+  padding-top: 0.2rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle'] [data-kind-landmarks]::before {
+  content: '';
+  position: absolute;
+  left: 0.15rem;
+  right: 8%;
+  bottom: 0.85rem;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 245, 212, 0.38) 0%,
+    rgba(0, 245, 212, 0.06) 38%,
+    rgba(0, 245, 212, 0.2) 68%,
+    transparent 100%
+  );
+  opacity: 0.8;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle'] [data-kind-landmarks] {
+    min-height: 9.5rem;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-kind-landmarks]::before {
+    right: 22%;
+    bottom: 1.35rem;
+    opacity: 0.95;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-header'] {
+  opacity: 0.32;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede]) {
+  transition:
+    opacity 200ms ease,
+    margin-top 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region']:not([data-arrival-recede]) {
+    transition: none;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  > [data-slot='surface'] {
+  min-height: 5.15rem;
+  padding-block: 0.45rem 1.05rem;
+  background-image: none;
+  overflow: visible;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region']:not([data-arrival-recede])
+    > [data-slot='surface'] {
+    min-height: 8.5rem;
+    padding-block: 0.65rem 1.35rem;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  > [data-slot='surface']::before {
+  content: '';
+  position: absolute;
+  left: -0.4rem;
+  bottom: 0.35rem;
+  width: 5rem;
+  height: 2.8rem;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 75% 85% at 16% 90%,
+    rgba(0, 245, 212, 0.16) 0%,
+    transparent 74%
+  );
+  opacity: 0.75;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  > [data-slot='surface']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.55rem;
+  width: 52%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 245, 212, 0.5) 0%,
+    rgba(0, 245, 212, 0.06) 100%
+  );
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  .world-kind-landmark-jamb {
+  inset-block: 0.35rem 0.7rem;
+  width: 2px;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  [data-slot='world-kind-region-marker'] {
+  display: none;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  [data-slot='world-kind-region-eyebrow'] {
+  opacity: 0.42;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  [data-slot='world-kind-region-name'] {
+  font-size: 0.875rem;
+  letter-spacing: 0.012em;
+  color: color-mix(in oklab, var(--foreground) 74%, transparent);
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+    [data-arrival-recede]
+  ) {
+  flex: 1.22 1 0;
+  max-width: 24rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  ) {
+  flex: 0.82 1 0;
+  max-width: 17.5rem;
+  margin-top: 1.35rem;
+  margin-left: 0.85rem;
+  opacity: 0.76;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  )
+  > [data-slot='surface'] {
+  min-height: 3.85rem;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='1']:not(
+      [data-arrival-recede]
+    ) {
+    margin-top: 2.15rem;
+    margin-left: 1.5rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='1']:not(
+      [data-arrival-recede]
+    )
+    > [data-slot='surface'] {
+    min-height: 5.15rem;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  )
+  > [data-slot='surface']::before {
+  opacity: 0.32;
+  width: 3.4rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  )
+  > [data-slot='surface']::after {
+  width: 28%;
+  opacity: 0.45;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-focused]:not([data-arrival-recede]) {
+  opacity: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-focused]:not([data-arrival-recede])
+  > [data-slot='surface']::before {
+  opacity: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-focused]:not([data-arrival-recede])
+  > [data-slot='surface']::after {
+  width: 62%;
+  opacity: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1'][data-focused]:not(
+    [data-arrival-recede]
+  ) {
+  margin-top: 0.85rem;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='1'][data-focused]:not(
+      [data-arrival-recede]
+    ) {
+    margin-top: 1.25rem;
+  }
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='1']:not(
+      [data-arrival-recede]
+    ) {
+    margin-left: 0.45rem;
+    margin-top: 0.95rem;
+  }
+}
+
+/**
+ * TASK-059 — Physical crossing architecture (CSS contact language).
+ * Continuum: grounded low sill / pier footing on the seam.
+ * Thresholds: smaller broken-threshold silhouette farther along the route.
+ * Decorative only — no chrome boxes, no L-frames, no keyframes.
+ */
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  [data-slot='world-kind-crossing-architecture'] {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Continuum / Current — near footing (order 0) */
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='footing'] {
+  left: 0.05rem;
+  right: auto;
+  bottom: 0.08rem;
+  width: min(13.5rem, 78%);
+  height: 1.7rem;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(58, 74, 112, 0.22) 38%,
+      rgba(28, 38, 68, 0.72) 78%,
+      rgba(12, 16, 34, 0.88) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(42, 54, 88, 0.7) 0%,
+      rgba(34, 46, 78, 0.48) 48%,
+      rgba(24, 34, 58, 0.22) 78%,
+      transparent 100%
+    );
+  clip-path: polygon(
+    0% 58%,
+    5% 42%,
+    12% 54%,
+    21% 34%,
+    34% 48%,
+    46% 30%,
+    58% 46%,
+    70% 36%,
+    82% 52%,
+    92% 40%,
+    100% 50%,
+    100% 100%,
+    0% 100%
+  );
+  box-shadow:
+    0 -1px 0 rgba(120, 142, 178, 0.14),
+    0 2px 10px rgba(6, 10, 24, 0.45);
+  opacity: 0.92;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='footing']::before {
+  content: '';
+  position: absolute;
+  left: 2%;
+  bottom: 0;
+  width: 64%;
+  height: 0.38rem;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(72, 88, 128, 0.45) 0%,
+    rgba(48, 62, 98, 0.28) 55%,
+    transparent 100%
+  );
+  clip-path: polygon(
+    0% 55%,
+    18% 0%,
+    42% 60%,
+    68% 15%,
+    100% 50%,
+    100% 100%,
+    0% 100%
+  );
+  opacity: 0.9;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='footing']::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  bottom: 0.55rem;
+  width: 42%;
+  height: 0.55rem;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 100% at 30% 100%,
+    rgba(18, 24, 48, 0.55) 0%,
+    transparent 78%
+  );
+  opacity: 0.85;
+}
+
+/* Thresholds / Ahead — distant broken silhouette (order 1) */
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='threshold'] {
+  left: 0.2rem;
+  bottom: 0.2rem;
+  width: 4.25rem;
+  height: 3.15rem;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(62, 78, 118, 0.22) 14%,
+      rgba(36, 48, 82, 0.48) 48%,
+      rgba(18, 26, 48, 0.78) 100%
+    );
+  clip-path: polygon(
+    4% 100%,
+    8% 52%,
+    16% 34%,
+    22% 62%,
+    30% 18%,
+    38% 44%,
+    46% 8%,
+    54% 40%,
+    62% 22%,
+    70% 50%,
+    78% 28%,
+    86% 58%,
+    94% 100%
+  );
+  box-shadow: 0 2px 12px rgba(6, 10, 22, 0.4);
+  opacity: 0.64;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='threshold']::before {
+  content: '';
+  position: absolute;
+  left: 22%;
+  bottom: 0;
+  width: 0.85rem;
+  height: 1.7rem;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(36, 48, 82, 0.35) 40%,
+    rgba(20, 28, 52, 0.55) 100%
+  );
+  clip-path: polygon(15% 100%, 25% 35%, 55% 0%, 80% 42%, 90% 100%);
+  opacity: 0.75;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='threshold']::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  bottom: 0;
+  width: 70%;
+  height: 0.42rem;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(40, 54, 88, 0.4) 30%,
+    rgba(28, 38, 68, 0.28) 70%,
+    transparent 100%
+  );
+  opacity: 0.8;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    )
+    [data-crossing-architecture='footing'] {
+    width: min(17rem, 74%);
+    height: 1.9rem;
+    bottom: 0.1rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='1']:not(
+      [data-arrival-recede]
+    )
+    [data-crossing-architecture='threshold'] {
+    width: 4.85rem;
+    height: 3.55rem;
+    bottom: 0.28rem;
+    opacity: 0.58;
+  }
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    )
+    [data-crossing-architecture='footing'] {
+    width: min(11rem, 84%);
+    height: 1.2rem;
+    opacity: 0.88;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='1']:not(
+      [data-arrival-recede]
+    )
+    [data-crossing-architecture='threshold'] {
+    width: 2.7rem;
+    height: 1.95rem;
+    opacity: 0.48;
+  }
+}
+
+/* Keep labels and jamb above decorative architecture */
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  [data-slot='world-kind-region-edge'],
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  [data-slot='world-kind-region-marker'] {
+  z-index: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region']:not([data-arrival-recede])
+  > [data-slot='surface']
+  > span:not([data-slot]) {
+  position: relative;
+  z-index: 1;
+}

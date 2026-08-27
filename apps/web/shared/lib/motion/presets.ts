@@ -11,8 +11,8 @@
 import type { Transition, Variants } from 'framer-motion';
 
 import { DELAY } from './constants';
-import { cinematicTransition, normalTransition, slowTransition } from './transitions';
-import { scaleIn, slideUp } from './variants';
+import { cinematicTransition } from './transitions';
+import { slideUp } from './variants';
 
 /** Viewport configuration for scroll-triggered reveals. */
 export interface MotionViewport {
@@ -48,38 +48,3 @@ export const heroReveal: MotionPreset = {
   initial: 'hidden',
   animate: 'visible',
 };
-
-/**
- * Section-level reveal.
- *
- * Deliberate rise triggered as the section scrolls into view.
- */
-export const sectionReveal: MotionPreset = {
-  variants: slideUp,
-  transition: slowTransition,
-  initial: 'hidden',
-  whileInView: 'visible',
-  viewport: { once: true, amount: 0.3 },
-};
-
-/**
- * Card-level reveal.
- *
- * Subtle scale-in for grid and list items as they enter the viewport.
- */
-export const cardReveal: MotionPreset = {
-  variants: scaleIn,
-  transition: normalTransition,
-  initial: 'hidden',
-  whileInView: 'visible',
-  viewport: { once: true, amount: 0.2 },
-};
-
-/** Aggregate lookup of every named preset. */
-export const presets = {
-  heroReveal,
-  sectionReveal,
-  cardReveal,
-} satisfies Record<string, MotionPreset>;
-
-export type PresetName = keyof typeof presets;

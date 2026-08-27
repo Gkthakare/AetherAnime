@@ -84,7 +84,7 @@ export function ArrivalScene() {
     <section
       data-slot="arrival-scene"
       data-phase={phase}
-      className="relative flex min-h-full w-full flex-col items-center justify-center"
+      className="relative flex min-h-full w-full flex-col items-center justify-center overflow-x-hidden px-4 py-8 sm:px-8"
     >
       <AtmosphereLayer phase={phase} />
 

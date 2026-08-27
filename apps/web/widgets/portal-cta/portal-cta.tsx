@@ -100,7 +100,7 @@ export function PortalCTA({
       )}
       style={{
         zIndex: zIndex.content,
-        marginTop: spacing['2xl'],
+        marginTop: spacing.lg,
       }}
     >
       <motion.div

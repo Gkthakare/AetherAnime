@@ -1,0 +1,54 @@
+/**
+ * TASK-032 living presence — idle breath on existing environment layers.
+ *
+ * Light opacity is the only continuous loop. Depth plates stay still so
+ * 1536px artwork is not re-composited every frame; pointer parallax still
+ * perturbs them. Paused when data-living is false (arrival / crossing).
+ */
+
+@keyframes aether-living-light {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+[data-slot='world-environment'] .aether-living-light {
+  inset: 0;
+}
+
+[data-slot='world-environment'][data-living='true'] .aether-living-light {
+  animation: aether-living-light 19.2s ease-in-out infinite;
+}
+
+/**
+ * TASK-046 — at 1920 CSS px the living-light layer is a full-viewport
+ * opacity compositor surface. Inset the box so the 19.2s breath still
+ * runs on the dimensional core instead of the whole 2.07Mpx frame.
+ */
+@media (min-width: 120rem) {
+  [data-slot='world-environment'] .aether-living-light {
+    inset: 18% 16%;
+  }
+}
+
+[data-slot='world-scene']:focus-within
+  [data-slot='world-environment'][data-living='true']
+  [data-slot='world-environment-ask'] {
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='world-environment'] .aether-living-light {
+    animation: none !important;
+  }
+
+  [data-slot='world-scene']:focus-within
+    [data-slot='world-environment'][data-living='true']
+    [data-slot='world-environment-ask'] {
+    opacity: 0.28;
+  }
+}

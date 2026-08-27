@@ -8,7 +8,8 @@
  *   - `ELEVATION_SHADOW` — raw, framework-agnostic CSS `box-shadow` values.
  *   - `elevation` — the web consumption surface: static Tailwind utility strings.
  *
- * Elevation is neutral (black) shadow only. Colored halos belong in `glow`.
+ * Elevation is neutral (black) shadow only. Colored halos are local to
+ * widgets that need emissive light, not a shared primitive.
  */
 
 /**

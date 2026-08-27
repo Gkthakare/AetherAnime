@@ -1,0 +1,72 @@
+/**
+ * TASK-053 — World Idle as a place, not a centered overlay.
+ *
+ * Destination keeps the existing identity veil. Idle relocates it into a
+ * small location-marker so the world is not a giant center ellipse.
+ */
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment-identity-veil'] {
+  background: radial-gradient(
+    ellipse 34% 24% at 16% 14%,
+    rgba(3, 7, 17, 0.42) 0%,
+    transparent 74%
+  ) !important;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-identity-engine'] {
+  align-items: flex-start;
+  text-align: left;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-navigator'] {
+  align-items: stretch;
+  text-align: left;
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-identity-column'] {
+    max-width: 26rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-navigator'] {
+    margin-left: 1.5rem;
+    max-width: 22rem;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-header'] {
+  align-items: flex-start;
+  text-align: left;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-header'] p:last-child {
+  opacity: 0.55;
+}
+
+[data-slot='world-kind-region'][data-region-order='0']:not(
+    [data-arrival-recede]
+  ) {
+  max-width: 22rem;
+}
+
+[data-slot='world-kind-region'][data-region-order='1']:not(
+    [data-arrival-recede]
+  ) {
+  margin-top: 0.85rem;
+  max-width: 20rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-details'] {
+  text-align: left;
+  max-width: 22rem;
+  opacity: 0.55;
+}

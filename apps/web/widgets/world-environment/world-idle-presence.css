@@ -1,0 +1,147 @@
+/**
+ * TASK-055 — World Idle presence. Home and Destination are excluded.
+ *
+ * A — local horizon mist on the existing foreground haze box
+ * B — irregular breath of the existing dimensional light (same 19.2s layer)
+ * C — stronger aerial separation + slightly larger pointer depth
+ *
+ * No new full-viewport opacity surface. No compositor hints. No plate animation.
+ */
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment'][data-living='true']
+  .aether-living-haze::before {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 22%;
+  bottom: 28%;
+  height: 36%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 70% 55% at 48% 60%,
+    rgba(19, 35, 65, 0.42) 0%,
+    rgba(0, 245, 212, 0.05) 42%,
+    transparent 74%
+  );
+  opacity: 0.22;
+}
+
+@keyframes aether-idle-atmosphere {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: translate3d(-1.1%, 0.2%, 0);
+  }
+  27% {
+    opacity: 0.34;
+    transform: translate3d(0.6%, -0.3%, 0);
+  }
+  61% {
+    opacity: 0.2;
+    transform: translate3d(1.3%, 0.4%, 0);
+  }
+  84% {
+    opacity: 0.3;
+    transform: translate3d(-0.4%, 0.1%, 0);
+  }
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment'][data-living='true']
+  .aether-living-haze::before {
+  animation: aether-idle-atmosphere 24s ease-in-out infinite;
+}
+
+@keyframes aether-idle-light {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  19% {
+    opacity: 0.88;
+  }
+  38% {
+    opacity: 0.74;
+  }
+  57% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0.82;
+  }
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment'][data-living='true']
+  .aether-living-light {
+  animation: aether-idle-light 19.2s ease-in-out infinite;
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment-depth'] {
+  background: linear-gradient(
+    180deg,
+    rgba(3, 7, 17, 0.52) 0%,
+    rgba(3, 7, 17, 0.2) 16%,
+    rgba(5, 10, 25, 0.04) 42%,
+    rgba(3, 7, 17, 0.44) 76%,
+    rgba(3, 7, 17, 0.8) 100%
+  );
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment-midground-architecture'] {
+  transform: translate3d(
+    calc(var(--depth-x, 0) * -10px),
+    calc(var(--depth-y, 0) * -5px),
+    0
+  ) !important;
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment-foreground-architecture'] {
+  transform: translate3d(
+    calc(var(--depth-x, 0) * -20px),
+    calc(var(--depth-y, 0) * -11px),
+    0
+  ) !important;
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-environment-image'] {
+  transform: translate3d(
+    calc(var(--depth-x, 0) * -5px),
+    calc(var(--depth-y, 0) * -2.5px),
+    0
+  ) !important;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-scene']:not([data-world-anime])
+    [data-slot='world-environment'][data-living='true']
+    .aether-living-haze::before {
+    animation-duration: 32s;
+    opacity: 0.16;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='world-scene']:not([data-world-anime])
+    [data-slot='world-environment'][data-living='true']
+    .aether-living-haze::before,
+  [data-slot='world-scene']:not([data-world-anime])
+    [data-slot='world-environment'][data-living='true']
+    .aether-living-light {
+    animation: none;
+  }
+
+  [data-slot='world-scene']:not([data-world-anime])
+    [data-slot='world-environment-image'],
+  [data-slot='world-scene']:not([data-world-anime])
+    [data-slot='world-environment-midground-architecture'],
+  [data-slot='world-scene']:not([data-world-anime])
+    [data-slot='world-environment-foreground-architecture'] {
+    transform: none !important;
+  }
+}

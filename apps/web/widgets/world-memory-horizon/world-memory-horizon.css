@@ -1,0 +1,91 @@
+/**
+ * TASK-057-B — Memory Horizon.
+ *
+ * Sparse residual afterglow in the upper-trailing atmospheric register.
+ * Idle-only. Non-interactive. Empty Memory paints nothing.
+ */
+
+[data-slot='world-memory-horizon'] {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Hidden until Idle gate enables the band. */
+  opacity: 0;
+  visibility: hidden;
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='world-memory-horizon'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+[data-slot='world-scene'][data-world-anime]
+  [data-slot='world-memory-horizon'] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Upper-trailing atmospheric band — not a HUD strip, not geographic horizon. */
+[data-slot='world-memory-horizon-band'] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(46%, 32rem);
+  height: 22%;
+  pointer-events: none;
+}
+
+[data-slot='world-memory-horizon-mark'] {
+  position: absolute;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  /* Soft atmospheric afterglow — larger bloom, quiet center. */
+  background: radial-gradient(
+    circle at 45% 45%,
+    rgba(220, 228, 242, 0.42) 0%,
+    rgba(140, 158, 200, 0.22) 28%,
+    rgba(70, 88, 130, 0.1) 55%,
+    transparent 78%
+  );
+  filter: blur(1.1px);
+}
+
+/* Portrait: keep ≤4 marks. */
+@media (orientation: portrait) {
+  [data-slot='world-memory-horizon-band'] {
+    width: min(48%, 16rem);
+    height: 16%;
+  }
+
+  [data-slot='world-memory-horizon-mark'][data-memory-index='4'],
+  [data-slot='world-memory-horizon-mark'][data-memory-index='5'],
+  [data-slot='world-memory-horizon-mark'][data-memory-index='6'],
+  [data-slot='world-memory-horizon-mark'][data-memory-index='7'] {
+    display: none;
+  }
+
+  [data-slot='world-memory-horizon-mark'] {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 639px) {
+  [data-slot='world-memory-horizon-band'] {
+    width: min(52%, 12rem);
+    height: 14%;
+  }
+}
+
+/* Static composition is the default. Reduced motion must keep marks present. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='world-memory-horizon'],
+  [data-slot='world-memory-horizon-band'],
+  [data-slot='world-memory-horizon-mark'] {
+    animation: none;
+    transition: none;
+  }
+}

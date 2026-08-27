@@ -12,7 +12,7 @@ interface ExperienceLayoutProps {
  */
 export function ExperienceLayout({ children }: Readonly<ExperienceLayoutProps>) {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground">
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background text-foreground">
       <main className="relative flex flex-1 flex-col items-center justify-center">
         {children}
       </main>

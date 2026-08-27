@@ -239,11 +239,11 @@ export const portalPlateNearIdleReduced: { x: number; y: number } = addPose(
  */
 export const portalSeamIdle: { opacity: number[] } = {
   opacity: [
-    gravityDensity('idle', 0.72, PORTAL_GRAVITY_DENSITY.seam),
-    gravityDensity('idle', 0.9, PORTAL_GRAVITY_DENSITY.seam),
     gravityDensity('idle', 0.78, PORTAL_GRAVITY_DENSITY.seam),
-    gravityDensity('idle', 0.86, PORTAL_GRAVITY_DENSITY.seam),
-    gravityDensity('idle', 0.72, PORTAL_GRAVITY_DENSITY.seam),
+    gravityDensity('idle', 0.96, PORTAL_GRAVITY_DENSITY.seam),
+    gravityDensity('idle', 0.84, PORTAL_GRAVITY_DENSITY.seam),
+    gravityDensity('idle', 0.92, PORTAL_GRAVITY_DENSITY.seam),
+    gravityDensity('idle', 0.78, PORTAL_GRAVITY_DENSITY.seam),
   ],
 };
 
@@ -381,19 +381,19 @@ export const portalPlateFarPhaseReduced: Record<PortalPhase, PlatePose> =
  */
 export const portalSeamPhase: Record<PortalPhase, OpacityPose> = {
   idle: {
-    opacity: gravityDensity('idle', 0.82, PORTAL_GRAVITY_DENSITY.seam),
+    opacity: gravityDensity('idle', 0.86, PORTAL_GRAVITY_DENSITY.seam),
   },
   inviting: {
-    opacity: gravityDensity('inviting', 0.95, PORTAL_GRAVITY_DENSITY.seam),
+    opacity: gravityDensity('inviting', 0.98, PORTAL_GRAVITY_DENSITY.seam),
   },
   accepting: {
     opacity: gravityDensity('accepting', 1, PORTAL_GRAVITY_DENSITY.seam),
   },
   crossing: {
-    opacity: gravityDensity('crossing', 0.52, PORTAL_GRAVITY_DENSITY.seam),
+    opacity: gravityDensity('crossing', 0.55, PORTAL_GRAVITY_DENSITY.seam),
   },
   settling: {
-    opacity: gravityDensity('settling', 0.78, PORTAL_GRAVITY_DENSITY.seam),
+    opacity: gravityDensity('settling', 0.82, PORTAL_GRAVITY_DENSITY.seam),
   },
 };
 

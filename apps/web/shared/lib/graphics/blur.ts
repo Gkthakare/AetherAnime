@@ -27,9 +27,11 @@ export const BLUR_RADIUS = {
   lg: '24px',
   /** Immersive, atmospheric blur for full-bleed backdrops. */
   xl: '40px',
+  /** Cinematic environmental blur — poster as light, not readable artwork. */
+  atmospheric: '72px',
 } as const;
 
-/** Union of available blur levels: `'sm' | 'md' | 'lg' | 'xl'`. */
+/** Union of available blur levels: `'sm' | 'md' | 'lg' | 'xl' | 'atmospheric'`. */
 export type BlurLevel = keyof typeof BLUR_RADIUS;
 
 /**
@@ -43,4 +45,5 @@ export const blur = {
   md: 'backdrop-blur-[12px]',
   lg: 'backdrop-blur-[24px]',
   xl: 'backdrop-blur-[40px]',
+  atmospheric: 'backdrop-blur-[72px]',
 } as const satisfies Record<BlurLevel, string>;

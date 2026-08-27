@@ -1,7 +1,7 @@
 /**
  * Reusable transition objects.
  *
- * Transitions describe *how* a change happens (duration, easing, physics).
+ * Transitions describe *how* a change happens (duration, easing).
  * They are composed purely from `constants.ts` so that timing and easing are
  * never re-declared inline by widgets. Variants and presets attach these to
  * concrete animation targets.
@@ -34,26 +34,3 @@ export const cinematicTransition: Transition = {
   duration: DURATION.CINEMATIC,
   ease: EASING.cinematic,
 };
-
-/** Natural, physics-based transition for interactive, tactile motion. */
-export const springTransition: Transition = {
-  type: 'spring',
-  stiffness: 260,
-  damping: 30,
-  mass: 1,
-};
-
-/**
- * Aggregate lookup of every named transition.
- *
- * Useful when a transition must be selected dynamically by key.
- */
-export const transitions = {
-  fast: fastTransition,
-  normal: normalTransition,
-  slow: slowTransition,
-  cinematic: cinematicTransition,
-  spring: springTransition,
-} satisfies Record<string, Transition>;
-
-export type TransitionName = keyof typeof transitions;

@@ -1,0 +1,108 @@
+/**
+ * TASK-052 — Home entrance atmosphere.
+ *
+ * WorldEnvironment already owns plates, living light, and vignette.
+ * These rules only compose that environment as a threshold: keep the portal
+ * luminous, ground the traveller, and let the gate notice attention.
+ */
+
+[data-slot='atmosphere-layer'] [data-slot='world-environment-identity-veil'] {
+  opacity: 0;
+}
+
+[data-slot='atmosphere-threshold-veil'] {
+  background:
+    radial-gradient(
+      ellipse 78% 28% at 50% 4%,
+      rgba(3, 7, 17, 0.46) 0%,
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 64%,
+      rgba(3, 7, 17, 0.36) 100%
+    );
+}
+
+[data-slot='atmosphere-gate-notice'] {
+  background:
+    radial-gradient(
+      ellipse 28% 34% at 50% 58%,
+      color-mix(in oklab, var(--ring) 22%, transparent),
+      transparent 72%
+    );
+  opacity: 0.16;
+  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-slot='atmosphere-layer'][data-phase='inviting']
+  [data-slot='atmosphere-gate-notice'] {
+  opacity: 0.34;
+}
+
+[data-slot='atmosphere-layer'][data-phase='accepting']
+  [data-slot='atmosphere-gate-notice'],
+[data-slot='atmosphere-layer'][data-phase='crossing']
+  [data-slot='atmosphere-gate-notice'] {
+  opacity: 0.3;
+}
+
+[data-slot='atmosphere-layer'][data-phase='settling']
+  [data-slot='atmosphere-gate-notice'] {
+  opacity: 0.2;
+}
+
+[data-slot='arrival-scene']:has([data-slot='portal-cta']:hover)
+  [data-slot='world-environment'][data-living='true']
+  [data-slot='world-environment-ask'],
+[data-slot='arrival-scene']:has([data-slot='portal-cta']:focus-visible)
+  [data-slot='world-environment'][data-living='true']
+  [data-slot='world-environment-ask'] {
+  opacity: 0.42;
+}
+
+[data-slot='arrival-scene']:has([data-slot='portal-cta']:hover)
+  [data-slot='atmosphere-gate-notice'],
+[data-slot='arrival-scene']:has([data-slot='portal-cta']:focus-visible)
+  [data-slot='atmosphere-gate-notice'] {
+  opacity: 0.32;
+}
+
+@media (orientation: portrait) {
+  [data-slot='atmosphere-layer'] [data-slot='world-environment-vignette'] {
+    opacity: 0.55;
+  }
+
+  [data-slot='atmosphere-threshold-veil'] {
+    background:
+      radial-gradient(
+        ellipse 86% 22% at 50% 0%,
+        rgba(3, 7, 17, 0.32) 0%,
+        transparent 70%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 72%,
+        rgba(3, 7, 17, 0.28) 100%
+      );
+  }
+
+  [data-slot='atmosphere-gate-notice'] {
+    opacity: 0.1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='atmosphere-gate-notice'] {
+    transition: none;
+  }
+
+  [data-slot='arrival-scene']:has([data-slot='portal-cta']:hover)
+    [data-slot='world-environment'][data-living='true']
+    [data-slot='world-environment-ask'],
+  [data-slot='arrival-scene']:has([data-slot='portal-cta']:focus-visible)
+    [data-slot='world-environment'][data-living='true']
+    [data-slot='world-environment-ask'] {
+    opacity: 0.28;
+  }
+}

@@ -29,10 +29,13 @@ import {
 } from './portal-cta.motion';
 import {
   PORTAL_FIELD,
+  PORTAL_GATE_FRAME,
   PORTAL_GEOMETRY_SIZE_CLASS,
   PORTAL_HAIRLINE,
+  PORTAL_MATERIAL,
   PORTAL_PLATE_CLIP,
   PORTAL_SEAM,
+  PORTAL_SINGULARITY,
 } from './portal-geometry.constants';
 import type { PortalGeometryProps } from './portal-geometry.types';
 import { PortalParticleField } from './portal-particle-field';
@@ -41,6 +44,7 @@ import { PortalParticleField } from './portal-particle-field';
  * PortalGeometry — Impossible Threshold structure, idle ambient life,
  * phase/ceremony responses, Gravity poses, and Particle Engine host mount.
  *
+ * Task-009: cinematic material / luminance / depth fidelity.
  * Animation values live in `portal-cta.motion.ts` / `portal-particle.motion.ts`.
  * Ambient loops only when `isPortalAmbientIdle`; particles recycle in-host.
  */
@@ -96,13 +100,34 @@ export function PortalGeometry({
       data-phase={phase}
       className={cn(PORTAL_GEOMETRY_SIZE_CLASS, className)}
     >
+      <div
+        data-slot="portal-gate-frame"
+        aria-hidden="true"
+        className={PORTAL_GATE_FRAME.outer}
+      />
+      <div
+        data-slot="portal-gate-aperture"
+        aria-hidden="true"
+        className={PORTAL_GATE_FRAME.aperture}
+      />
+
+      {/* Far atmosphere — static cosmic depth (no ambient loop). */}
+      <div
+        data-slot="portal-atmosphere"
+        aria-hidden="true"
+        className="pointer-events-none absolute rounded-[42%] opacity-[0.85] transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+        style={{
+          inset: '-28%',
+          background: PORTAL_MATERIAL.atmosphere,
+        }}
+      />
+
       <motion.div
         data-slot="portal-field"
-        className="pointer-events-none absolute rounded-[40%]"
+        className="pointer-events-none absolute rounded-[38%]"
         style={{
           inset: PORTAL_FIELD.inset,
-          background:
-            'radial-gradient(ellipse 55% 65% at 46% 48%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%)',
+          background: PORTAL_MATERIAL.field,
         }}
         initial={false}
         animate={fieldAnimate}
@@ -114,35 +139,44 @@ export function PortalGeometry({
         className="pointer-events-none absolute inset-0"
         style={{
           clipPath: PORTAL_PLATE_CLIP.near,
-          background:
-            'linear-gradient(145deg, color-mix(in oklab, var(--primary) 22%, var(--card)) 0%, color-mix(in oklab, var(--card) 70%, var(--background)) 55%, var(--background) 100%)',
-          opacity: 0.55,
+          background: PORTAL_MATERIAL.plateNear,
+          opacity: 0.72,
         }}
         initial={false}
         animate={plateNearAnimate}
         transition={plateNearTransition}
-      />
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{ background: PORTAL_MATERIAL.plateEdgeNear, opacity: 0.55 }}
+        />
+      </motion.div>
 
       <motion.div
         data-slot="portal-plate-far"
         className="pointer-events-none absolute inset-0"
         style={{
           clipPath: PORTAL_PLATE_CLIP.far,
-          background:
-            'linear-gradient(210deg, color-mix(in oklab, var(--card) 80%, var(--background)) 0%, color-mix(in oklab, var(--primary) 12%, var(--background)) 100%)',
-          opacity: 0.42,
+          background: PORTAL_MATERIAL.plateFar,
+          opacity: 0.58,
         }}
         initial={false}
         animate={plateFarAnimate}
         transition={phaseTransition}
-      />
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{ background: PORTAL_MATERIAL.plateEdgeFar, opacity: 0.45 }}
+        />
+      </motion.div>
 
       <motion.div
         data-slot="portal-chamber"
-        className="pointer-events-none absolute inset-[22%] rounded-[32%]"
+        className="pointer-events-none absolute inset-[18%] rounded-[28%]"
         style={{
-          background:
-            'radial-gradient(ellipse 70% 80% at 48% 50%, var(--background) 0%, color-mix(in oklab, var(--background) 85%, transparent) 55%, transparent 75%)',
+          background: PORTAL_MATERIAL.chamber,
         }}
         initial={false}
         animate={chamberAnimate}
@@ -160,8 +194,7 @@ export function PortalGeometry({
           top: PORTAL_SEAM.top,
           left: PORTAL_SEAM.left,
           transform: `rotate(${PORTAL_SEAM.rotate})`,
-          background:
-            'linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--ring) 55%, transparent) 12%, color-mix(in oklab, var(--foreground) 75%, var(--ring)) 48%, color-mix(in oklab, var(--ring) 60%, transparent) 82%, transparent 100%)',
+          background: PORTAL_MATERIAL.seam,
         }}
         initial={false}
         animate={seamAnimate}
@@ -177,8 +210,7 @@ export function PortalGeometry({
           top: PORTAL_HAIRLINE.top,
           left: PORTAL_HAIRLINE.left,
           transform: `rotate(${PORTAL_HAIRLINE.rotate})`,
-          background:
-            'linear-gradient(180deg, transparent, color-mix(in oklab, var(--primary) 45%, transparent), transparent)',
+          background: PORTAL_MATERIAL.hairline,
         }}
         initial={false}
         animate={hairlineAnimate}
@@ -187,10 +219,12 @@ export function PortalGeometry({
 
       <motion.div
         data-slot="portal-singularity"
-        className="pointer-events-none absolute left-1/2 top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full md:size-3"
+        className={cn(
+          'pointer-events-none absolute',
+          PORTAL_SINGULARITY.className,
+        )}
         style={{
-          background:
-            'radial-gradient(circle at 50% 50%, var(--foreground) 0%, color-mix(in oklab, var(--ring) 40%, var(--foreground)) 35%, transparent 72%)',
+          background: PORTAL_MATERIAL.singularity,
         }}
         initial={false}
         animate={singularityAnimate}
