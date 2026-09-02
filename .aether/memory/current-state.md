@@ -4,7 +4,7 @@ Last verified: TASK-089 (**Plausible visitor attribution fix**)
 
 ## Completed
 
-[[TASK-046]] · [[TASK-049]] · [[TASK-050]] · [[TASK-050.1]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-057-A]] · [[TASK-057-B]] · [[TASK-058-E]] · [[TASK-059]] · [[TASK-060]] · [[TASK-061]] · [[TASK-062]] · [[TASK-063]] · [[TASK-064]] · [[TASK-065]] · [[TASK-066]] · [[TASK-067]] · [[TASK-068]] · [[TASK-069]] · [[TASK-070]] · [[TASK-071]] · [[TASK-072]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]] · [[TASK-080]] · [[TASK-081]] · [[TASK-082]] · [[TASK-083]] · [[TASK-084]] · [[TASK-085]] · [[TASK-086]] · [[TASK-087]] · [[TASK-088]]
+[[TASK-046]] · [[TASK-049]] · [[TASK-050]] · [[TASK-050.1]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-057-A]] · [[TASK-057-B]] · [[TASK-058-E]] · [[TASK-059]] · [[TASK-060]] · [[TASK-061]] · [[TASK-062]] · [[TASK-063]] · [[TASK-064]] · [[TASK-065]] · [[TASK-066]] · [[TASK-067]] · [[TASK-068]] · [[TASK-069]] · [[TASK-070]] · [[TASK-071]] · [[TASK-072]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]] · [[TASK-080]] · [[TASK-081]] · [[TASK-082]] · [[TASK-083]] · [[TASK-084]] · [[TASK-085]] · [[TASK-086]] · [[TASK-087]] · [[TASK-088]] · [[TASK-089]]
 
 ## Phase
 
@@ -20,7 +20,7 @@ Last verified: TASK-089 (**Plausible visitor attribution fix**)
 
 ## Verified
 
-- 529 tests; tsc/lint/build 0 ([[TASK-088]]).
+- 538 tests; tsc/lint/build 0 ([[TASK-089]]).
 - Production: HTTPS both domains; `/api/events` accepts CORE events; forbidden payloads return 204.
 
 ## Next
