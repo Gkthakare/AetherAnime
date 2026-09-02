@@ -125,34 +125,105 @@ export function getPlausibleApiHost(): string {
   return host && host.length > 0 ? host.replace(/\/$/, '') : 'https://plausible.io';
 }
 
+/** Visitor transport metadata from the incoming browser request — never stored in props. */
+export type PlausibleVisitorTransport = Readonly<{
+  userAgent?: string;
+  forwardedFor?: string;
+}>;
+
+export function resolvePlausibleVisitorTransport(input: {
+  userAgent: string | null;
+  forwardedFor: string | null;
+  realIp?: string | null;
+}): PlausibleVisitorTransport {
+  const userAgent = input.userAgent?.trim();
+  const forwardedFor =
+    input.forwardedFor?.split(',')[0]?.trim() || input.realIp?.trim() || undefined;
+
+  return {
+    ...(userAgent && userAgent.length > 0 ? { userAgent } : {}),
+    ...(forwardedFor && forwardedFor.length > 0 ? { forwardedFor } : {}),
+  };
+}
+
+/** Page URL for Plausible — must reflect the product surface, not /api/events. */
+export function plausibleEventUrl(
+  event: ProductEventPayload,
+  domain: string,
+): string {
+  const origin = `https://${domain}`;
+
+  switch (event.name) {
+    case 'destination_arrived':
+      return `${origin}/world/aetheranime?anime=${encodeURIComponent(event.slug)}`;
+    case 'world_entered':
+    case 'navigator_ask_submitted':
+    case 'session_multi_destination':
+    case 'return_visit':
+      return `${origin}/world/aetheranime`;
+    default:
+      return `${origin}/world/aetheranime`;
+  }
+}
+
+export function buildPlausibleForwardHeaders(
+  transport: PlausibleVisitorTransport,
+): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (transport.userAgent) {
+    headers['User-Agent'] = transport.userAgent;
+  }
+  if (transport.forwardedFor) {
+    headers['X-Forwarded-For'] = transport.forwardedFor;
+  }
+
+  return headers;
+}
+
+export type PlausibleForwardResult = Readonly<{
+  recorded: boolean;
+  dropped: boolean;
+  status: number;
+}>;
+
 export async function forwardProductEventToPlausible(
   event: ProductEventPayload,
-): Promise<void> {
+  transport: PlausibleVisitorTransport = {},
+): Promise<PlausibleForwardResult> {
   if (!isAnalyticsEnabled()) {
-    return;
+    return { recorded: false, dropped: false, status: 0 };
   }
 
   const domain = getPlausibleDomain();
   if (!domain) {
-    return;
+    return { recorded: false, dropped: false, status: 0 };
   }
 
   const endpoint = `${getPlausibleApiHost()}/api/event`;
-  await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': 'AetherAnimeAnalytics/1.0',
-    },
-    body: JSON.stringify({
-      name: event.name,
-      domain,
-      url: `https://${domain}/api/events`,
-      props: plausibleProps(event),
-    }),
-  }).catch(() => {
-    /* fire-and-forget */
-  });
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: buildPlausibleForwardHeaders(transport),
+      body: JSON.stringify({
+        name: event.name,
+        domain,
+        url: plausibleEventUrl(event, domain),
+        props: plausibleProps(event),
+      }),
+    });
+
+    const dropped = response.headers.get('x-plausible-dropped') === '1';
+    return {
+      recorded: !dropped && response.ok,
+      dropped,
+      status: response.status,
+    };
+  } catch {
+    return { recorded: false, dropped: false, status: 0 };
+  }
 }
 
 export function buildAnalyticsCookie(

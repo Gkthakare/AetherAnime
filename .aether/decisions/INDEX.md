@@ -45,6 +45,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-086]] | Capital Phase instrumentation | Hybrid Plausible + `/api/events`; CORE funnel; privacy boundary |
 | [[TASK-087]] | Capital Phase PMF + monetization strategy | Discovery beachhead; affiliate-first; no PMF claim |
 | [[TASK-088]] | Production analytics enablement | aetheranime.com; server-side Plausible; CORE events live |
+| [[TASK-089]] | Plausible visitor attribution fix | Forward UA + X-Forwarded-For; product page URLs |
 
 ## Clusters
 

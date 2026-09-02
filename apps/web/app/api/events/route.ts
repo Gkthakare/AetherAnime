@@ -9,6 +9,7 @@ import {
   isAnalyticsSessionExpired,
   isValidVisitorId,
   parseAnalyticsCookies,
+  resolvePlausibleVisitorTransport,
   shouldEmitReturnVisit,
 } from '@/shared/analytics/analytics.server';
 import { validateProductEvent } from '@/shared/analytics/analytics.validate';
@@ -68,7 +69,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  await Promise.all(eventsToForward.map((event) => forwardProductEventToPlausible(event)));
+  const transport = resolvePlausibleVisitorTransport({
+    userAgent: request.headers.get('user-agent'),
+    forwardedFor: request.headers.get('x-forwarded-for'),
+    realIp: request.headers.get('x-real-ip'),
+  });
+
+  await Promise.all(eventsToForward.map((event) => forwardProductEventToPlausible(event, transport)));
 
   const response = new Response(null, { status: 204 });
   for (const cookie of buildAnalyticsCookieUpdates({

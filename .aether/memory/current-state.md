@@ -1,6 +1,6 @@
 # Current State
 
-Last verified: TASK-088 (**Production analytics enabled**)
+Last verified: TASK-089 (**Plausible visitor attribution fix**)
 
 ## Completed
 
@@ -10,7 +10,7 @@ Last verified: TASK-088 (**Production analytics enabled**)
 
 **V1 engineering:** complete · production verified ([[TASK-083]])
 
-**Capital Phase:** analytics **enabled in production** ([[TASK-088]]); Exp 1 baseline collection can begin ([[TASK-087]])
+**Capital Phase:** analytics enabled ([[TASK-088]]); **Plausible attribution fixed** ([[TASK-089]]); Exp 1 baseline safe after operator re-verifies dashboard
 
 ## Surfaces
 
