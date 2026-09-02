@@ -37,6 +37,14 @@ Area: Capital Phase · analytics · production
 - Do not enable analytics in client bundles via `NEXT_PUBLIC_*`.
 - Do not wire GROWTH events without a follow-on task.
 
+## Verified (TASK-088)
+
+- Production deploy `dpl_Co9LfzSJw5mQb8J5ThpFV7JnFNQw` · alias `https://aetheranime.com`
+- Vercel Production env: `ANALYTICS_ENABLED`, `PLAUSIBLE_DOMAIN`, `PLAUSIBLE_API_HOST`
+- `/api/events` returns 204; valid CORE events set HttpOnly analytics cookies; forbidden payloads rejected silently
+- Plausible Events API returns 202 for `aetheranime.com` domain
+- No browser Plausible snippet in codebase
+
 ## Links
 
 [[TASK-086]] · [[TASK-087]] · [[TASK-085]] · [[current-state]]
