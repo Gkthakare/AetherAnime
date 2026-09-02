@@ -9,6 +9,7 @@ import {
 } from '@/shared/anime';
 import type { AnimeDiscoveryCandidate, AnimeMetadata, CanonicalAnime } from '@/shared/anime';
 import type { DestinationMetadataOverlay } from '@/shared/anime/anime.metadata';
+import { markArrivalVia } from '@/shared/analytics';
 import { spacing } from '@/shared/config/theme';
 import { legibility } from '@/shared/lib/graphics';
 import { DURATION, EASING, STAGGER } from '@/shared/lib/motion';
@@ -333,6 +334,7 @@ function DestinationPathsInner({
                         (item) => `discovered:${item.malId}` === key,
                       );
                       if (!candidate) return;
+                      markArrivalVia('kinship');
                       arriveAnime(canonicalizeDiscoveryCandidate(candidate));
                     }}
                   />

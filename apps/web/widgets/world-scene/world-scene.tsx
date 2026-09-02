@@ -11,6 +11,7 @@ import {
 } from '@/shared/anime';
 import { discoveredMalIdFromSlug } from '@/shared/anime/anime.mal.identity';
 import { rememberArrival } from '@/shared/anime/anime.memory';
+import { recordDestinationArrival, recordWorldEntered } from '@/shared/analytics';
 import {
   WORLD_FOCUS_NONE,
   WORLD_LIFECYCLE_DEFAULT,
@@ -115,6 +116,7 @@ export function WorldScene({
   );
   const arrivedAnimeRef = useRef<CanonicalAnime | null>(initialAnime);
   const discoveredHydrateRef = useRef<AbortController | null>(null);
+  const worldEnteredRef = useRef(false);
 
   const dispatchLifecycle = useCallback((event: WorldLifecycleEvent) => {
     setLifecycle((phase) => reduceWorldLifecycle(phase, event));
@@ -266,6 +268,12 @@ export function WorldScene({
     };
   }, []);
 
+  useEffect(() => {
+    if (worldEnteredRef.current) return;
+    worldEnteredRef.current = true;
+    recordWorldEntered();
+  }, []);
+
   // World Memory observes committed arrival rather than any one arrival path:
   // in-scene arriveAnime, URL / Back / Forward / discovered hand-off, and the
   // first-load initializer all converge on arrivedAnime. Passive recorder —
@@ -274,6 +282,7 @@ export function WorldScene({
   useEffect(() => {
     if (!arrivedAnime) return;
     rememberArrival(arrivedAnime);
+    recordDestinationArrival(arrivedAnime);
   }, [arrivedAnime]);
 
   const ambient = resolveWorldAmbient({

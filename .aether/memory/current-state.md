@@ -1,50 +1,34 @@
 # Current State
 
-
-
-Last verified: TASK-083 (**Production semantic intent fixed; hunter Solo #1 live**)
-
-
+Last verified: TASK-088 (**Production analytics enabled**)
 
 ## Completed
 
+[[TASK-046]] · [[TASK-049]] · [[TASK-050]] · [[TASK-050.1]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-057-A]] · [[TASK-057-B]] · [[TASK-058-E]] · [[TASK-059]] · [[TASK-060]] · [[TASK-061]] · [[TASK-062]] · [[TASK-063]] · [[TASK-064]] · [[TASK-065]] · [[TASK-066]] · [[TASK-067]] · [[TASK-068]] · [[TASK-069]] · [[TASK-070]] · [[TASK-071]] · [[TASK-072]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]] · [[TASK-080]] · [[TASK-081]] · [[TASK-082]] · [[TASK-083]] · [[TASK-084]] · [[TASK-085]] · [[TASK-086]] · [[TASK-087]] · [[TASK-088]]
 
+## Phase
 
-[[TASK-046]] · [[TASK-049]] · [[TASK-050]] · [[TASK-050.1]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-057-A]] · [[TASK-057-B]] · [[TASK-058-E]] · [[TASK-059]] · [[TASK-060]] · [[TASK-061]] · [[TASK-062]] · [[TASK-063]] · [[TASK-064]] · [[TASK-065]] · [[TASK-066]] · [[TASK-067]] · [[TASK-068]] · [[TASK-069]] · [[TASK-070]] · [[TASK-071]] · [[TASK-072]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]] · [[TASK-080]] · [[TASK-081]] · [[TASK-082]] · [[TASK-083]]
+**V1 engineering:** complete · production verified ([[TASK-083]])
 
-
+**Capital Phase:** analytics **enabled in production** ([[TASK-088]]); Exp 1 baseline collection can begin ([[TASK-087]])
 
 ## Surfaces
 
+**HOST** — Canonical: `https://aetheranime.com` · `https://www.aetheranime.com` · Vercel alias `aetheranime-tawny.vercel.app` · Root Directory `apps/web`
 
-
-**HOST** — Production Ready: `https://aetheranime-tawny.vercel.app` · deploy `dpl_Ey9rUzXmnMqLpSAKQMxZh5nUx3C8` · Root Directory `apps/web`.
-
-
-
-**NAVIGATOR** — Descriptive hunter/system ask: semantic intent non-null; Solo Leveling ranks #1 on production alias ([[TASK-083]]).
-
-
+**PRODUCT ANALYTICS** — ON in Production (`ANALYTICS_ENABLED=true`, `PLAUSIBLE_DOMAIN=aetheranime.com`). Server-side `/api/events` → Plausible. No browser snippet.
 
 ## Verified
 
-
-
-- 499 tests; tsc/lint/build 0.
-- Live: intent API + Navigator hunter #1; Home/Idle/Destination regressions hold; settled FPS ≈60. Evidence `%TEMP%\aether-083-qa\`.
-
-
+- 529 tests; tsc/lint/build 0 ([[TASK-088]]).
+- Production: HTTPS both domains; `/api/events` accepts CORE events; forbidden payloads return 204.
 
 ## Next
 
-
-
-Optional: commit TASK-083 code + brain; full TASK-082 regression re-run if desired.
-
-
+- Operator: confirm CORE custom goals in Plausible UI for `aetheranime.com`.
+- Exp 1: accumulate 7-day funnel baseline ([[TASK-087]]).
+- Legal/privacy review for EU/India traffic if not already done.
 
 ## Related
-
-
 
 [[visual-debt]] · [[open-questions]] · [[decisions/INDEX|decisions]]

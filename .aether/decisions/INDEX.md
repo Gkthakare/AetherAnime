@@ -41,6 +41,10 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-080]] | Navigator + Destination art/arrival | Plot semantic path; contain field; identity-keyed ceremony |
 | [[TASK-082]] | Vercel production + live QA | Deployed Ready; hunter Solo ranking blocked live |
 | [[TASK-083]] | Production semantic intent | HTTP boundary fix; hunter Solo #1 verified live |
+| [[TASK-085]] | Capital Phase measurement audit | Zero analytics today; hybrid architecture proposed |
+| [[TASK-086]] | Capital Phase instrumentation | Hybrid Plausible + `/api/events`; CORE funnel; privacy boundary |
+| [[TASK-087]] | Capital Phase PMF + monetization strategy | Discovery beachhead; affiliate-first; no PMF claim |
+| [[TASK-088]] | Production analytics enablement | aetheranime.com; server-side Plausible; CORE events live |
 
 ## Clusters
 

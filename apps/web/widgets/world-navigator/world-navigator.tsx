@@ -28,6 +28,7 @@ import {
 } from '@/shared/anime';
 import type { CanonicalAnime, StructuredAnimeIntent, WatchlistReturnRow } from '@/shared/anime';
 import { subscribeMemory } from '@/shared/anime/anime.memory';
+import { markArrivalVia, recordNavigatorAskSubmitted } from '@/shared/analytics';
 import { spacing } from '@/shared/config/theme';
 import { legibility } from '@/shared/lib/graphics';
 import { cn } from '@/lib/utils';
@@ -183,12 +184,14 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
       const settle = () => {
         try {
           const plan = planAnimeAsk(trimmed);
+          recordNavigatorAskSubmitted(plan);
           if (plan.kind === 'arrive') {
             setState({
               phase: 'resolved',
               query: trimmed,
               anime: plan.anime,
             });
+            markArrivalVia('navigator');
             arriveAnime(plan.anime);
             return;
           }
@@ -314,6 +317,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
 
   const selectWatchlistRow = useCallback(
     (row: WatchlistReturnRow) => {
+      markArrivalVia('navigator');
       if (row.kind === 'catalog') {
         arriveReturnedAnime(row.anime);
         return;
@@ -343,6 +347,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
 
   const activateContinue = useCallback(
     (candidate: ContinueCandidate) => {
+      markArrivalVia('continue');
       if (candidate.arrival.kind === 'catalog') {
         arriveReturnedAnime(candidate.arrival.anime);
         return;
@@ -644,6 +649,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
               query: candidate.canonicalTitle,
               anime: candidate,
             });
+            markArrivalVia('navigator');
             arriveAnime(candidate);
           }}
         />
@@ -665,6 +671,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
               query: anime.canonicalTitle,
               anime,
             });
+            markArrivalVia('navigator');
             arriveAnime(anime);
           }}
         />

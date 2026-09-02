@@ -26,11 +26,26 @@ Genuinely unresolved. **Do not answer these here** — answering one is a decisi
 | Vercel auth & project link resume | Answered — still logged out at TASK-078 time | [[TASK-078]] |
 | Vercel project link + env readiness | Answered — linked `aetheranime` / `apps/web`; Production env empty | [[TASK-079]] |
 | Navigator descriptive relevance + Destination contain/arrival | Answered — implemented | [[TASK-080]] |
-| Vercel production deploy + live QA | Answered — deployed Ready; live hunter Solo ranking blocked | [[TASK-082]] |
-
+| Vercel production deploy + live QA | Answered — deployed Ready; hunter Solo ranking blocked | [[TASK-082]] |
 | Production semantic intent null | Answered — HTTP boundary + retrieval pin; hunter Solo #1 live | [[TASK-083]] |
+| Capital Phase measurement architecture | Answered — audit complete; hybrid design proposed; not implemented | [[TASK-085]] |
+| Capital Phase instrumentation foundation | Answered — Hybrid Plausible + `/api/events`; CORE events; privacy boundary | [[TASK-086]] |
+| Capital Phase PMF + monetization strategy | Answered — discovery beachhead; affiliate-first; experiments defined | [[TASK-087]] |
+| Production analytics enablement | Answered — enabled on aetheranime.com; server-side Plausible | [[TASK-088]] |
 
 ## Intentionally deferred (outside V1 / future product decision)
+
+### Capital experiments (not yet run)
+
+Strategy and experiment queue defined ([[TASK-087]]). Exp 1 (analytics baseline) **unblocked** — production analytics enabled ([[TASK-088]]). Exp 2–5 blocked on Exp 1 data.
+
+*Classification:* **Capital Phase — next** ([[TASK-087]]).
+
+### Product analytics — growth events + consent UI
+
+CORE funnel foundation implemented ([[TASK-086]]). GROWTH events remain schema-only until experiments require ([[TASK-087]] Part 13). Consent banner / DPDP-GDPR legal sign-off before enabling production collection.
+
+*Classification:* **Capital Phase — deferred until Exp 1** ([[TASK-086]] · [[TASK-087]]).
 
 ### Arrive-from-memory / Horizon interaction
 
@@ -40,9 +55,9 @@ Horizon stays non-interactive residual. Making Horizon a resume surface would co
 
 ### Account / server Memory sync
 
-Local-only Memory/Watchlist remains V1. Cloud sync needs privacy, migration, and ownership decisions.
+Local-only Memory/Watchlist remains V1. Cloud sync needs privacy, migration, and ownership decisions. **Capital Stage 2 gate only if retention data supports** ([[TASK-087]]).
 
-*Classification:* **B intentionally deferred** ([[TASK-066]] · [[TASK-069]]).
+*Classification:* **B intentionally deferred** ([[TASK-066]] · [[TASK-069]] · [[TASK-087]]).
 
 ### Dedicated portrait mid-continuation artwork
 
