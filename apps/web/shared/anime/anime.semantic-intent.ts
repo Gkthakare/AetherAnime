@@ -303,6 +303,24 @@ function uniqueCandidates(
   });
 }
 
+function catalogCandidateForAnime(anime: CanonicalAnime): AnimeDiscoveryCandidate | null {
+  const malId = malIdForSlug(anime.slug);
+  if (malId == null) return null;
+  return {
+    malId,
+    title: anime.canonicalTitle,
+    alternateTitle: anime.alternateTitles[0] ?? null,
+    year: anime.year,
+    type: anime.type,
+    episodeCount: anime.episodeCount,
+    status: anime.status,
+    genres: anime.genres,
+    studios: anime.studios,
+    synopsis: anime.synopsis,
+    poster: anime.poster,
+  };
+}
+
 export async function retrieveForStructuredIntent(
   intent: StructuredAnimeIntent,
   deps: SemanticRetrievalDeps,
@@ -310,6 +328,37 @@ export async function retrieveForStructuredIntent(
 ): Promise<ReadonlyArray<AnimeDiscoveryCandidate>> {
   let seedMalId: number | null = null;
   let retrieved: AnimeDiscoveryCandidate[] = [];
+
+  const navigateResolution =
+    intent.type === 'navigate' && intent.title
+      ? resolveAnime(intent.title)
+      : null;
+
+  if (navigateResolution?.status === 'resolved') {
+    const anchor = catalogCandidateForAnime(navigateResolution.anime);
+    const query = constraintQuery(intent);
+    const searched = query.length >= 3 ? await deps.searchByTitle(query) : [];
+    retrieved = [...catalogCandidates(), ...searched];
+    let ranked = rankBySemanticPreference(
+      uniqueCandidates(retrieved),
+      intent,
+      null,
+      askText,
+    );
+    if (anchor) {
+      ranked = [
+        { ...anchor, matchReason: null },
+        ...ranked.filter((candidate) => candidate.malId !== anchor.malId),
+      ];
+    }
+    if (intent.exclusions.watchlisted) {
+      const blocked = new Set(deps.watchlistedSlugs ?? []);
+      ranked = ranked.filter(
+        (candidate) => !blocked.has(slugForCandidate(candidate)),
+      );
+    }
+    return ranked.slice(0, 5);
+  }
 
   if (intent.seedTitle) {
     const seed = resolveAnime(intent.seedTitle);
@@ -374,6 +423,96 @@ function parseModelContent(payload: unknown): unknown {
   }
 }
 
+const TOKEN_LIMIT_ATTEMPTS = [
+  { max_completion_tokens: 500 },
+  { max_tokens: 500 },
+] as const;
+
+function normalizeOptionalStringField(value: unknown): unknown {
+  if (value === '') return null;
+  return value;
+}
+
+function normalizeConstraintList(value: unknown): unknown {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? [trimmed.slice(0, 32)] : [];
+  }
+  if (!Array.isArray(value)) return value;
+  return value.map((entry) =>
+    typeof entry === 'string' ? entry.trim().slice(0, 32) : entry,
+  );
+}
+
+export function normalizeStructuredIntentPayload(value: unknown): unknown {
+  const record = asRecord(value);
+  if (!record) return value;
+  const constraints = asRecord(record.constraints);
+  return {
+    ...record,
+    title: normalizeOptionalStringField(record.title),
+    seedTitle: normalizeOptionalStringField(record.seedTitle),
+    constraints: constraints
+      ? {
+          ...constraints,
+          genres: normalizeConstraintList(constraints.genres),
+          themes: normalizeConstraintList(constraints.themes),
+          protagonistTraits: normalizeConstraintList(
+            constraints.protagonistTraits,
+          ),
+          tone: normalizeConstraintList(constraints.tone),
+        }
+      : record.constraints,
+  };
+}
+
+function isUnsupportedTokenLimitError(payload: unknown): boolean {
+  const param = asRecord(asRecord(payload)?.error)?.param;
+  return param === 'max_tokens' || param === 'max_completion_tokens';
+}
+
+function isUnsupportedTemperatureError(payload: unknown): boolean {
+  return asRecord(asRecord(payload)?.error)?.param === 'temperature';
+}
+
+async function postChatCompletion(
+  fetchImpl: SemanticFetch,
+  url: string,
+  headers: Record<string, string>,
+  baseBody: Record<string, unknown>,
+): Promise<Response> {
+  let lastResponse: Response | null = null;
+  for (const limit of TOKEN_LIMIT_ATTEMPTS) {
+    for (const temperature of [0, undefined] as const) {
+      const body =
+        temperature === undefined
+          ? { ...baseBody, ...limit }
+          : { ...baseBody, temperature, ...limit };
+      const response = await fetchImpl(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(8000),
+      });
+      if (response.ok) return response;
+      lastResponse = response;
+      try {
+        const payload = await response.clone().json();
+        if (response.status === 400 && isUnsupportedTemperatureError(payload)) {
+          continue;
+        }
+        if (response.status === 400 && isUnsupportedTokenLimitError(payload)) {
+          break;
+        }
+      } catch {
+        /* non-JSON error body */
+      }
+      return response;
+    }
+  }
+  return lastResponse ?? new Response(null, { status: 500 });
+}
+
 export function createHttpSemanticIntentProvider(
   options: HttpSemanticIntentProviderOptions,
 ): SemanticIntentProvider {
@@ -390,27 +529,27 @@ export function createHttpSemanticIntentProvider(
       }
       if (text.length === 0) return null;
       try {
-        const response = await fetchImpl(`${baseUrl}/chat/completions`, {
-          method: 'POST',
-          headers: {
+        const response = await postChatCompletion(
+          fetchImpl,
+          `${baseUrl}/chat/completions`,
+          {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
+          {
             model,
-            temperature: 0,
-            max_tokens: 250,
             response_format: { type: 'json_object' },
             messages: [
               { role: 'system', content: SEMANTIC_SYSTEM_PROMPT },
               { role: 'user', content: text.slice(0, 240) },
             ],
-          }),
-          signal: AbortSignal.timeout(8000),
-        });
+          },
+        );
         if (!response.ok) return null;
         return validateStructuredAnimeIntent(
-          parseModelContent(await response.json()),
+          normalizeStructuredIntentPayload(
+            parseModelContent(await response.json()),
+          ),
         );
       } catch {
         return null;

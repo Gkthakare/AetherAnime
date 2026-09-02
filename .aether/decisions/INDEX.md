@@ -39,6 +39,8 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-078]] | Vercel auth & project link | Auth still required; link not started; no deploy |
 | [[TASK-079]] | Vercel project + env readiness | Linked `aetheranime` / `apps/web`; Production env empty; deploy blocked |
 | [[TASK-080]] | Navigator + Destination art/arrival | Plot semantic path; contain field; identity-keyed ceremony |
+| [[TASK-082]] | Vercel production + live QA | Deployed Ready; hunter Solo ranking blocked live |
+| [[TASK-083]] | Production semantic intent | HTTP boundary fix; hunter Solo #1 verified live |
 
 ## Clusters
 

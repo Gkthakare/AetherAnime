@@ -5,6 +5,7 @@ import { parseAnimeIntent } from './anime.intent';
 import {
   constraintQuery,
   createHttpSemanticIntentProvider,
+  normalizeStructuredIntentPayload,
   planAnimeAsk,
   retrieveForStructuredIntent,
   validateStructuredAnimeIntent,
@@ -170,6 +171,37 @@ describe('validateStructuredAnimeIntent', () => {
     assert.equal(validateStructuredAnimeIntent({ type: 'agent' }), null);
   });
 
+  test('normalizes common provider quirks before validation', () => {
+    assert.deepEqual(
+      validateStructuredAnimeIntent(
+        normalizeStructuredIntentPayload({
+          type: 'recommend',
+          title: null,
+          seedTitle: '',
+          constraints: {
+            genres: [],
+            themes: ['mysterious'],
+            protagonistTraits: ['becomes increasingly powerful'],
+            tone: 'intense and adventurous',
+          },
+          exclusions: { watchlisted: false },
+        }),
+      ),
+      {
+        type: 'recommend',
+        title: null,
+        seedTitle: null,
+        constraints: {
+          genres: [],
+          themes: ['mysterious'],
+          protagonistTraits: ['becomes increasingly powerful'],
+          tone: ['intense and adventurous'],
+        },
+        exclusions: { watchlisted: false },
+      },
+    );
+  });
+
   test('unknown fields are rejected', () => {
     assert.equal(
       validateStructuredAnimeIntent({ ...DARK_RECOMMEND, url: 'https://evil.example' }),
@@ -274,6 +306,100 @@ describe('semantic provider call budget', () => {
         }),
     });
     assert.equal(await provider.parseIntent('dark anime'), null);
+  });
+
+  test('HTTP provider prefers max_completion_tokens for newer chat models', async () => {
+    let limitUsed: string | null = null;
+    const provider = createHttpSemanticIntentProvider({
+      apiKey: 'test-key',
+      baseUrl: 'https://example.invalid/v1',
+      model: 'gpt-new',
+      fetchImpl: async (_url, init) => {
+        const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        if ('max_completion_tokens' in body) limitUsed = 'max_completion_tokens';
+        if ('max_tokens' in body) limitUsed = 'max_tokens';
+        return new Response(
+          JSON.stringify({
+            choices: [{ message: { content: JSON.stringify(DARK_RECOMMEND) } }],
+          }),
+          { status: 200 },
+        );
+      },
+    });
+    assert.deepEqual(await provider.parseIntent('dark anime'), DARK_RECOMMEND);
+    assert.equal(limitUsed, 'max_completion_tokens');
+  });
+
+  test('HTTP provider retries max_tokens when max_completion_tokens is rejected', async () => {
+    let calls = 0;
+    let retriedWith: string | null = null;
+    const provider = createHttpSemanticIntentProvider({
+      apiKey: 'test-key',
+      baseUrl: 'https://example.invalid/v1',
+      model: 'gpt-legacy',
+      fetchImpl: async (_url, init) => {
+        calls += 1;
+        const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        if ('max_completion_tokens' in body) {
+          return new Response(
+            JSON.stringify({
+              error: {
+                type: 'invalid_request_error',
+                code: 'unsupported_parameter',
+                param: 'max_completion_tokens',
+              },
+            }),
+            { status: 400 },
+          );
+        }
+        retriedWith = 'max_tokens' in body ? 'max_tokens' : 'unknown';
+        return new Response(
+          JSON.stringify({
+            choices: [{ message: { content: JSON.stringify(DARK_RECOMMEND) } }],
+          }),
+          { status: 200 },
+        );
+      },
+    });
+    assert.deepEqual(await provider.parseIntent('dark anime'), DARK_RECOMMEND);
+    assert.equal(calls, 2);
+    assert.equal(retriedWith, 'max_tokens');
+  });
+
+  test('HTTP provider retries without temperature when temperature 0 is rejected', async () => {
+    let calls = 0;
+    let secondHadTemperature = false;
+    const provider = createHttpSemanticIntentProvider({
+      apiKey: 'test-key',
+      baseUrl: 'https://example.invalid/v1',
+      model: 'gpt-reasoning',
+      fetchImpl: async (_url, init) => {
+        calls += 1;
+        const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        if ('temperature' in body) {
+          return new Response(
+            JSON.stringify({
+              error: {
+                type: 'invalid_request_error',
+                code: 'unsupported_value',
+                param: 'temperature',
+              },
+            }),
+            { status: 400 },
+          );
+        }
+        secondHadTemperature = 'temperature' in body;
+        return new Response(
+          JSON.stringify({
+            choices: [{ message: { content: JSON.stringify(DARK_RECOMMEND) } }],
+          }),
+          { status: 200 },
+        );
+      },
+    });
+    assert.deepEqual(await provider.parseIntent('dark anime'), DARK_RECOMMEND);
+    assert.equal(calls, 2);
+    assert.equal(secondHadTemperature, false);
   });
 });
 
@@ -415,5 +541,29 @@ describe('retrieveForStructuredIntent', () => {
       candidates.some((candidate) => candidate.title === 'Solo Leveling'),
       false,
     );
+  });
+
+  test('navigate intent with a resolved catalog title pins that anime first', async () => {
+    const candidates = await retrieveForStructuredIntent(
+      {
+        type: 'navigate',
+        title: 'Solo Leveling',
+        seedTitle: 'Solo Leveling',
+        constraints: {
+          genres: ['action', 'fantasy'],
+          themes: ['hunters'],
+          protagonistTraits: ['determined'],
+          tone: ['intense'],
+        },
+        exclusions: { watchlisted: false },
+      },
+      {
+        searchByTitle: async () => [],
+        getSimilarByCanonicalAnime: async () => {
+          throw new Error('similar lookup must not run for resolved navigate');
+        },
+      },
+    );
+    assert.equal(candidates[0]?.title, 'Solo Leveling');
   });
 });

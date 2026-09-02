@@ -26,14 +26,11 @@ Genuinely unresolved. **Do not answer these here** — answering one is a decisi
 | Vercel auth & project link resume | Answered — still logged out at TASK-078 time | [[TASK-078]] |
 | Vercel project link + env readiness | Answered — linked `aetheranime` / `apps/web`; Production env empty | [[TASK-079]] |
 | Navigator descriptive relevance + Destination contain/arrival | Answered — implemented | [[TASK-080]] |
+| Vercel production deploy + live QA | Answered — deployed Ready; live hunter Solo ranking blocked | [[TASK-082]] |
+
+| Production semantic intent null | Answered — HTTP boundary + retrieval pin; hunter Solo #1 live | [[TASK-083]] |
 
 ## Intentionally deferred (outside V1 / future product decision)
-
-### First Vercel production deploy (Production env)
-
-Project `aetheranime` is linked with Root Directory `apps/web`. Auth OK. **Production environment variables are not configured on Vercel** (all required names missing). User must set Production values in Vercel (names from `apps/web/.env.example`), then a later task may `cd apps/web && npx vercel --prod`.
-
-*Classification:* **ops blocker — user action** ([[TASK-072]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]]).
 
 ### Arrive-from-memory / Horizon interaction
 
