@@ -46,6 +46,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-087]] | Capital Phase PMF + monetization strategy | Discovery beachhead; affiliate-first; no PMF claim |
 | [[TASK-088]] | Production analytics enablement | aetheranime.com; server-side Plausible; CORE events live |
 | [[TASK-089]] | Plausible visitor attribution fix | Forward UA + X-Forwarded-For; product page URLs |
+| [[TASK-090]] | Capital Phase Experiment 1 baseline | 7-day discovery funnel; started 2026-09-03T05:00+05:30 |
 
 ## Clusters
 

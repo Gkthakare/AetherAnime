@@ -32,14 +32,19 @@ Genuinely unresolved. **Do not answer these here** — answering one is a decisi
 | Capital Phase instrumentation foundation | Answered — Hybrid Plausible + `/api/events`; CORE events; privacy boundary | [[TASK-086]] |
 | Capital Phase PMF + monetization strategy | Answered — discovery beachhead; affiliate-first; experiments defined | [[TASK-087]] |
 | Production analytics enablement | Answered — enabled on aetheranime.com; server-side Plausible | [[TASK-088]] |
+| Plausible visitor attribution fix | Answered — forward UA + X-Forwarded-For; product page URLs | [[TASK-089]] |
+
+## Active experiment
+
+| Topic | Status | Record |
+|---|---|---|
+| Capital Phase Experiment 1 — descriptive discovery baseline | **RUNNING** — started 2026-09-03T05:00:00+05:30; 7-day window; readout 2026-09-10 | [[TASK-090]] |
 
 ## Intentionally deferred (outside V1 / future product decision)
 
-### Capital experiments (not yet run)
+### Capital experiments (Exp 2–5)
 
-Strategy and experiment queue defined ([[TASK-087]]). Exp 1 (analytics baseline) **unblocked** — production analytics enabled ([[TASK-088]]). Exp 2–5 blocked on Exp 1 data.
-
-*Classification:* **Capital Phase — next** ([[TASK-087]]).
+Strategy and experiment queue defined ([[TASK-087]]). Exp 1 **running** ([[TASK-090]]). Exp 2–5 blocked on Exp 1 readout + 500-unique gate.
 
 ### Product analytics — growth events + consent UI
 
