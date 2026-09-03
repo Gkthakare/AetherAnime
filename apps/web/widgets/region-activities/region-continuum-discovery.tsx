@@ -4,20 +4,15 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 import { spacing } from '@/shared/config/theme';
 import { legibility } from '@/shared/lib/graphics';
-import { DISTANCE } from '@/shared/lib/motion';
+import { DISTANCE, DURATION, EASING, STAGGER } from '@/shared/lib/motion';
 import {
   isContinuumDiscoveryRegion,
   resolveContinuumDiscoveryCandidates,
 } from '@/shared/world';
 import { cn } from '@/lib/utils';
-import {
-  navigatorPathFromCatalog,
-  WORLD_NAVIGATOR_PATH,
-} from '@/widgets/world-navigator/world-navigator.paths';
 import { useRegionScene } from '@/widgets/region-scene/region-scene-context';
 import { useWorldScene } from '@/widgets/world-scene/world-scene-context';
 
-import { REGION_ACTIVITY_LABEL } from './region-activities.constants';
 import {
   regionActivitiesEnterFrom,
   regionActivitiesEnterTo,
@@ -27,10 +22,10 @@ import {
 } from './region-activities.motion';
 
 /**
- * ContinuumDiscovery — World landmark explore activity.
+ * ContinuumDiscovery — destinations gathered on the Continuum footing.
  *
- * Surfaces curated catalog destinations when Continuum is focused.
- * Selection hands off to WorldScene arriveAnime (TASK-092 transport).
+ * Catalog candidates rise from the landmark itself. Selection hands off to
+ * WorldScene arriveAnime (TASK-092 transport). Not a Navigator result list.
  */
 export function RegionContinuumDiscovery({ className }: { className?: string }) {
   const { currentRegion, regionStatus } = useRegionScene();
@@ -55,14 +50,12 @@ export function RegionContinuumDiscovery({ className }: { className?: string }) 
   return (
     <motion.div
       key={currentRegion.id}
+      id="world-continuum-discovery"
       data-slot="region-continuum-discovery"
       data-region-id={currentRegion.id}
       data-activity="explore"
-      className={cn(
-        'mx-auto flex w-full max-w-md flex-col items-stretch',
-        className,
-      )}
-      style={{ gap: spacing.sm }}
+      className={cn('flex w-full flex-col items-stretch', className)}
+      style={{ gap: spacing.xs }}
       initial={reduceMotion ? false : regionActivitiesEnterFrom}
       animate={regionActivitiesEnterTo}
       exit={
@@ -72,33 +65,26 @@ export function RegionContinuumDiscovery({ className }: { className?: string }) 
         reduceMotion ? regionActivitiesEnterTransitionReduced : swapTransition
       }
     >
-      <p
-        className={cn(
-          'text-center text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground lg:text-left',
-          legibility.copy,
-        )}
-      >
-        {REGION_ACTIVITY_LABEL.explore}
-      </p>
-
       <ul
-        data-slot="region-continuum-discovery-paths"
-        className={WORLD_NAVIGATOR_PATH.list}
-        style={{ gap: spacing.xs }}
+        data-slot="region-continuum-discovery-signals"
+        className="m-0 flex list-none flex-row flex-wrap items-end p-0"
+        style={{ gap: spacing.md }}
       >
         {candidates.map((anime, index) => {
-          const path = navigatorPathFromCatalog(anime);
           const isPrimary = index === 0;
 
           return (
             <motion.li
-              key={path.key}
-              className="w-full"
-              initial={reduceMotion ? false : { opacity: 0, y: DISTANCE.SM / 4 }}
+              key={anime.id}
+              className="min-w-0"
+              initial={
+                reduceMotion ? false : { opacity: 0, y: DISTANCE.SM }
+              }
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: reduceMotion ? 0 : 0.28,
-                delay: reduceMotion ? 0 : index * 0.05,
+                duration: reduceMotion ? DURATION.FAST : DURATION.NORMAL,
+                delay: reduceMotion ? 0 : index * STAGGER.FAST,
+                ease: EASING.entrance,
               }}
             >
               <button
@@ -107,22 +93,29 @@ export function RegionContinuumDiscovery({ className }: { className?: string }) 
                 data-candidate-slug={anime.slug}
                 data-candidate-primary={isPrimary || undefined}
                 disabled={isTransportLocked}
-                aria-label={`Travel to ${path.title}`}
+                aria-label={`Travel to ${anime.canonicalTitle}`}
                 onClick={() => {
                   if (isTransportLocked) return;
                   arriveAnime(anime);
                 }}
-                className={cn(WORLD_NAVIGATOR_PATH.item, legibility.copy)}
+                className={cn(
+                  'relative bg-transparent text-left text-foreground/85 outline-none',
+                  'transition-colors duration-200 motion-reduce:transition-none',
+                  'hover:text-foreground',
+                  'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                  'disabled:cursor-not-allowed disabled:opacity-50',
+                  legibility.copy,
+                )}
               >
-                <span className={WORLD_NAVIGATOR_PATH.title}>{path.title}</span>
-                {path.meta ? (
-                  <span className={WORLD_NAVIGATOR_PATH.meta}>{path.meta}</span>
-                ) : null}
-                {isPrimary ? (
-                  <span className={WORLD_NAVIGATOR_PATH.context}>
-                    Found in the continuum
-                  </span>
-                ) : null}
+                <span
+                  data-slot="region-continuum-discovery-title"
+                  className={cn(
+                    'block tracking-[0.01em]',
+                    isPrimary ? 'text-base' : 'text-sm',
+                  )}
+                >
+                  {anime.canonicalTitle}
+                </span>
               </button>
             </motion.li>
           );

@@ -8,7 +8,7 @@
 
 [data-slot='world-shell'][data-world-arrival='idle'] [data-kind-landmarks] {
   position: relative;
-  min-height: 5rem;
+  min-height: 8rem;
   padding-top: 0.2rem;
 }
 
@@ -32,9 +32,9 @@
 
 @media (min-width: 64rem) {
   [data-slot='world-shell'][data-world-arrival='idle'] [data-kind-landmarks] {
-    min-height: 9.5rem;
+    min-height: 16rem;
     padding-top: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
   }
 
   [data-slot='world-shell'][data-world-arrival='idle']
@@ -47,7 +47,7 @@
 
 [data-slot='world-shell'][data-world-arrival='idle']
   [data-slot='world-kind-header'] {
-  opacity: 0.32;
+  display: none;
 }
 
 [data-slot='world-shell'][data-world-arrival='idle']
@@ -67,8 +67,8 @@
 [data-slot='world-shell'][data-world-arrival='idle']
   [data-slot='world-kind-region']:not([data-arrival-recede])
   > [data-slot='surface'] {
-  min-height: 5.15rem;
-  padding-block: 0.45rem 1.05rem;
+  min-height: 3.35rem;
+  padding-block: 0.35rem 0.95rem;
   background-image: none;
   overflow: visible;
 }
@@ -77,8 +77,8 @@
   [data-slot='world-shell'][data-world-arrival='idle']
     [data-slot='world-kind-region']:not([data-arrival-recede])
     > [data-slot='surface'] {
-    min-height: 8.5rem;
-    padding-block: 0.65rem 1.35rem;
+    min-height: 4.25rem;
+    padding-block: 0.45rem 1.2rem;
   }
 }
 
@@ -148,8 +148,18 @@
   [data-slot='world-kind-region'][data-region-order='0']:not(
     [data-arrival-recede]
   ) {
-  flex: 1.22 1 0;
-  max-width: 24rem;
+  flex: 2.2 1 0;
+  max-width: 40rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+    [data-arrival-recede]
+  )
+  [data-slot='world-kind-region-name'] {
+  font-size: 1.75rem;
+  letter-spacing: 0.008em;
+  color: color-mix(in oklab, var(--foreground) 92%, transparent);
 }
 
 [data-slot='world-shell'][data-world-arrival='idle']
@@ -275,8 +285,8 @@
   left: 0.05rem;
   right: auto;
   bottom: 0.08rem;
-  width: min(13.5rem, 78%);
-  height: 1.7rem;
+  width: min(20rem, 88%);
+  height: 2.35rem;
   background:
     linear-gradient(
       180deg,
@@ -450,8 +460,8 @@
       [data-arrival-recede]
     )
     [data-crossing-architecture='footing'] {
-    width: min(17rem, 74%);
-    height: 1.9rem;
+    width: min(26rem, 82%);
+    height: 2.8rem;
     bottom: 0.1rem;
   }
 
@@ -473,8 +483,8 @@
       [data-arrival-recede]
     )
     [data-crossing-architecture='footing'] {
-    width: min(11rem, 84%);
-    height: 1.2rem;
+    width: min(14.5rem, 90%);
+    height: 1.65rem;
     opacity: 0.88;
   }
 
@@ -506,3 +516,165 @@
   position: relative;
   z-index: 1;
 }
+
+/**
+ * TASK-095 — Continuum as primary place: focus opens the footing,
+ * discovery signals gather on the seam. No keyframes, no new compositor.
+ */
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    ) {
+    max-width: 48rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    )
+    [data-slot='world-kind-region-name'] {
+    font-size: 2.35rem;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0'][data-focused]:not(
+    [data-arrival-recede]
+  )
+  [data-crossing-architecture='footing'] {
+  width: min(28rem, 96%);
+  height: 3.15rem;
+  opacity: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0'][data-focused]:not(
+    [data-arrival-recede]
+  )
+  > [data-slot='surface']::after {
+  width: 86%;
+  opacity: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-kind-region'][data-region-order='0'][data-focused]:not(
+    [data-arrival-recede]
+  )
+  > [data-slot='surface']::before {
+  width: 8.5rem;
+  height: 4.2rem;
+  opacity: 1;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0'][data-focused]:not(
+      [data-arrival-recede]
+    )
+    [data-crossing-architecture='footing'] {
+    width: min(34rem, 92%);
+    height: 3.6rem;
+  }
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0'][data-focused]:not(
+      [data-arrival-recede]
+    )
+    [data-crossing-architecture='footing'] {
+    width: min(18rem, 96%);
+    height: 2.1rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    )
+    [data-slot='world-kind-region-name'] {
+    font-size: 1.5rem;
+  }
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery'] {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 36rem;
+  margin-top: -0.35rem;
+  padding-inline: 0.85rem 0.5rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery-signals'] {
+  align-items: flex-end;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery-candidate'] {
+  padding: 0.15rem 0.05rem 0.55rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery-candidate']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.12rem;
+  width: 1.7rem;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 245, 212, 0.55) 0%,
+    transparent 100%
+  );
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery-candidate'][data-candidate-primary]::after {
+  width: 2.4rem;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 245, 212, 0.7) 0%,
+    transparent 100%
+  );
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery-candidate']:focus-visible::after,
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='region-continuum-discovery-candidate']:hover::after {
+  width: 3.1rem;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='region-continuum-discovery-signals'] {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='region-continuum-discovery'] {
+    padding-inline: 0.65rem 0.25rem;
+  }
+}
+
+@media (min-width: 90rem) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    ) {
+    max-width: 54rem;
+  }
+
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='region-continuum-discovery'] {
+    max-width: 46rem;
+  }
+}
+

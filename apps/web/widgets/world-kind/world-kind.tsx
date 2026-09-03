@@ -6,10 +6,12 @@ import { spacing } from '@/shared/config/theme';
 import { legibility } from '@/shared/lib/graphics';
 import { Surface } from '@/shared/ui/surface';
 import {
+  isContinuumDiscoveryRegion,
   isWorldRegionInteractive,
   resolveWorldRegions,
 } from '@/shared/world';
 import { cn } from '@/lib/utils';
+import { RegionContinuumDiscovery } from '@/widgets/region-activities';
 import { useWorldScene } from '@/widgets/world-scene/world-scene-context';
 
 import {
@@ -34,6 +36,13 @@ import {
 } from './world-kind.motion';
 import type { WorldKindProps } from './world-kind.types';
 import './world-kind.landmarks.css';
+
+function focusRemainsInRegion(
+  current: EventTarget,
+  next: EventTarget | null,
+): boolean {
+  return next instanceof Node && current instanceof Node && current.contains(next);
+}
 
 /**
  * WorldKind — primary-slot composition language for World Engine.
@@ -155,21 +164,34 @@ export function WorldKind({ className }: WorldKindProps) {
                 data-arrival-recede={recede || undefined}
                 className={cn(
                   'origin-left',
-                  recede ? 'w-full' : 'min-w-0 flex-1 basis-0',
+                  recede ? 'w-full' : 'flex min-w-0 flex-1 basis-0 flex-col',
                 )}
                 animate={{ opacity: regionOpacity, scale }}
                 transition={worldKindFocusTransition}
                 onPointerEnter={() => {
                   if (interactive) dispatchFocus(region.id);
                 }}
-                onPointerLeave={() => {
-                  if (interactive) clearFocus();
+                onPointerLeave={(event) => {
+                  if (!interactive) return;
+                  if (
+                    focusRemainsInRegion(
+                      event.currentTarget,
+                      event.currentTarget.ownerDocument.activeElement,
+                    )
+                  ) {
+                    return;
+                  }
+                  clearFocus();
                 }}
                 onFocus={() => {
                   if (interactive) dispatchFocus(region.id);
                 }}
-                onBlur={() => {
-                  if (interactive) clearFocus();
+                onBlur={(event) => {
+                  if (!interactive) return;
+                  if (focusRemainsInRegion(event.currentTarget, event.relatedTarget)) {
+                    return;
+                  }
+                  clearFocus();
                 }}
               >
                 <Surface
@@ -178,6 +200,16 @@ export function WorldKind({ className }: WorldKindProps) {
                   role={interactive ? 'button' : undefined}
                   aria-label={
                     interactive ? `Activate ${region.displayName}` : undefined
+                  }
+                  aria-expanded={
+                    isContinuumDiscoveryRegion(region.id)
+                      ? isFocused
+                      : undefined
+                  }
+                  aria-controls={
+                    isContinuumDiscoveryRegion(region.id)
+                      ? 'world-continuum-discovery'
+                      : undefined
                   }
                   onClick={(event) => {
                     if (event.detail === 0) return;
@@ -267,6 +299,9 @@ export function WorldKind({ className }: WorldKindProps) {
                     )}
                   />
                 </Surface>
+                {!recede && isContinuumDiscoveryRegion(region.id) ? (
+                  <RegionContinuumDiscovery />
+                ) : null}
               </motion.div>
             );
           })}

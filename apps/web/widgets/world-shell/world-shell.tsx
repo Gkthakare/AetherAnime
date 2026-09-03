@@ -74,7 +74,7 @@ export function WorldShell({
             className={cn(
               'relative flex w-full flex-col',
               arrivedAnime ? 'items-center' : 'items-stretch',
-              !arrivedAnime && 'pt-[16vh] pb-8 md:pt-[14vh] lg:pt-[12vh] lg:pb-12',
+              !arrivedAnime && 'pt-[6vh] pb-8 md:pt-[7vh] lg:pt-[6vh] lg:pb-12',
             )}
             style={{
               ['--world-layout-stage-gap' as string]: gaps.stage,

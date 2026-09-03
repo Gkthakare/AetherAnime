@@ -13,12 +13,16 @@ const activitiesSource = readFileSync(
   join(dir, 'region-activities.tsx'),
   'utf8',
 );
+const kindSource = readFileSync(
+  join(dir, '../world-kind/world-kind.tsx'),
+  'utf8',
+);
 
 describe('region continuum discovery contracts', () => {
-  test('Continuum exposes a discovery activity surface', () => {
+  test('Continuum exposes a discovery activity surface on the landmark', () => {
     assert.match(discoverySource, /data-slot="region-continuum-discovery"/);
     assert.match(discoverySource, /resolveContinuumDiscoveryCandidates/);
-    assert.match(activitiesSource, /RegionContinuumDiscovery/);
+    assert.match(kindSource, /RegionContinuumDiscovery/);
     assert.match(activitiesSource, /isContinuumDiscoveryRegion/);
   });
 
@@ -33,20 +37,23 @@ describe('region continuum discovery contracts', () => {
     assert.match(discoverySource, /disabled=\{isTransportLocked\}/);
   });
 
-  test('discovery uses existing path presentation, not a card grid', () => {
-    assert.match(discoverySource, /WORLD_NAVIGATOR_PATH/);
+  test('discovery is landmark signals, not a Navigator result list or card grid', () => {
+    assert.match(
+      discoverySource,
+      /data-slot="region-continuum-discovery-signals"/,
+    );
+    assert.doesNotMatch(discoverySource, /WORLD_NAVIGATOR_PATH/);
     assert.doesNotMatch(discoverySource, /grid-cols/);
     assert.doesNotMatch(discoverySource, /carousel|swiper/i);
   });
 
-  test('keyboard reachable with focus-visible ring', () => {
+  test('keyboard reachable with locally composed focus-visible ring', () => {
     assert.match(discoverySource, /type="button"/);
-    assert.match(discoverySource, /WORLD_NAVIGATOR_PATH\.item/);
-    const pathsSource = readFileSync(
-      join(dir, '../world-navigator/world-navigator.paths.ts'),
-      'utf8',
+    assert.match(discoverySource, /focus-visible:ring-2 focus-visible:ring-ring/);
+    assert.match(
+      discoverySource,
+      /focus-visible:ring-offset-2 focus-visible:ring-offset-background/,
     );
-    assert.match(pathsSource, /focus-visible:ring-2/);
   });
 
   test('no Navigator import or query dependency', () => {
@@ -60,8 +67,11 @@ describe('region continuum discovery contracts', () => {
   });
 
   test('Thresholds region keeps generic activity rail', () => {
-    assert.match(activitiesSource, /RegionContinuumDiscovery/);
     assert.match(activitiesSource, /isContinuumDiscoveryRegion/);
     assert.match(activitiesSource, /resolveRegionActivityCapability/);
+    assert.match(
+      activitiesSource,
+      /isContinuumDiscoveryRegion[\s\S]*return null/,
+    );
   });
 });

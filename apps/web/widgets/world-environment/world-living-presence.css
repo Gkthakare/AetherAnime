@@ -41,6 +41,14 @@
   opacity: 0.55;
 }
 
+[data-slot='world-scene'][data-world-focus='world-continuum']:not(
+    [data-world-anime]
+  )
+  [data-slot='world-environment'][data-living='true']
+  [data-slot='world-environment-ask'] {
+  opacity: 0.48;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-slot='world-environment'] .aether-living-light {
     animation: none !important;
@@ -50,5 +58,13 @@
     [data-slot='world-environment'][data-living='true']
     [data-slot='world-environment-ask'] {
     opacity: 0.28;
+  }
+
+  [data-slot='world-scene'][data-world-focus='world-continuum']:not(
+      [data-world-anime]
+    )
+    [data-slot='world-environment'][data-living='true']
+    [data-slot='world-environment-ask'] {
+    opacity: 0.22;
   }
 }

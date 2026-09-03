@@ -21,7 +21,6 @@ import {
   regionActivitiesSwapTransition,
   regionActivitiesSwapTransitionReduced,
 } from './region-activities.motion';
-import { RegionContinuumDiscovery } from './region-continuum-discovery';
 import { resolveRegionActivityCapability } from './region-activity.execution';
 import type { RegionActivitiesProps } from './region-activities.types';
 
@@ -29,7 +28,7 @@ import type { RegionActivitiesProps } from './region-activities.types';
  * RegionActivities — Region activity rail with portal execution handoff.
  *
  * Observes RegionScene. Navigation via Link + resolved worldHref only.
- * Continuum explore renders curated discovery via RegionContinuumDiscovery.
+ * Continuum explore discovery lives on the WorldKind landmark.
  * No Focus ownership, Registry lookup, or PortalCTA.
  * Renders nothing while idle so the orientation marker is not a third band.
  */
@@ -43,11 +42,7 @@ export function RegionActivities({ className }: RegionActivitiesProps) {
     regionStatus === 'ready' &&
     currentRegion.activities?.includes('explore')
   ) {
-    return (
-      <AnimatePresence mode="wait" initial={false}>
-        <RegionContinuumDiscovery className={className} />
-      </AnimatePresence>
-    );
+    return null;
   }
 
   const activities = currentRegion?.activities;

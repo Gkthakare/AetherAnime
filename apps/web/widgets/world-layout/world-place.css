@@ -1,5 +1,7 @@
 /**
  * TASK-053 — World Idle as a place, not a centered overlay.
+ * TASK-095 — Idle hierarchy: location marker + Continuum geography first;
+ * Navigator is a quieter fast-travel instrument.
  *
  * Destination keeps the existing identity veil. Idle relocates it into a
  * small location-marker so the world is not a giant center ellipse.
@@ -15,28 +17,95 @@
 }
 
 [data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-idle-place'] {
+  gap: 1.75rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-idle-place']
+  [data-slot='world-navigator'] {
+  margin-top: 0.35rem;
+  margin-left: 0.15rem;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
   [data-slot='world-identity-engine'] {
   align-items: flex-start;
   text-align: left;
+  gap: 0.55rem !important;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-identity-title'] {
+  font-size: clamp(1.05rem, 1.35vw, 1.35rem);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  opacity: 0.82;
 }
 
 [data-slot='world-shell'][data-world-arrival='idle']
   [data-slot='world-navigator'] {
   align-items: stretch;
   text-align: left;
-  margin-top: 0.25rem;
+  margin-top: 0.15rem;
+  max-width: 18rem;
+  opacity: 0.58;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-identity-crest'] {
+  display: none;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-identity-accent'] {
+  display: none;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-navigator']:focus-within,
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-navigator']:not([data-navigator-phase='idle']) {
+  opacity: 1;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-navigator-orientation'] {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-navigator']:focus-within
+  [data-slot='world-navigator-orientation'] {
+  height: auto;
+  overflow: visible;
+  opacity: 0.7;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-navigator-form'] input {
+  font-size: 0.875rem;
+}
+
+[data-slot='world-scene'][data-world-focus='world-continuum']:not(
+    [data-world-anime]
+  )
+  [data-slot='world-navigator']:not(:focus-within) {
+  opacity: 0.32;
 }
 
 @media (min-width: 64rem) {
   [data-slot='world-shell'][data-world-arrival='idle']
     [data-slot='world-identity-column'] {
-    max-width: 26rem;
+    max-width: 22rem;
   }
 
   [data-slot='world-shell'][data-world-arrival='idle']
     [data-slot='world-navigator'] {
-    margin-left: 1.5rem;
-    max-width: 22rem;
+    margin-left: 0.35rem;
+    max-width: 18rem;
   }
 }
 
@@ -54,19 +123,92 @@
 [data-slot='world-kind-region'][data-region-order='0']:not(
     [data-arrival-recede]
   ) {
-  max-width: 22rem;
+  max-width: 42rem;
 }
 
 [data-slot='world-kind-region'][data-region-order='1']:not(
     [data-arrival-recede]
   ) {
   margin-top: 0.85rem;
-  max-width: 20rem;
+  max-width: 16rem;
 }
 
 [data-slot='world-shell'][data-world-arrival='idle']
   [data-slot='world-details'] {
   text-align: left;
   max-width: 22rem;
-  opacity: 0.55;
+  opacity: 0.42;
+}
+
+[data-slot='world-shell'][data-world-arrival='idle']
+  [data-slot='world-details'][data-region-status='none'] {
+  display: none;
+}
+
+[data-slot='world-scene']:not([data-world-anime])
+  [data-slot='region-identity'][data-region-status='none'] {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-slot='world-scene'][data-world-focus='world-continuum']:not(
+    [data-world-anime]
+  )
+  [data-slot='region-identity'] {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-slot='world-scene'][data-world-focus='world-continuum']:not(
+    [data-world-anime]
+  )
+  [data-slot='world-details'] {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-slot='world-scene'][data-world-focus='world-continuum']:not(
+    [data-world-anime]
+  )
+  [data-slot='world-identity-emblem'],
+[data-slot='world-scene'][data-world-focus='world-continuum']:not(
+    [data-world-anime]
+  )
+  [data-slot='world-identity-accent'] {
+  opacity: 0.35;
+}
+
+@media (max-width: 639px) {
+  [data-slot='world-shell'][data-world-arrival='idle']
+    [data-slot='world-navigator'] {
+    max-width: 16.5rem;
+  }
+
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    ) {
+    max-width: 100%;
+  }
+}
+
+[data-slot='world-scene'][data-world-transport='departing']
+  [data-slot='region-continuum-discovery'],
+[data-slot='world-scene'][data-world-transport='in_transit']
+  [data-slot='region-continuum-discovery'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 90rem) {
+  [data-slot='world-kind-region'][data-region-order='0']:not(
+      [data-arrival-recede]
+    ) {
+    max-width: 54rem;
+  }
 }

@@ -448,7 +448,7 @@ export function WorldScene({
                   }}
                 >
                   <WorldIdentity />
-                  <WorldNavigator />
+                  {arrival.destinationInIdentity ? <WorldNavigator /> : null}
                   {arrival.destinationInIdentity && arrivedAnime ? (
                     <AnimeDestination key={arrivedAnime.slug} />
                   ) : null}
@@ -456,7 +456,18 @@ export function WorldScene({
               )
             }
             presence={presenceSlot ?? <RegionClimate />}
-            primary={primary ?? children ?? <WorldKind />}
+            primary={
+              primary ??
+              children ??
+              (arrival.destinationInIdentity ? (
+                <WorldKind />
+              ) : (
+                <div data-slot="world-idle-place" className="flex w-full flex-col">
+                  <WorldKind />
+                  <WorldNavigator />
+                </div>
+              ))
+            }
             secondary={
               secondary ?? (
                 <WorldDetails recede={arrival.recedeWorldChrome} />
