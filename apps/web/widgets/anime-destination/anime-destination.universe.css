@@ -731,25 +731,274 @@
 [data-slot='anime-universe-neighbors'] {
   position: relative;
   width: 100%;
-  max-width: 34rem;
-  margin-top: 3.75rem;
-  padding-left: 1.35rem;
-  opacity: 0.78;
+  max-width: 42rem;
+  margin-top: 2.75rem;
+  opacity: 0.92;
 }
 
-[data-slot='anime-universe-neighbors']::before {
+/**
+ * TASK-099 — spatial universe network.
+ * Nearby universes, not recommendation cards.
+ */
+
+[data-slot='anime-universe-network'] {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 0.5rem 0 0;
+}
+
+[data-slot='anime-universe-network-origin'] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: center;
+}
+
+[data-slot='anime-universe-network-origin'] > span:nth-child(2) {
+  font-size: 0.5rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 42%, transparent);
+}
+
+[data-slot='anime-universe-network-origin'] > span:nth-child(3) {
+  max-width: 16rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
+}
+
+[data-slot='anime-universe-network-node'] {
+  display: block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground) 78%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ring) 28%, transparent);
+}
+
+[data-slot='anime-universe-network-constellation'] {
+  position: relative;
+  display: flex;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 1.5rem 0 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem 1.75rem;
+}
+
+[data-slot='anime-universe-network-constellation']::before {
   content: '';
   pointer-events: none;
   position: absolute;
-  top: 0.45rem;
-  bottom: 0.6rem;
-  left: 0;
+  top: 0;
+  left: 50%;
   width: 1px;
+  height: 1.35rem;
+  transform: translateX(-50%);
   background: color-mix(in oklab, var(--foreground) 22%, transparent);
 }
 
-[data-slot='anime-universe-neighbors'] [data-slot='anime-destination-kinship-constellation'] > :nth-child(even) {
-  margin-left: 2.1rem;
+[data-slot='anime-universe-neighbor'] {
+  position: relative;
+  width: min(100%, 11.5rem);
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-index='1'] {
+  margin-top: 1.75rem;
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-index='2'] {
+  margin-top: 0.35rem;
+}
+
+[data-slot='anime-universe-neighbor-path'] {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  color: color-mix(in oklab, var(--foreground) 78%, transparent);
+}
+
+[data-slot='anime-universe-neighbor-field'] {
+  position: relative;
+  display: block;
+  width: 6.5rem;
+  height: 9.25rem;
+  overflow: hidden;
+  opacity: 0.42;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 18%,
+    #000 78%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 18%,
+    #000 78%,
+    transparent 100%
+  );
+}
+
+[data-slot='anime-universe-neighbor-field'] img {
+  object-fit: cover;
+}
+
+[data-slot='anime-universe-neighbor-seal'] {
+  position: absolute;
+  inset: 35% 38%;
+  border: 1px solid color-mix(in oklab, var(--ring) 35%, transparent);
+  transform: rotate(45deg);
+}
+
+[data-slot='anime-universe-neighbor-copy'] {
+  display: flex;
+  max-width: 11rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  text-align: center;
+}
+
+[data-slot='anime-universe-neighbor-title'] {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: inherit;
+}
+
+[data-slot='anime-universe-neighbor-meta'] {
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 48%, transparent);
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-state='prominent'] {
+  z-index: 2;
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-state='prominent'] [data-slot='anime-universe-neighbor-path'] {
+  color: color-mix(in oklab, var(--foreground) 96%, transparent);
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-state='prominent'] [data-slot='anime-universe-neighbor-field'] {
+  width: 7.75rem;
+  height: 11rem;
+  opacity: 0.78;
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-state='receded'] {
+  opacity: 0.28;
+}
+
+[data-slot='anime-universe-neighbor'][data-neighbor-state='receded'] [data-slot='anime-universe-neighbor-field'] {
+  opacity: 0.18;
+}
+
+[data-neighbor-focus]:not([data-neighbor-focus='none']) [data-slot='anime-universe-network-origin'] {
+  opacity: 0.55;
+}
+
+@media (min-width: 64rem) {
+  [data-slot='anime-universe-network-constellation'] {
+    gap: 1.5rem 3.5rem;
+    padding-top: 2rem;
+  }
+
+  [data-slot='anime-universe-neighbor'] {
+    width: 13rem;
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='0'] {
+    transform: translateX(-1.25rem);
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='1'] {
+    margin-top: 2.75rem;
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='2'] {
+    margin-top: 0.75rem;
+    transform: translateX(1.25rem);
+  }
+
+  [data-slot='anime-universe-neighbor-field'] {
+    width: 7.5rem;
+    height: 10.75rem;
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-state='prominent'] [data-slot='anime-universe-neighbor-field'] {
+    width: 9rem;
+    height: 12.75rem;
+  }
+}
+
+@media (min-width: 90rem) {
+  [data-slot='anime-universe-network'] {
+    gap: 2.25rem;
+  }
+
+  [data-slot='anime-universe-network-constellation'] {
+    gap: 2rem 5rem;
+  }
+}
+
+@media (max-width: 639px) {
+  [data-slot='anime-universe-neighbors'] {
+    margin-top: 2rem;
+  }
+
+  [data-slot='anime-universe-network-constellation'] {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.35rem;
+  }
+
+  [data-slot='anime-universe-neighbor'] {
+    width: min(100%, 14rem);
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='1'],
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='2'] {
+    margin-top: 0;
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='1'] {
+    transform: translateX(1.1rem);
+  }
+
+  [data-slot='anime-universe-neighbor'][data-neighbor-index='2'] {
+    transform: translateX(-0.85rem);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='anime-universe-neighbor'],
+  [data-slot='anime-universe-neighbor-field'],
+  [data-slot='anime-universe-network-origin'] {
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s ease;
+  }
+
+  [data-slot='anime-universe-neighbor-field'] {
+    transition:
+      opacity 0.35s ease,
+      width 0.35s ease,
+      height 0.35s ease;
+  }
 }
 
 @media (min-width: 64rem) {
@@ -789,8 +1038,7 @@
   }
 
   [data-slot='anime-universe-neighbors'] {
-    margin-top: 2.5rem;
-    padding-left: 1.1rem;
+    margin-top: 2rem;
   }
 }
 

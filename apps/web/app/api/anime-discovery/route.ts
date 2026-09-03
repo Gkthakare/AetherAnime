@@ -1,4 +1,4 @@
-import { getAnimeBySlug } from '@/shared/anime';
+import { getAnimeBySlug, resolveSimilarLookupAnime } from '@/shared/anime';
 import { canonicalizeDiscoveryCandidate } from '@/shared/anime/anime.discovery';
 import { createMalDiscoveryProvider } from '@/shared/anime/anime.mal.discovery';
 import { discoveredMalIdFromSlug } from '@/shared/anime/anime.mal.identity';
@@ -36,10 +36,12 @@ export async function GET(request: Request) {
   }
 
   if (similar.length > 0) {
-    const anime = getAnimeBySlug(similar);
+    const anime = resolveSimilarLookupAnime(similar);
     if (!anime) return Response.json({ candidates: [] });
+    // Prefer catalog when present so titles stay authoritative; seed otherwise.
+    const seed = getAnimeBySlug(similar) ?? anime;
     return Response.json({
-      candidates: await discovery.getSimilarByCanonicalAnime(anime),
+      candidates: await discovery.getSimilarByCanonicalAnime(seed),
     });
   }
 

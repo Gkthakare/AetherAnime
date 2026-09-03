@@ -157,11 +157,10 @@ describe('destination world thresholds', () => {
       genres: ['Action'],
       studios: [],
     });
-    assert.equal(destinationKinshipAvailable(discovered), false);
-    assert.match(pathsViewSource, /requestAnimeDiscovery\(\{\s*kind: 'similar'/);
-    assert.match(pathsViewSource, /activePath !== 'kinship'/);
-    assert.match(pathsViewSource, /canonicalizeDiscoveryCandidate/);
-    assert.match(pathsViewSource, /arriveAnime\(/);
+    assert.equal(destinationKinshipAvailable(discovered), true);
+    assert.match(destinationSource, /useNeighboringWorlds|requestAnimeDiscovery\(\{\s*kind: 'similar'/);
+    assert.match(pathsViewSource, /networkOpen/);
+    assert.match(pathsViewSource, /canonicalizeDiscoveryCandidate|onKinshipSelect/);
     assert.doesNotMatch(pathsViewSource, /planAnimeAsk|requestSemanticIntent/);
   });
 
@@ -240,10 +239,10 @@ describe('destination kinship constellation', () => {
   });
 
   test('Kinship selection, lazy fetch, and freeze contracts stay intact', () => {
-    assert.match(pathsViewSource, /canonicalizeDiscoveryCandidate/);
-    assert.match(pathsViewSource, /arriveAnime\(/);
-    assert.match(pathsViewSource, /requestAnimeDiscovery\(\{\s*kind: 'similar'/);
-    assert.match(pathsViewSource, /fetchedSlug\.current === anime\.slug/);
+    assert.match(pathsViewSource, /onKinshipSelect/);
+    assert.match(destinationSource, /canonicalizeDiscoveryCandidate/);
+    assert.match(destinationSource, /arriveAnime\(/);
+    assert.match(destinationSource, /useNeighboringWorlds|requestAnimeDiscovery\(\{\s*kind: 'similar'/);
     assert.match(pathsViewSource, /key=\{anime\.slug\}/);
     assert.doesNotMatch(pathsViewSource, /openWatchPath|toggleWatchlist|onTogglePreview/);
     assert.match(constantsSource, /ANIME_DESTINATION_KINSHIP_PATH/);

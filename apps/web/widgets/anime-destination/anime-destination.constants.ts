@@ -26,13 +26,14 @@ export const ANIME_DESTINATION_COPY = {
   kinshipHint: 'Nearby destinations',
   kinshipListening: 'Listening for nearby worlds…',
   kinshipEmpty: 'Nearby worlds could not answer.',
-  kinshipAnswered: 'Nearby worlds have answered below.',
+  kinshipAnswered: 'Nearby worlds have answered beyond.',
   storyReturn: 'Return to the paths',
   enterStory: 'Enter the story',
   returnContinuum: 'Return to Continuum',
   universeIndex: 'Universe',
   pathsHere: 'You are here',
   neighbors: 'Neighboring worlds',
+  networkOrigin: 'This world',
   claimed: 'This universe is remembered',
   storyHeading: 'The Story',
   worldHeading: 'The World',
@@ -42,7 +43,17 @@ export const ANIME_DESTINATION_COPY = {
   beyondEyebrow: 'And beyond',
   beyondTitle: 'More worlds exist.',
   beyondBody: 'This world ends here. The universe does not.',
+  beyondApproach: 'Approach neighboring worlds beyond.',
 } as const;
+
+/** Honest count line for Beyond — never invents worlds. */
+export function formatBeyondNetworkLine(count: number): string {
+  if (count <= 0) return ANIME_DESTINATION_COPY.beyondBody;
+  if (count === 1) return 'One world waits beyond.';
+  return `${count} worlds wait beyond.`;
+}
+
+export const ANIME_UNIVERSE_NETWORK_MAX = 3 as const;
 
 export function formatMalScore(score: number): string {
   return score.toFixed(2);

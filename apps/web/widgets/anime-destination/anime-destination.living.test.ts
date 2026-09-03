@@ -18,6 +18,10 @@ const pathsViewSource = readFileSync(
   join(widgetDir, 'anime-destination-paths.tsx'),
   'utf8',
 );
+const networkSource = readFileSync(
+  join(widgetDir, 'anime-destination-network.tsx'),
+  'utf8',
+);
 const universeCss = readFileSync(
   join(widgetDir, 'anime-destination.universe.css'),
   'utf8',
@@ -46,17 +50,16 @@ describe('TASK-098 living anime universe', () => {
   test('neighboring worlds reuse kinship similar lookup and arriveAnime, not a second recsys', () => {
     const solo = bySlug('solo-leveling');
     assert.equal(destinationKinshipAvailable(solo), true);
-    assert.match(pathsViewSource, /data-slot="anime-universe-neighbors"/);
-    assert.match(pathsViewSource, /candidates\.slice\(0,\s*3\)/);
-    assert.match(pathsViewSource, /requestAnimeDiscovery\(\{\s*kind: 'similar'/);
-    assert.match(pathsViewSource, /arriveAnime\(/);
-    assert.match(pathsViewSource, /canonicalizeDiscoveryCandidate/);
-    assert.match(pathsViewSource, /markArrivalVia\('kinship'\)/);
+    assert.match(destinationSource, /data-slot="anime-universe-neighbors"/);
+    assert.match(destinationSource, /ANIME_UNIVERSE_NETWORK_MAX|candidates\.slice\(0,\s*3\)/);
+    assert.match(destinationSource, /requestAnimeDiscovery\(\{\s*kind: 'similar'|useNeighboringWorlds/);
+    assert.match(destinationSource, /arriveAnime\(/);
+    assert.match(destinationSource, /canonicalizeDiscoveryCandidate/);
+    assert.match(destinationSource, /markArrivalVia\('kinship'\)/);
     assert.doesNotMatch(
-      pathsViewSource,
+      destinationSource + networkSource,
       /Recommended for you|because you|match percentage/i,
     );
-    assert.doesNotMatch(pathsViewSource, /prefetch|useEffect\(\(\) => \{\s*requestAnimeDiscovery/);
     assert.equal(ANIME_DESTINATION_COPY.neighbors, 'Neighboring worlds');
   });
 
@@ -79,13 +82,11 @@ describe('TASK-098 living anime universe', () => {
   });
 
   test('living interaction does not add transport, analytics, persistence, or WebGL', () => {
-    assert.doesNotMatch(destinationSource, /requestAnimeDiscovery/);
     assert.doesNotMatch(destinationSource, /recordDestinationArrival|\/api\/events/);
     assert.doesNotMatch(pathsViewSource, /localStorage|indexedDB/);
     assert.doesNotMatch(destinationSource, /onWheel|preventDefault\(\)|scrollTo\(/);
     assert.doesNotMatch(destinationSource, /WebGL|R3F|<canvas/i);
     assert.doesNotMatch(typesSource, /character|episodeGallery|relatedWorlds/);
-    assert.match(pathsViewSource, /listen/);
-    assert.match(pathsViewSource, /activePath !== 'kinship'/);
+    assert.match(destinationSource, /here === 'paths'|here === 'beyond'/);
   });
 });

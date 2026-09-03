@@ -5,8 +5,8 @@
  * They read existing synopsis, semantic evidence, and catalog identity.
  */
 
+import { malIdForSlug } from '@/shared/anime/anime.mal.identity';
 import { buildAnimeSemanticProfile } from '@/shared/anime/anime.semantic-profile';
-import { getAnimeBySlug } from '@/shared/anime/anime.repository';
 import type { CanonicalAnime } from '@/shared/anime/anime.types';
 
 export type DestinationPathId = 'story' | 'signals' | 'kinship';
@@ -41,8 +41,9 @@ export function destinationSignalTags(input: {
   return profile.evidence.map((entry) => entry.tag.toUpperCase());
 }
 
+/** Kinship when the destination has a MAL identity — catalog or discovered. */
 export function destinationKinshipAvailable(anime: CanonicalAnime): boolean {
-  return getAnimeBySlug(anime.slug) != null;
+  return malIdForSlug(anime.slug) != null;
 }
 
 export function destinationAvailablePaths(input: {

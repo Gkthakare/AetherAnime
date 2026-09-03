@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 
 import {
+  canonicalizeDiscoveryCandidate,
   catalogWatchPathProvider,
   discoveredDestinationMark,
   isOnWatchlist,
@@ -16,6 +17,7 @@ import {
 import { ANIME_TYPE_LABEL } from '@/shared/anime/anime.labels';
 import { discoveredMalIdFromSlug } from '@/shared/anime/anime.mal.identity';
 import type { CanonicalAnime } from '@/shared/anime';
+import { markArrivalVia } from '@/shared/analytics';
 import { spacing } from '@/shared/config/theme';
 import { legibility } from '@/shared/lib/graphics';
 import { DURATION } from '@/shared/lib/motion';
@@ -40,8 +42,11 @@ import {
   ANIME_DESTINATION_WATCH_NOW_RULE_MARK,
   ANIME_DESTINATION_WATCH_NOW_UNAVAILABLE,
   ANIME_STATUS_LABEL,
+  ANIME_UNIVERSE_NETWORK_MAX,
+  formatBeyondNetworkLine,
   formatMalSupportingLine,
 } from './anime-destination.constants';
+import { AnimeUniverseNetwork } from './anime-destination-network';
 import {
   animeDestinationActions,
   animeDestinationBody,
@@ -72,6 +77,7 @@ import {
 } from './anime-destination.paths';
 import { useUniverseHere } from './use-universe-here';
 import { useAnimeMetadata } from './use-anime-metadata';
+import { useNeighboringWorlds } from './use-neighboring-worlds';
 import './anime-destination.universe.css';
 
 function useLocalWatchlist(animeId: string, slug: string, title: string) {
@@ -220,7 +226,7 @@ function UniverseField({
  * Reads arrivedAnime from WorldScene. WorldLayout places the universe stage.
  */
 export function AnimeDestination({ className }: AnimeDestinationProps) {
-  const { arrivedAnime, clearAnimeArrival } = useWorldScene();
+  const { arrivedAnime, arriveAnime, clearAnimeArrival } = useWorldScene();
   const reduceMotion = useReducedMotion();
   const metadata = useAnimeMetadata(arrivedAnime?.slug ?? null);
 
@@ -264,8 +270,33 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
   const [explorePath, setExplorePath] = useState<DestinationPathId | null>(
     null,
   );
+  const kinshipAvailable = anime
+    ? destinationKinshipAvailable(anime)
+    : false;
+  const neighboringEnabled =
+    kinshipAvailable &&
+    (here === 'paths' ||
+      here === 'beyond' ||
+      explorePath === 'kinship');
+  const neighboring = useNeighboringWorlds(anime, neighboringEnabled);
 
   if (!anime || !presented) return null;
+
+  const enterNeighbor = (key: string) => {
+    if (neighboring.status !== 'ready') return;
+    const candidate = neighboring.candidates.find(
+      (item) => `discovered:${item.malId}` === key,
+    );
+    if (!candidate) return;
+    markArrivalVia('kinship');
+    arriveAnime(canonicalizeDiscoveryCandidate(candidate));
+  };
+
+  const networkCandidates =
+    neighboring.status === 'ready'
+      ? neighboring.candidates.slice(0, ANIME_UNIVERSE_NETWORK_MAX)
+      : [];
+  const networkOpen = networkCandidates.length > 0;
 
   const statement = destinationIdentityStatement(presented.synopsis);
   const showWorld = destinationHasWorldSection({
@@ -699,7 +730,9 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
               metadata={metadata}
               explorePath={explorePath}
               onExplore={setExplorePath}
-              listen={here === 'paths'}
+              kinship={neighboring}
+              onKinshipSelect={enterNeighbor}
+              networkOpen={networkOpen}
             />
           </section>
         ) : null}
@@ -729,7 +762,9 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
                 legibility.copy,
               )}
             >
-              {ANIME_DESTINATION_COPY.beyondBody}
+              {networkOpen
+                ? formatBeyondNetworkLine(networkCandidates.length)
+                : ANIME_DESTINATION_COPY.beyondBody}
             </p>
             <p
               data-slot="anime-universe-infinity"
@@ -737,12 +772,37 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
             >
               ∞
             </p>
+            {networkOpen ? (
+              <div
+                data-slot="anime-universe-neighbors"
+                aria-live="polite"
+                className="w-full"
+              >
+                <AnimeUniverseNetwork
+                  originTitle={anime.canonicalTitle}
+                  candidates={networkCandidates}
+                  onSelect={enterNeighbor}
+                />
+              </div>
+            ) : kinshipAvailable &&
+              (neighboring.status === 'loading' ||
+                neighboring.status === 'idle') &&
+              neighboringEnabled ? (
+              <p
+                className={cn(
+                  'mt-6 text-sm text-muted-foreground/70',
+                  legibility.copy,
+                )}
+              >
+                {ANIME_DESTINATION_COPY.kinshipListening}
+              </p>
+            ) : null}
             <button
               type="button"
               data-slot="anime-universe-return"
               onClick={clearAnimeArrival}
               className={cn(
-                'text-[0.6875rem] uppercase tracking-[0.28em] text-foreground/80',
+                'mt-10 text-[0.6875rem] uppercase tracking-[0.28em] text-foreground/80',
                 'border-b border-border/40 pb-1',
                 'outline-none motion-safe:transition-colors motion-reduce:transition-none',
                 'hover:border-ring/50 hover:text-ring',

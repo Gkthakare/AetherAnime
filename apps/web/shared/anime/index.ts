@@ -1,4 +1,4 @@
-export { getAnimeBySlug } from './anime.repository';
+export { getAnimeBySlug, resolveSimilarLookupAnime } from './anime.repository';
 export { resolveInitialAnimeArrival } from './anime.repository';
 export { resolveAnime } from './anime.resolver';
 export { planAnimeAsk, retrieveForStructuredIntent } from './anime.semantic-intent';

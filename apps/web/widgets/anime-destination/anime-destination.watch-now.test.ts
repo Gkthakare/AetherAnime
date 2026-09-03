@@ -151,9 +151,11 @@ describe('Watch Now crossing presentation', () => {
       destinationSource,
       /world-environment|worldArrivalAtmosphere|CanonicalAnime\s*=/,
     );
+    assert.doesNotMatch(destinationSource, /resolveAnime|WORLD_NAVIGATOR_PATH/);
+    assert.match(destinationSource, /openWatchPath\(watchUrl\)/);
     assert.doesNotMatch(
       destinationSource,
-      /resolveAnime|arriveAnime|WORLD_NAVIGATOR_PATH/,
+      /openWatchPath[\s\S]{0,80}arriveAnime|arriveAnime[\s\S]{0,80}openWatchPath/,
     );
   });
 });
