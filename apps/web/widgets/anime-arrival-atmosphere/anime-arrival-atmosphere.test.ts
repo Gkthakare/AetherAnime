@@ -317,7 +317,7 @@ describe('TASK-038 immersive poster-derived atmosphere', () => {
       destinationSource,
       /BLUR_RADIUS|filter:\s*blur|--arrival-atmosphere-blur/,
     );
-    assert.match(destinationSource, /scale-\[1\.02\]/);
+    assert.match(destinationSource, /data-slot="anime-universe-figure"/);
   });
 
   test('idle, candidates, unknown, and discovered poster-null receive no atmosphere', () => {
@@ -377,16 +377,16 @@ describe('TASK-038 immersive poster-derived atmosphere', () => {
     assert.doesNotMatch(cssSource, /will-change:/);
   });
 
-  test('background remains decorative and TASK-035–037 stay frozen', () => {
+  test('background remains decorative and Watch Now stays the only poster-independent threshold', () => {
     assert.match(viewSource, /aria-hidden="true"/);
     assert.match(viewSource, /pointer-events-none/);
     assert.match(destinationSource, /ANIME_DESTINATION_STAGE/);
-    assert.match(destinationSource, /ANIME_DESTINATION_POSTER_WIDTH/);
+    assert.match(destinationSource, /data-slot="anime-universe-figure"/);
     assert.match(destinationSource, /data-slot="anime-destination-watch-now"/);
-    assert.match(destinationSource, /onClick=\{onTogglePreview\}/);
+    assert.doesNotMatch(destinationSource, /onClick=\{onTogglePreview\}/);
     assert.doesNotMatch(
       destinationSource.slice(
-        destinationSource.indexOf('function AnimePoster'),
+        destinationSource.indexOf('function UniverseFigure'),
         destinationSource.indexOf('export function AnimeDestination'),
       ),
       /openWatchPath/,

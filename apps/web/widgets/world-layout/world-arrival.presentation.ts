@@ -40,8 +40,8 @@ export function worldArrivalPresentation(
 
   return {
     destinationInIdentity: showDestination,
-    kindPresent: true,
-    detailsPresent: true,
+    kindPresent: !showDestination,
+    detailsPresent: !showDestination,
     recedeWorldChrome,
     identityGap: showDestination ? spacing.sm : departing ? spacing.md : spacing.xl,
   };

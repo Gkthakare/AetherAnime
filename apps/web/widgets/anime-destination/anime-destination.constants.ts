@@ -27,6 +27,14 @@ export const ANIME_DESTINATION_COPY = {
   kinshipListening: 'Listening for nearby worlds…',
   kinshipEmpty: 'Nearby worlds could not answer.',
   storyReturn: 'Return to the paths',
+  enterStory: 'Enter the story',
+  returnContinuum: 'Return to Continuum',
+  universeIndex: 'Universe',
+  worldSection: 'World',
+  recordSection: 'Record',
+  beyondEyebrow: 'And beyond',
+  beyondTitle: 'More worlds exist.',
+  beyondBody: 'This world ends here. The universe does not.',
 } as const;
 
 export function formatMalScore(score: number): string {
@@ -76,10 +84,9 @@ export const ANIME_DESTINATION_POSTER_WIDTH =
 export const ANIME_SEAL_WIDTH = 'w-[4.5rem] md:w-[5rem]' as const;
 
 /**
- * Destination stage — fills the existing WorldLayout max-w-5xl measure.
- * Wider than the previous max-w-3xl column; not a full-bleed content card.
+ * Destination stage — the arrived universe occupies the World canvas.
  */
-export const ANIME_DESTINATION_STAGE = 'w-full max-w-5xl' as const;
+export const ANIME_DESTINATION_STAGE = 'w-full' as const;
 
 export const ANIME_ARRIVAL_STAGE_GRID =
   'grid w-full grid-cols-1 items-start justify-items-center gap-x-8 gap-y-6 lg:justify-center lg:justify-items-stretch' as const;
@@ -109,7 +116,7 @@ export const ANIME_DESTINATION_GENRES =
   'text-[0.6875rem] uppercase tracking-[0.18em] text-foreground/65' as const;
 
 export const ANIME_DESTINATION_SYNOPSIS =
-  'line-clamp-4 text-sm leading-relaxed text-foreground/65 lg:text-left' as const;
+  'max-w-[38rem] text-base leading-[1.85] text-foreground/72 md:text-lg' as const;
 
 export const ANIME_DESTINATION_SUPPORTING =
   'flex w-full flex-col items-center border-t border-border/20 pt-4 lg:items-start' as const;
@@ -188,12 +195,12 @@ export const ANIME_DESTINATION_KINSHIP_TITLE =
 export const ANIME_DESTINATION_KINSHIP_META =
   'mt-0.5 block text-[0.625rem] tracking-[0.08em] text-muted-foreground/80' as const;
 
-/** Arrived title — destination identity, above WorldIdentity during arrival. */
+/** Arrived title — destination identity at universe scale. */
 export const ANIME_DESTINATION_TITLE =
-  'text-[clamp(1.75rem,4.5vw,2.25rem)] md:text-[clamp(1.75rem,2.4vw,2.25rem)] lg:text-[2rem]' as const;
+  'text-[clamp(2.75rem,12vw,8.25rem)] md:text-[clamp(3.25rem,8vw,8.5rem)] lg:text-[clamp(4.5rem,7.2vw,8.75rem)]' as const;
 
 export const ANIME_DESTINATION_POSTER_SIZES =
-  '(max-width: 767px) 200px, (max-width: 1023px) 260px, 300px' as const;
+  '(max-width: 767px) 100vw, (max-width: 1279px) 52vw, 640px' as const;
 
 export const ANIME_POSTER_EDGE = {
   rest: 'bg-ring/40',
@@ -264,3 +271,14 @@ export const ANIME_STATUS_LABEL = {
   airing: 'Airing',
   upcoming: 'Upcoming',
 } as const;
+
+export function formatUniverseRecordLine(input: {
+  readonly episodeCount: number | null;
+  readonly status: keyof typeof ANIME_STATUS_LABEL;
+}): string | null {
+  if (input.episodeCount == null) return null;
+  const episodes = `${input.episodeCount} ${
+    input.episodeCount === 1 ? 'episode' : 'episodes'
+  }`;
+  return `${episodes} · ${ANIME_STATUS_LABEL[input.status]}`;
+}

@@ -11,7 +11,6 @@ import {
 } from '@/shared/anime/anime.watch-path';
 
 import {
-  ANIME_ARRIVAL_STAGE_GRID_POSTER,
   ANIME_DESTINATION_COPY,
   ANIME_DESTINATION_POSTER_WIDTH,
   ANIME_DESTINATION_STAGE,
@@ -45,13 +44,13 @@ function sliceProviders(): string {
 }
 
 describe('destination information hierarchy', () => {
-  test('copy order is identity, action, synopsis, then supporting context', () => {
+  test('copy order is identity, action, then deep story and supporting context', () => {
     const title = destinationSource.indexOf('data-slot="anime-destination-title"');
     const metadata = destinationSource.indexOf('metadataLine(anime)');
     const watchNow = destinationSource.indexOf(
       'data-slot="anime-destination-watch-now"',
     );
-    const synopsis = destinationSource.indexOf('presented.synopsis');
+    const story = destinationSource.indexOf('id="anime-universe-story"');
     const supporting = destinationSource.indexOf(
       'data-slot="anime-destination-supporting"',
     );
@@ -59,8 +58,8 @@ describe('destination information hierarchy', () => {
     assert.ok(title > 0);
     assert.ok(metadata > title);
     assert.ok(watchNow > metadata);
-    assert.ok(synopsis > watchNow);
-    assert.ok(supporting > synopsis);
+    assert.ok(story > watchNow);
+    assert.ok(supporting > story);
   });
 
   test('studio is quiet supporting context, not a primary identity line', () => {
@@ -92,7 +91,7 @@ describe('destination information hierarchy', () => {
   });
 
   test('title stays destination identity and Watch Now stays the threshold', () => {
-    assert.match(ANIME_DESTINATION_TITLE, /lg:text-\[2rem\]/);
+    assert.match(ANIME_DESTINATION_TITLE, /clamp\(4\.5rem/);
     assert.equal(ANIME_DESTINATION_COPY.watchNow, 'Watch Now');
     assert.equal(
       ANIME_DESTINATION_COPY.watchNowUnavailable,
@@ -151,14 +150,12 @@ describe('provider language remains provenance', () => {
   });
 });
 
-describe('TASK-035 geometry freeze', () => {
-  test('destination stage, poster, and desktop grid remain the TASK-035 measure', () => {
-    assert.match(ANIME_DESTINATION_STAGE, /max-w-5xl/);
-    assert.match(ANIME_DESTINATION_POSTER_WIDTH, /lg:w-\[18\.75rem\]/);
-    assert.match(
-      ANIME_ARRIVAL_STAGE_GRID_POSTER,
-      /18\.75rem_minmax\(22\.5rem,35rem\)/,
-    );
+describe('TASK-096 universe geometry', () => {
+  test('destination stage leaves the TASK-035 column and occupies the canvas', () => {
+    assert.doesNotMatch(ANIME_DESTINATION_STAGE, /max-w-5xl/);
+    assert.match(ANIME_DESTINATION_STAGE, /w-full/);
+    assert.match(destinationSource, /data-slot="anime-universe-hero"/);
+    assert.match(ANIME_DESTINATION_POSTER_WIDTH, /18\.75rem/);
   });
 });
 

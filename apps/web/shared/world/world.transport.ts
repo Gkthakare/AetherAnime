@@ -30,7 +30,8 @@ export const WORLD_TRANSPORT_DEPART_S = 0.35;
 /** Fraction of cinematic transit elapsed before URL commit (transit midpoint). */
 export const WORLD_TRANSPORT_URL_COMMIT_FRACTION = 0.5;
 
-export const WORLD_TRANSPORT_CINEMATIC_S = DURATION.CINEMATIC;
+/** TASK-096 warp ceremony. Lifecycle is unchanged: DEPART→TRANSIT→URL→ARRIVE. */
+export const WORLD_TRANSPORT_CINEMATIC_S = DURATION.WARP;
 
 const LOCKED: ReadonlySet<WorldTransportPhase> = new Set([
   'departing',

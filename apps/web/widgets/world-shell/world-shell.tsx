@@ -50,17 +50,14 @@ export function WorldShell({
       data-world-climate={world?.climate}
       data-world-arrival={arrivedAnime ? 'anime' : 'idle'}
       className={cn(
-        'relative flex w-full flex-1 flex-col',
-        arrivedAnime
-          ? 'items-center justify-start'
-          : 'items-stretch justify-start',
+        'relative flex w-full flex-1 flex-col items-stretch justify-start',
         className,
       )}
       style={{
-        gap: spacing['2xl'],
-        paddingInline: spacing.xl,
-        paddingBlock: arrivedAnime ? spacing.lg : undefined,
-        paddingTop: arrivedAnime ? spacing.lg : undefined,
+        gap: arrivedAnime ? spacing.md : spacing['2xl'],
+        paddingInline: arrivedAnime ? 0 : spacing.xl,
+        paddingBlock: arrivedAnime ? 0 : undefined,
+        paddingTop: arrivedAnime ? 0 : undefined,
       }}
     >
       <WorldLayout
@@ -72,8 +69,7 @@ export function WorldShell({
         wrapMain={(main) => (
           <motion.div
             className={cn(
-              'relative flex w-full flex-col',
-              arrivedAnime ? 'items-center' : 'items-stretch',
+              'relative flex w-full flex-col items-stretch',
               !arrivedAnime && 'pt-[6vh] pb-8 md:pt-[7vh] lg:pt-[6vh] lg:pb-12',
             )}
             style={{

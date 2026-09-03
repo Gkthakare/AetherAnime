@@ -19,7 +19,7 @@ export const WORLD_LAYOUT_STAGE_IDLE =
   'w-full max-w-6xl items-stretch text-left' as const;
 export const WORLD_LAYOUT_IDLE = WORLD_LAYOUT_STAGE_IDLE;
 export const WORLD_LAYOUT_ARRIVAL =
-  'w-full max-w-5xl items-center text-center' as const;
+  'w-full max-w-none items-stretch text-left' as const;
 
 /**
  * Primary region order + share of the desktop split.
@@ -46,7 +46,7 @@ export const WORLD_LAYOUT_SECONDARY_RULE =
  * from a shared top edge so the two slots are one composition.
  */
 export const WORLD_LAYOUT_REGIONS =
-  'flex w-full flex-col lg:flex-row lg:items-start' as const;
+  'flex w-full flex-col' as const;
 
 /** Idle landmarks sit on one ground line, not a desktop card split. */
 export const WORLD_LAYOUT_REGIONS_IDLE = 'flex w-full flex-col' as const;

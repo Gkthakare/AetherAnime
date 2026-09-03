@@ -431,7 +431,7 @@ export function WorldScene({
                   className={cn(
                     'flex w-full flex-col',
                     arrival.destinationInIdentity
-                      ? 'items-center'
+                      ? 'items-start'
                       : 'items-stretch',
                     arrival.destinationInIdentity && [
                       '[&_[data-slot=world-identity-engine]]:gap-2',
@@ -448,10 +448,6 @@ export function WorldScene({
                   }}
                 >
                   <WorldIdentity />
-                  {arrival.destinationInIdentity ? <WorldNavigator /> : null}
-                  {arrival.destinationInIdentity && arrivedAnime ? (
-                    <AnimeDestination key={arrivedAnime.slug} />
-                  ) : null}
                 </div>
               )
             }
@@ -459,8 +455,8 @@ export function WorldScene({
             primary={
               primary ??
               children ??
-              (arrival.destinationInIdentity ? (
-                <WorldKind />
+              (arrival.destinationInIdentity && arrivedAnime ? (
+                <AnimeDestination key={arrivedAnime.slug} />
               ) : (
                 <div data-slot="world-idle-place" className="flex w-full flex-col">
                   <WorldKind />
@@ -469,9 +465,10 @@ export function WorldScene({
               ))
             }
             secondary={
-              secondary ?? (
+              secondary ??
+              (arrival.destinationInIdentity ? null : (
                 <WorldDetails recede={arrival.recedeWorldChrome} />
-              )
+              ))
             }
           />
         </RegionScene>

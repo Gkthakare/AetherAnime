@@ -168,7 +168,7 @@ describe('destination world thresholds', () => {
   test('Watch Now, Save, poster, atmosphere, geometry, and CanonicalAnime stay frozen', () => {
     assert.match(destinationSource, /openWatchPath\(watchUrl\)/);
     assert.match(destinationSource, /onClick=\{watchlist\.toggle\}/);
-    assert.match(destinationSource, /onClick=\{onTogglePreview\}/);
+    assert.match(destinationSource, /data-slot="anime-universe-figure"/);
     assert.match(destinationSource, /ANIME_DESTINATION_STAGE/);
     assert.match(atmosphereView, /BLUR_RADIUS\.lg/);
     assert.doesNotMatch(typesSource, /activePath|destinationPath|storyRecord/);

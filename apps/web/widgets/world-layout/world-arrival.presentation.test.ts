@@ -23,11 +23,11 @@ describe('worldArrivalPresentation', () => {
     assert.equal(presentation.recedeWorldChrome, false);
   });
 
-  test('arrived anime uses the identity column without removing Kind or Details', () => {
+  test('arrived anime yields Kind and Details to the destination universe', () => {
     const presentation = worldArrivalPresentation(true);
     assert.equal(presentation.destinationInIdentity, true);
-    assert.equal(presentation.kindPresent, true);
-    assert.equal(presentation.detailsPresent, true);
+    assert.equal(presentation.kindPresent, false);
+    assert.equal(presentation.detailsPresent, false);
     assert.equal(presentation.recedeWorldChrome, true);
   });
 
@@ -36,7 +36,7 @@ describe('worldArrivalPresentation', () => {
     assert.equal(presentation.identityGap, spacing.xl);
   });
 
-  test('arrival tightens identity-to-destination rhythm without hiding the navigator', () => {
+  test('arrival tightens identity rhythm for the universe overlay', () => {
     const presentation = worldArrivalPresentation(true);
     assert.equal(presentation.identityGap, spacing.sm);
   });
@@ -70,13 +70,13 @@ describe('worldArrivalLayoutGaps', () => {
     assert.equal(gaps.regions, spacing.xl);
   });
 
-  test('arrival tightens chrome gaps without unmounting Kind or Details', () => {
+  test('arrival tightens chrome gaps for the universe stage', () => {
     const gaps = worldArrivalLayoutGaps(true);
     assert.equal(gaps.stage, spacing.sm);
     assert.equal(gaps.regions, spacing.sm);
     const presentation = worldArrivalPresentation(true);
-    assert.equal(presentation.kindPresent, true);
-    assert.equal(presentation.detailsPresent, true);
+    assert.equal(presentation.kindPresent, false);
+    assert.equal(presentation.detailsPresent, false);
     assert.equal(presentation.recedeWorldChrome, true);
   });
 });

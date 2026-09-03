@@ -15,10 +15,10 @@ import { DISTANCE, DURATION, EASING, SCALE } from '@/shared/lib/motion';
  * Total path settle stays within ~1.5s.
  */
 export const ANIME_DESTINATION_ARRIVAL_DELAY = {
-  poster: 0.35,
-  identity: 0.55,
-  body: 0.75,
-  actions: 0.95,
+  poster: 1.05,
+  identity: 1.28,
+  body: 1.48,
+  actions: 1.62,
 } as const;
 
 export const animeDestinationEnterTransition: Transition = {

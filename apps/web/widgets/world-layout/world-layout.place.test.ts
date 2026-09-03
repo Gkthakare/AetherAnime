@@ -44,7 +44,7 @@ describe('TASK-053 world idle placement', () => {
   test('idle identity column is not a centered title-plus-search stack', () => {
     assert.match(sceneSource, /data-slot="world-identity-column"/);
     assert.match(sceneSource, /destinationInIdentity/);
-    assert.match(sceneSource, /'items-center'/);
+    assert.match(sceneSource, /'items-start'/);
     assert.match(sceneSource, /'items-stretch'/);
   });
 

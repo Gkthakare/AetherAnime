@@ -230,10 +230,10 @@ describe('worldRealmCrossing activation', () => {
 
 describe('realm crossing motion language', () => {
   test('duration is cinematic with a spatial peak, not opacity-only', () => {
-    assert.equal(realmCrossingTransition.duration, DURATION.CINEMATIC);
+    assert.equal(realmCrossingTransition.duration, DURATION.WARP);
     assert.equal(realmCrossingTransition.ease, 'linear');
     assert.deepEqual(realmCrossingTransition.times, [...REALM_CROSSING_TIMES]);
-    assert.deepEqual(REALM_CROSSING_TIMES, [0, 0.15, 0.5, 0.67, 1]);
+    assert.deepEqual(REALM_CROSSING_TIMES, [0, 0.16, 0.38, 0.58, 1]);
     assert.ok(REALM_CROSSING_SCALE.peak > REALM_CROSSING_SCALE.travel);
     assert.ok(REALM_CROSSING_SCALE.travel > REALM_CROSSING_SCALE.anticipate);
     const env = realmCrossingEnvironment(false);

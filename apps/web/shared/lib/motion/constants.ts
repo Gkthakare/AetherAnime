@@ -27,6 +27,8 @@ export const DURATION = {
   SLOW: 0.6,
   /** Immersive, storytelling motion: hero entrances. */
   CINEMATIC: 1.2,
+  /** One-shot spacetime travel: World → Anime Universe. */
+  WARP: 2.4,
 } as const;
 
 /**

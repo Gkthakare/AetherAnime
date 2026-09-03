@@ -3,16 +3,10 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
-import { cn } from '@/lib/utils';
 import { DURATION } from '@/shared/lib/motion';
 
 import type { WorldArrivalAtmosphere } from './world-arrival.atmosphere';
-import {
-  WORLD_ENVIRONMENT_DEPTH_VEIL,
-  WORLD_ENVIRONMENT_DESTINATION_ATMOSPHERE,
-  WORLD_ENVIRONMENT_DIMENSIONAL_LIGHT,
-  WORLD_ENVIRONMENT_VIGNETTE,
-} from './world-environment.constants';
+import { WORLD_ENVIRONMENT_DESTINATION_ATMOSPHERE } from './world-environment.constants';
 import { worldRealmCrossing } from './world-realm-crossing';
 import './world-realm-crossing.css';
 
@@ -46,7 +40,7 @@ export function EnvironmentCrossingFrame({
       if (node) node.style.animation = 'none';
       return;
     }
-    playAnimation(node, `aether-realm-env ${DURATION.CINEMATIC}s linear forwards`);
+    playAnimation(node, `aether-warp-env ${DURATION.WARP}s linear forwards`);
   }, [arrivalKey, spatial]);
 
   return (
@@ -62,19 +56,21 @@ export function EnvironmentCrossingFrame({
 
 function crossingAnimation(name: string, spatial: boolean): string {
   if (!spatial) {
-    return `aether-realm-reduced ${DURATION.NORMAL}s linear forwards`;
+    return `aether-warp-reduced ${DURATION.NORMAL}s linear forwards`;
   }
-  return `${name} ${DURATION.CINEMATIC}s linear forwards`;
+  return `${name} ${DURATION.WARP}s linear forwards`;
 }
 
 function CrossingLayer({
   animation,
   className,
   style,
+  slot,
 }: {
   readonly animation: string;
   readonly className?: string;
   readonly style?: CSSProperties;
+  readonly slot: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -82,14 +78,21 @@ function CrossingLayer({
     playAnimation(ref.current, animation);
   }, [animation]);
 
-  return <div ref={ref} className={className} style={style} />;
+  return (
+    <div
+      ref={ref}
+      data-slot={slot}
+      className={className}
+      style={style}
+    />
+  );
 }
 
 /**
- * Viewport veil / aperture / gate. Decorative only.
+ * Viewport spacetime warp. Decorative only.
  *
- * Sits above destination chrome so the world visibly opens, then recedes
- * onto the existing AnimeDestination payoff.
+ * Black-hole ceremony over the existing transport lifecycle, then recedes
+ * onto the Anime Universe destination.
  */
 export function WorldRealmCrossing({
   atmosphere,
@@ -114,50 +117,59 @@ export function WorldRealmCrossing({
       data-crossing-key={crossing.key}
       data-crossing-climate={climate ?? 'none'}
       data-crossing-spatial={spatial ? 'true' : 'false'}
+      data-warp="black-hole"
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
     >
       <CrossingLayer
+        slot="world-warp-veil"
         className="absolute inset-0"
-        style={{ background: WORLD_ENVIRONMENT_DEPTH_VEIL }}
-        animation={crossingAnimation('aether-realm-veil', spatial)}
+        animation={crossingAnimation('aether-warp-veil', spatial)}
       />
       {climate ? (
         <CrossingLayer
+          slot="world-warp-climate"
           className="absolute inset-0"
           style={{
             background: WORLD_ENVIRONMENT_DESTINATION_ATMOSPHERE[climate],
           }}
-          animation={crossingAnimation('aether-realm-climate', spatial)}
+          animation={crossingAnimation('aether-warp-climate', spatial)}
         />
       ) : null}
       <CrossingLayer
-        className="absolute inset-[-12%] origin-center"
-        style={{ background: WORLD_ENVIRONMENT_VIGNETTE }}
+        slot="world-warp-distortion"
+        className="absolute inset-[-18%] origin-center"
         animation={
           spatial
-            ? crossingAnimation('aether-realm-aperture', true)
-            : crossingAnimation('aether-realm-reduced', false)
+            ? crossingAnimation('aether-warp-distortion', true)
+            : crossingAnimation('aether-warp-reduced', false)
         }
       />
       <CrossingLayer
+        slot="world-warp-accretion"
+        className="absolute inset-[-8%] origin-center"
+        animation={
+          spatial
+            ? crossingAnimation('aether-warp-accretion', true)
+            : crossingAnimation('aether-warp-reduced', false)
+        }
+      />
+      <CrossingLayer
+        slot="world-warp-horizon"
         className="absolute inset-0 origin-center"
-        style={{ background: WORLD_ENVIRONMENT_DIMENSIONAL_LIGHT }}
         animation={
           spatial
-            ? crossingAnimation('aether-realm-gate', true)
-            : crossingAnimation('aether-realm-reduced', false)
+            ? crossingAnimation('aether-warp-horizon', true)
+            : crossingAnimation('aether-warp-reduced', false)
         }
       />
       <CrossingLayer
-        className={cn(
-          'absolute inset-[10%_8%] origin-center rounded-[50%]',
-          'border border-ring/70 max-md:inset-[12%_6%]',
-        )}
+        slot="world-warp-emergence"
+        className="absolute inset-0 origin-center"
         animation={
           spatial
-            ? crossingAnimation('aether-realm-ring', true)
-            : crossingAnimation('aether-realm-reduced', false)
+            ? crossingAnimation('aether-warp-emergence', true)
+            : crossingAnimation('aether-warp-reduced', false)
         }
       />
     </div>

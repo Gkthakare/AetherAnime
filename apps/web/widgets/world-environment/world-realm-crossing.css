@@ -1,147 +1,264 @@
 /**
- * TASK-031 realm crossing — one-shot CSS beat.
+ * TASK-096 spacetime warp — one-shot CSS ceremony.
  *
- * Framer keyframes were collapsing to the default 300ms tween. These
- * animations hold DURATION.CINEMATIC (1.2s) so the peak is perceptible.
+ * Black-hole travel replaces the TASK-031 cyan ring. Duration is
+ * DURATION.WARP (2.4s). Animations are forwards-only. No infinite loops,
+ * no filters on the environment stack, no WebGL.
  */
 
-@keyframes aether-realm-veil {
+@keyframes aether-warp-veil {
   0% {
     opacity: 0;
   }
-  15% {
-    opacity: 0.5;
+  10% {
+    opacity: 0.42;
   }
-  50% {
-    opacity: 0.72;
+  28% {
+    opacity: 0.88;
   }
-  67% {
-    opacity: 0.86;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes aether-realm-climate {
-  0% {
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.28;
-  }
-  50% {
-    opacity: 0.48;
-  }
-  67% {
-    opacity: 0.62;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes aether-realm-aperture {
-  0% {
-    opacity: 0;
-    transform: scale(1.28);
-  }
-  15% {
-    opacity: 0.58;
-    transform: scale(1.12);
-  }
-  50% {
-    opacity: 0.82;
-    transform: scale(0.9);
-  }
-  67% {
-    opacity: 0.94;
-    transform: scale(0.72);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.24);
-  }
-}
-
-@keyframes aether-realm-gate {
-  0% {
-    opacity: 0;
-    transform: scale(0.7);
-  }
-  15% {
-    opacity: 0.4;
-    transform: scale(0.88);
-  }
-  50% {
-    opacity: 0.72;
-    transform: scale(1.16);
-  }
-  67% {
+  48% {
     opacity: 1;
-    transform: scale(1.42);
+  }
+  72% {
+    opacity: 0.55;
   }
   100% {
     opacity: 0;
-    transform: scale(1);
   }
 }
 
-@keyframes aether-realm-ring {
+@keyframes aether-warp-climate {
   0% {
     opacity: 0;
-    transform: scale(0.78);
   }
-  15% {
-    opacity: 0.42;
-    transform: scale(0.88);
+  18% {
+    opacity: 0.22;
   }
-  50% {
-    opacity: 0.78;
-    transform: scale(1.02);
-  }
-  67% {
-    opacity: 0.95;
-    transform: scale(1.12);
+  46% {
+    opacity: 0.4;
   }
   100% {
     opacity: 0;
-    transform: scale(1.04);
   }
 }
 
-@keyframes aether-realm-env {
+@keyframes aether-warp-distortion {
+  0% {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+  16% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  38% {
+    opacity: 0.82;
+    transform: scale(0.48);
+  }
+  58% {
+    opacity: 0.35;
+    transform: scale(1.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+@keyframes aether-warp-accretion {
+  0% {
+    opacity: 0;
+    transform: scale(0.42) rotate(0deg);
+  }
+  14% {
+    opacity: 0.72;
+    transform: scale(0.78) rotate(80deg);
+  }
+  36% {
+    opacity: 1;
+    transform: scale(1) rotate(200deg);
+  }
+  54% {
+    opacity: 0.9;
+    transform: scale(1.18) rotate(320deg);
+  }
+  76% {
+    opacity: 0.28;
+    transform: scale(2.6) rotate(470deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.4) rotate(560deg);
+  }
+}
+
+@keyframes aether-warp-horizon {
+  0% {
+    opacity: 0;
+    transform: scale(0.08);
+  }
+  12% {
+    opacity: 0.9;
+    transform: scale(0.18);
+  }
+  34% {
+    opacity: 1;
+    transform: scale(0.32);
+  }
+  52% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  74% {
+    opacity: 0.55;
+    transform: scale(3.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(5.4);
+  }
+}
+
+@keyframes aether-warp-emergence {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  48% {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  64% {
+    opacity: 0.7;
+    transform: scale(0.92);
+  }
+  82% {
+    opacity: 0.35;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes aether-warp-env {
   0% {
     transform: scale(1) translateY(0);
   }
-  15% {
-    transform: scale(1.02) translateY(-4px);
+  16% {
+    transform: scale(1.06) translateY(-6px);
   }
-  50% {
-    transform: scale(1.055) translateY(-8px);
+  38% {
+    transform: scale(1.18) translateY(-2px);
   }
-  67% {
-    transform: scale(1.09) translateY(-6px);
+  58% {
+    transform: scale(1.42) translateY(0);
   }
   100% {
     transform: scale(1) translateY(0);
   }
 }
 
-@keyframes aether-realm-reduced {
+@keyframes aether-warp-reduced {
   0% {
     opacity: 0;
   }
   50% {
-    opacity: 0.42;
+    opacity: 0.55;
   }
   100% {
     opacity: 0;
   }
+}
+
+[data-slot='world-warp-veil'],
+[data-slot='world-warp-climate'],
+[data-slot='world-warp-distortion'],
+[data-slot='world-warp-accretion'],
+[data-slot='world-warp-horizon'],
+[data-slot='world-warp-emergence'] {
+  opacity: 0;
+}
+
+[data-slot='world-warp-veil'] {
+  background: radial-gradient(
+    circle at 50% 48%,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.72) 28%,
+    rgba(2, 2, 8, 0.96) 58%,
+    #000 100%
+  );
+}
+
+[data-slot='world-warp-distortion'] {
+  background: radial-gradient(
+    circle at 50% 48%,
+    transparent 0%,
+    transparent 18%,
+    rgba(255, 214, 170, 0.08) 30%,
+    rgba(0, 0, 0, 0.55) 42%,
+    transparent 68%
+  );
+}
+
+[data-slot='world-warp-accretion'] {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 176, 96, 0.05) 28deg,
+    rgba(255, 214, 160, 0.95) 52deg,
+    rgba(255, 248, 230, 1) 64deg,
+    rgba(232, 118, 42, 0.55) 88deg,
+    transparent 128deg,
+    rgba(255, 186, 120, 0.28) 210deg,
+    transparent 255deg
+  );
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0%,
+    transparent 31%,
+    #000 36%,
+    #000 46%,
+    transparent 53%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0%,
+    transparent 31%,
+    #000 36%,
+    #000 46%,
+    transparent 53%
+  );
+}
+
+[data-slot='world-warp-horizon'] {
+  background: radial-gradient(
+    circle at 50% 50%,
+    #000 0%,
+    #000 38%,
+    rgba(8, 4, 2, 0.92) 46%,
+    transparent 62%
+  );
+}
+
+[data-slot='world-warp-emergence'] {
+  background: radial-gradient(
+    circle at 50% 48%,
+    rgba(255, 236, 210, 0.42) 0%,
+    rgba(180, 90, 40, 0.18) 22%,
+    transparent 58%
+  );
+}
+
+[data-slot='world-scene'][data-world-anime] [data-slot='world-realm-crossing'] {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aether-realm-env {
+  [data-slot='world-environment-crossing'] {
     animation: none !important;
   }
 }

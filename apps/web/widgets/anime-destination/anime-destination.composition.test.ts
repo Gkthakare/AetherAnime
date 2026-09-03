@@ -49,30 +49,30 @@ function bySlug(slug: string) {
 }
 
 describe('arrival stage composition', () => {
-  test('destination occupies a stage wider than the previous centered column', () => {
+  test('destination occupies the universe canvas rather than a centered column', () => {
     assert.match(destinationSource, /data-slot="anime-arrival-stage"/);
-    assert.match(ANIME_DESTINATION_STAGE, /max-w-5xl/);
+    assert.match(destinationSource, /data-slot="anime-universe-hero"/);
+    assert.match(ANIME_DESTINATION_STAGE, /w-full/);
+    assert.doesNotMatch(ANIME_DESTINATION_STAGE, /max-w-5xl/);
     assert.doesNotMatch(destinationSource, /max-w-3xl/);
   });
 
-  test('desktop composition places poster and information as siblings', () => {
+  test('hero places environmental figure and identity as one arrival composition', () => {
     assert.match(destinationSource, /data-slot="anime-destination-copy"/);
-    const stage = destinationSource.indexOf('anime-arrival-stage');
-    const copy = destinationSource.indexOf('anime-destination-copy');
-    const synopsis = destinationSource.indexOf('presented.synopsis');
-    const copyEnd = destinationSource.indexOf(
-      'data-slot="anime-destination-providers"',
-    );
-    assert.ok(stage > 0);
-    assert.ok(copy > stage);
-    assert.ok(synopsis > copy);
-    assert.ok(copyEnd > synopsis);
+    const hero = destinationSource.indexOf('id="anime-universe-hero"');
+    const figure = destinationSource.indexOf('<UniverseFigure');
+    const copy = destinationSource.indexOf('data-slot="anime-destination-copy"');
+    const story = destinationSource.indexOf('id="anime-universe-story"');
+    assert.ok(hero > 0);
+    assert.ok(figure > hero);
+    assert.ok(copy > hero);
+    assert.ok(story > copy);
   });
 
-  test('desktop poster clamp reaches identity-artifact scale, not wallpaper', () => {
+  test('desktop poster clamp remains an identity artifact token, not a wallpaper API', () => {
     assert.match(ANIME_DESTINATION_POSTER_WIDTH, /18\.75rem/);
-    assert.doesNotMatch(ANIME_DESTINATION_POSTER_WIDTH, /100vw/);
     assert.doesNotMatch(ANIME_DESTINATION_POSTER_WIDTH, /lg:w-\[clamp/);
+    assert.match(destinationSource, /data-slot="anime-universe-figure"/);
   });
 
   test('discovered destinations do not reserve a catalog poster hole', () => {

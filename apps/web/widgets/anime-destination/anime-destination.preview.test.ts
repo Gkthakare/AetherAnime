@@ -12,8 +12,6 @@ import {
 } from '@/shared/anime/anime.watch-path';
 
 import {
-  ANIME_ARRIVAL_STAGE_GRID_POSTER,
-  ANIME_DESTINATION_POSTER_WIDTH,
   ANIME_DESTINATION_STAGE,
   animePosterPreviewCopy,
 } from './anime-destination.constants';
@@ -38,8 +36,8 @@ function bySlug(slug: string) {
   return anime;
 }
 
-function posterSource(): string {
-  const start = destinationSource.indexOf('function AnimePoster');
+function figureSource(): string {
+  const start = destinationSource.indexOf('function UniverseFigure');
   const end = destinationSource.indexOf(
     'export function AnimeDestination',
     start,
@@ -48,53 +46,29 @@ function posterSource(): string {
   return destinationSource.slice(start, end);
 }
 
-describe('poster remains a destination artifact', () => {
-  test('poster is a local preview button, not Watch Now', () => {
-    const poster = posterSource();
-    assert.match(poster, /type="button"/);
-    assert.match(poster, /data-slot="anime-poster"/);
-    assert.match(poster, /aria-expanded=\{previewed\}/);
-    assert.match(poster, /onClick=\{onTogglePreview\}/);
-    assert.doesNotMatch(poster, /openWatchPath/);
+describe('poster is environmental universe art', () => {
+  test('figure is decorative artwork, not Watch Now', () => {
+    const figure = figureSource();
+    assert.match(figure, /data-slot="anime-universe-figure"/);
+    assert.match(figure, /aria-hidden="true"/);
+    assert.doesNotMatch(figure, /openWatchPath/);
+    assert.doesNotMatch(figure, /type="button"/);
     assert.match(
       destinationSource,
       /onClick=\{\(\) => \{\s*if \(watchUrl\) openWatchPath\(watchUrl\);/,
     );
   });
 
-  test('preview state stays local presentation, not domain or URL state', () => {
-    assert.match(
-      destinationSource,
-      /const \[previewed, setPreviewed\] = useState\(false\)/,
-    );
+  test('figure state is not domain, URL, or preview-toggle state', () => {
+    assert.doesNotMatch(destinationSource, /setPreviewed/);
     assert.doesNotMatch(destinationSource, /searchParams.*preview|dispatchFocus/);
     assert.doesNotMatch(typesSource, /previewed|posterPreview/);
   });
 
-  test('preview copy is a short identity fragment, not a synopsis overlay', () => {
+  test('identity fragment helper stays synopsis-free even if unused by the figure', () => {
     assert.match(constantsSource, /export function animePosterPreviewCopy/);
-    assert.match(destinationSource, /animePosterPreviewCopy/);
     assert.doesNotMatch(destinationSource, /synopsis\.slice/);
-    assert.doesNotMatch(posterSource(), /Watch Now|crunchyroll|myanimelist/i);
-  });
-
-  test('presence scale stays restrained and reduced-motion skips travel', () => {
-    const poster = posterSource();
-    assert.match(poster, /scale-\[1\.02\]/);
-    assert.doesNotMatch(poster, /scale-\[1\.03\]|scale-\[1\.1\]/);
-    assert.match(poster, /motion-reduce:transition-none/);
-    assert.match(poster, /focus-visible:ring-2/);
-  });
-
-  test('keyboard focus uses the same presence language as hover', () => {
-    assert.match(
-      constantsSource,
-      /ANIME_POSTER_PRESENCE_SCALE =\s*'hover:scale-\[1\.02\] focus-visible:scale-\[1\.02\]'/,
-    );
-    const poster = posterSource();
-    assert.match(poster, /in-focus-visible:opacity-100/);
-    assert.match(poster, /in-focus-visible:w-0\.5/);
-    assert.doesNotMatch(poster, /group-focus-visible:/);
+    assert.doesNotMatch(figureSource(), /Watch Now|crunchyroll|myanimelist/i);
   });
 });
 
@@ -128,19 +102,15 @@ describe('poster preview copy', () => {
     assert.match(preview, /ACTION/);
     assert.doesNotMatch(preview, /Watch Now/);
     assert.ok(preview.length <= 120);
-    const poster = posterSource();
-    assert.match(poster, /previewText && anime\.poster/);
+    const figure = figureSource();
+    assert.match(figure, /DestinationMark/);
   });
 });
 
-describe('TASK-035 and TASK-036 remain frozen', () => {
-  test('stage geometry and supporting hierarchy are unchanged', () => {
-    assert.match(ANIME_DESTINATION_STAGE, /max-w-5xl/);
-    assert.match(ANIME_DESTINATION_POSTER_WIDTH, /lg:w-\[18\.75rem\]/);
-    assert.match(
-      ANIME_ARRIVAL_STAGE_GRID_POSTER,
-      /18\.75rem_minmax\(22\.5rem,35rem\)/,
-    );
+describe('TASK-096 universe geometry', () => {
+  test('stage occupies the canvas and supporting hierarchy stays below the hero', () => {
+    assert.doesNotMatch(ANIME_DESTINATION_STAGE, /max-w-5xl/);
+    assert.match(ANIME_DESTINATION_STAGE, /w-full/);
     const supporting = destinationSource.indexOf(
       'data-slot="anime-destination-supporting"',
     );

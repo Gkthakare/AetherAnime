@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -18,24 +18,17 @@ import { discoveredMalIdFromSlug } from '@/shared/anime/anime.mal.identity';
 import type { CanonicalAnime } from '@/shared/anime';
 import { spacing } from '@/shared/config/theme';
 import { legibility } from '@/shared/lib/graphics';
+import { DURATION } from '@/shared/lib/motion';
 import { cn } from '@/lib/utils';
 import { useWorldScene } from '@/widgets/world-scene/world-scene-context';
 
 import {
-  ANIME_ARRIVAL_STAGE_GRID,
-  ANIME_ARRIVAL_STAGE_GRID_POSTER,
-  ANIME_ARRIVAL_STAGE_GRID_SEAL,
   ANIME_DESTINATION_ALTERNATE,
   ANIME_DESTINATION_COPY,
-  ANIME_DESTINATION_COPY_COLUMN,
-  ANIME_DESTINATION_EYEBROW,
   ANIME_DESTINATION_GENRES,
-  ANIME_DESTINATION_IDENTITY,
   ANIME_DESTINATION_METADATA,
   ANIME_DESTINATION_POSTER_SIZES,
-  ANIME_DESTINATION_POSTER_WIDTH,
   ANIME_DESTINATION_STAGE,
-  ANIME_DESTINATION_SUPPORTING,
   ANIME_DESTINATION_SUPPORTING_LABEL,
   ANIME_DESTINATION_SUPPORTING_VALUE,
   ANIME_DESTINATION_SYNOPSIS,
@@ -47,13 +40,9 @@ import {
   ANIME_DESTINATION_WATCH_NOW_RULE,
   ANIME_DESTINATION_WATCH_NOW_RULE_MARK,
   ANIME_DESTINATION_WATCH_NOW_UNAVAILABLE,
-  ANIME_POSTER_EDGE,
-  ANIME_POSTER_PLATE,
-  ANIME_POSTER_PRESENCE_SCALE,
-  ANIME_SEAL_WIDTH,
-  animePosterPreviewCopy,
   ANIME_STATUS_LABEL,
   formatMalSupportingLine,
+  formatUniverseRecordLine,
 } from './anime-destination.constants';
 import {
   animeDestinationActions,
@@ -70,7 +59,14 @@ import {
 import type { AnimeDestinationProps } from './anime-destination.types';
 import { openWatchPath } from './anime-destination.watch-now';
 import { AnimeDestinationPaths } from './anime-destination-paths';
+import {
+  destinationHasRecordSection,
+  destinationHasWorldSection,
+  destinationIdentityStatement,
+  destinationUniverseNav,
+} from './anime-destination.universe';
 import { useAnimeMetadata } from './use-anime-metadata';
+import './anime-destination.universe.css';
 
 function useLocalWatchlist(animeId: string, slug: string, title: string) {
   const saved = useSyncExternalStore(
@@ -162,97 +158,37 @@ function DestinationMark({ anime }: { anime: CanonicalAnime }) {
   );
 }
 
-function AnimePoster({
-  anime,
-  previewed,
-  onTogglePreview,
-  reduceMotion,
-}: {
-  anime: CanonicalAnime;
-  previewed: boolean;
-  onTogglePreview: () => void;
-  reduceMotion: boolean | null;
-}) {
-  const previewText = animePosterPreviewCopy(anime);
-  const label = `${anime.canonicalTitle} destination preview`;
-
+function UniverseFigure({ anime }: { anime: CanonicalAnime }) {
   return (
-    <button
-      type="button"
-      data-slot="anime-poster"
-      aria-label={label}
-      aria-expanded={previewed}
-      onClick={onTogglePreview}
-      className={cn(
-        'group relative mx-auto block outline-none',
-        anime.poster ? ANIME_DESTINATION_POSTER_WIDTH : ANIME_SEAL_WIDTH,
-        'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-        !reduceMotion &&
-          'motion-safe:transition-transform motion-safe:duration-200',
-        !reduceMotion && ANIME_POSTER_PRESENCE_SCALE,
-        previewed && !reduceMotion && 'motion-safe:scale-[1.02]',
-      )}
+    <div
+      data-slot="anime-universe-figure"
+      data-figure={anime.poster ? 'poster' : 'seal'}
+      aria-hidden="true"
     >
-      <span
-        aria-hidden="true"
-        className={cn(
-          'absolute inset-y-1 left-0 w-px transition-[width,background-color]',
-          ANIME_POSTER_EDGE.rest,
-          'group-hover:w-0.5 group-hover:bg-ring in-focus-visible:w-0.5 in-focus-visible:bg-ring',
-          previewed && `w-0.5 ${ANIME_POSTER_EDGE.preview}`,
-          'motion-reduce:transition-none',
-        )}
-      />
-      <span
-        data-slot="anime-poster-plate"
-        className={cn(
-          'relative flex w-full flex-col items-center justify-center overflow-hidden',
-          anime.poster ? 'aspect-[2/3]' : 'aspect-square',
-          ANIME_POSTER_PLATE,
-        )}
-      >
-        {anime.poster ? (
-          <Image
-            src={anime.poster}
-            alt=""
-            fill
-            sizes={ANIME_DESTINATION_POSTER_SIZES}
-            className="object-cover object-center"
-          />
-        ) : (
-          <DestinationMark anime={anime} />
-        )}
-      </span>
-      {previewText && anime.poster ? (
-        <span
-          data-slot="anime-poster-preview"
-          className={cn(
-            'pointer-events-none absolute inset-x-0 bottom-0 px-2 pb-2 pt-8',
-            'bg-gradient-to-t from-background/80 to-transparent',
-            'whitespace-pre-line text-left text-[0.625rem] leading-snug text-foreground/80',
-            'opacity-0 transition-opacity duration-200',
-            'group-hover:opacity-100 in-focus-visible:opacity-100',
-            previewed && 'opacity-100',
-            'motion-reduce:transition-none',
-            legibility.copy,
-          )}
-        >
-          {previewText}
-        </span>
-      ) : null}
-    </button>
+      {anime.poster ? (
+        <Image
+          src={anime.poster}
+          alt=""
+          fill
+          priority
+          sizes={ANIME_DESTINATION_POSTER_SIZES}
+          className="object-cover object-center"
+        />
+      ) : (
+        <DestinationMark anime={anime} />
+      )}
+    </div>
   );
 }
 
 /**
- * AnimeDestination — a place inside AetherAnime, not a card or modal.
+ * AnimeDestination — an arrived anime universe inside AetherAnime.
  *
- * Reads arrivedAnime from WorldScene. WorldLayout only places this slot.
+ * Reads arrivedAnime from WorldScene. WorldLayout places the universe stage.
  */
 export function AnimeDestination({ className }: AnimeDestinationProps) {
-  const { arrivedAnime } = useWorldScene();
+  const { arrivedAnime, clearAnimeArrival } = useWorldScene();
   const reduceMotion = useReducedMotion();
-  const [previewed, setPreviewed] = useState(false);
   const metadata = useAnimeMetadata(arrivedAnime?.slug ?? null);
 
   const anime = arrivedAnime;
@@ -265,6 +201,33 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
   if (!anime) return null;
 
   const presented = overlayDiscoveredMetadata(anime, metadata);
+  const statement = destinationIdentityStatement(presented.synopsis);
+  const nav = destinationUniverseNav({
+    synopsis: presented.synopsis,
+    year: anime.year,
+    genres: presented.genres,
+    studios: anime.studios,
+    episodeCount: anime.episodeCount,
+    score: presented.score,
+  });
+  const showWorld = destinationHasWorldSection({
+    year: anime.year,
+    genres: presented.genres,
+    studios: anime.studios,
+  });
+  const showRecord = destinationHasRecordSection({
+    episodeCount: anime.episodeCount,
+    score: presented.score,
+  });
+  const recordLine = formatUniverseRecordLine({
+    episodeCount: anime.episodeCount,
+    status: anime.status,
+  });
+  const malLine = formatMalSupportingLine({
+    score: presented.score,
+    rank: presented.rank,
+    scoredBy: presented.scoredBy,
+  });
 
   const posterVariants = reduceMotion
     ? animeDestinationPosterReduced
@@ -291,17 +254,14 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
     <motion.div
       key={anime.id}
       data-slot="anime-destination"
+      data-universe=""
       data-anime-id={anime.id}
       data-anime-slug={anime.slug}
       data-destination-arrival={anime.id}
       data-watch-now={canWatch ? 'verified' : 'unavailable'}
       data-watch-crunchyroll={crunchyroll?.status ?? 'unknown'}
       data-destination-artwork={anime.poster ? 'poster' : 'seal'}
-      className={cn(
-        'mx-auto w-full text-center',
-        ANIME_DESTINATION_STAGE,
-        className,
-      )}
+      className={cn(ANIME_DESTINATION_STAGE, className)}
       initial={reduceMotion ? false : animeDestinationEnterFrom}
       animate={animeDestinationEnterTo}
       transition={
@@ -310,257 +270,364 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           : animeDestinationEnterTransition
       }
     >
-      <div
-        data-slot="anime-arrival-stage"
-        data-destination-artwork={anime.poster ? 'poster' : 'seal'}
-        className={cn(
-          ANIME_ARRIVAL_STAGE_GRID,
-          anime.poster
-            ? ANIME_ARRIVAL_STAGE_GRID_POSTER
-            : ANIME_ARRIVAL_STAGE_GRID_SEAL,
-        )}
-      >
-        <motion.div
-          variants={posterVariants}
-          initial={reduceMotion ? false : 'hidden'}
-          animate="show"
-          className="shrink-0"
+      <article data-slot="anime-universe">
+        <nav
+          data-slot="anime-universe-index"
+          aria-label={ANIME_DESTINATION_COPY.universeIndex}
         >
-          <AnimePoster
-            anime={anime}
-            previewed={previewed}
-            reduceMotion={reduceMotion}
-            onTogglePreview={() => setPreviewed((current) => !current)}
-          />
-        </motion.div>
-        <motion.div
-          data-slot="anime-destination-copy"
-          variants={copyVariants}
-          initial={reduceMotion ? false : 'hidden'}
-          animate="show"
-          className={ANIME_DESTINATION_COPY_COLUMN}
-          style={{ gap: spacing.md }}
+          <ol className="flex flex-col items-end" style={{ gap: spacing.sm }}>
+            {nav.map((entry) => (
+              <li key={entry.id}>
+                <a
+                  href={entry.href}
+                  className={cn(
+                    'block py-1 text-[0.5rem] uppercase tracking-[0.28em] text-muted-foreground/55',
+                    'outline-none hover:text-foreground/80',
+                    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                    legibility.copy,
+                  )}
+                >
+                  {entry.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <header
+          id="anime-universe-hero"
+          data-slot="anime-universe-hero"
         >
-          <div
-            data-slot="anime-destination-identity"
-            className={ANIME_DESTINATION_IDENTITY}
-            style={{ gap: spacing.xs }}
+          <div data-slot="anime-arrival-stage" className="contents">
+          <motion.div
+            variants={posterVariants}
+            initial={reduceMotion ? false : 'hidden'}
+            animate="show"
+            className="pointer-events-none absolute inset-0"
           >
-            <p className={cn(ANIME_DESTINATION_EYEBROW, legibility.copy)}>
-              {ANIME_DESTINATION_COPY.eyebrow}
-            </p>
-            <h2
-              data-slot="anime-destination-title"
+            <UniverseFigure anime={anime} />
+          </motion.div>
+          <div data-slot="anime-universe-identity">
+            <button
+              type="button"
+              data-slot="anime-universe-exit"
+              onClick={clearAnimeArrival}
               className={cn(
-                'font-medium leading-tight tracking-[-0.01em] text-foreground',
-                ANIME_DESTINATION_TITLE,
+                'mb-6 text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground/70',
+                'outline-none hover:text-foreground/85',
+                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                 legibility.copy,
               )}
             >
-              {anime.canonicalTitle}
-            </h2>
-            {alternate ? (
-              <p
-                data-slot="anime-destination-alternate"
-                className={cn(ANIME_DESTINATION_ALTERNATE, legibility.copy)}
-              >
-                {alternate}
-              </p>
-            ) : null}
-            <p
-              data-slot="anime-destination-metadata"
-              className={cn(ANIME_DESTINATION_METADATA, legibility.copy)}
+              ← {ANIME_DESTINATION_COPY.returnContinuum}
+            </button>
+            <motion.div
+              data-slot="anime-destination-copy"
+              variants={copyVariants}
+              initial={reduceMotion ? false : 'hidden'}
+              animate="show"
+              className="flex flex-col items-start"
+              style={{ gap: spacing.sm }}
             >
-              {metadataLine(anime)}
+              <div
+                data-slot="anime-destination-identity"
+                className="flex flex-col items-start"
+                style={{ gap: spacing.xs }}
+              >
+                <h1
+                  data-slot="anime-destination-title"
+                  className={cn(
+                    'text-foreground',
+                    ANIME_DESTINATION_TITLE,
+                    legibility.copy,
+                  )}
+                >
+                  {anime.canonicalTitle}
+                </h1>
+                {alternate ? (
+                  <p
+                    data-slot="anime-destination-alternate"
+                    className={cn(ANIME_DESTINATION_ALTERNATE, legibility.copy)}
+                  >
+                    {alternate}
+                  </p>
+                ) : null}
+                {statement ? (
+                  <p
+                    data-slot="anime-universe-statement"
+                    className={legibility.copy}
+                  >
+                    {statement}
+                  </p>
+                ) : null}
+                <p
+                  data-slot="anime-destination-metadata"
+                  className={cn(ANIME_DESTINATION_METADATA, legibility.copy)}
+                >
+                  {metadataLine(anime)}
+                </p>
+              </div>
+            </motion.div>
+            <motion.div
+              variants={actionVariants}
+              initial={reduceMotion ? false : 'hidden'}
+              animate="show"
+              data-slot="anime-destination-actions"
+              className="flex flex-wrap items-center"
+              style={{ gap: spacing.md }}
+            >
+              <button
+                type="button"
+                data-slot="anime-destination-watch-now"
+                disabled={!canWatch}
+                aria-label={
+                  canWatch
+                    ? ANIME_DESTINATION_COPY.watchNow
+                    : ANIME_DESTINATION_COPY.watchNowUnavailable
+                }
+                onClick={() => {
+                  if (watchUrl) openWatchPath(watchUrl);
+                }}
+                className={cn(
+                  canWatch
+                    ? [
+                        ANIME_DESTINATION_WATCH_NOW,
+                        ANIME_DESTINATION_WATCH_NOW_EDGE,
+                        ANIME_DESTINATION_WATCH_NOW_RULE,
+                        ANIME_DESTINATION_WATCH_NOW_CROSSING,
+                      ]
+                    : ANIME_DESTINATION_WATCH_NOW_UNAVAILABLE,
+                  legibility.copy,
+                )}
+              >
+                {canWatch ? (
+                  <>
+                    {ANIME_DESTINATION_COPY.watchNow}
+                    <span
+                      aria-hidden="true"
+                      data-slot="anime-destination-watch-now-arrow"
+                      className={ANIME_DESTINATION_WATCH_NOW_ARROW}
+                    >
+                      {' '}
+                      →
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      data-slot="anime-destination-watch-now-rule"
+                      className={ANIME_DESTINATION_WATCH_NOW_RULE_MARK}
+                    />
+                  </>
+                ) : (
+                  ANIME_DESTINATION_COPY.watchNowUnavailable
+                )}
+              </button>
+              <button
+                type="button"
+                aria-pressed={watchlist.saved}
+                aria-label={
+                  watchlist.saved
+                    ? ANIME_DESTINATION_COPY.removeWatchlist
+                    : ANIME_DESTINATION_COPY.saveWatchlist
+                }
+                onClick={watchlist.toggle}
+                className={cn(
+                  'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground',
+                  'border-b border-border/40 pb-0.5',
+                  'outline-none motion-safe:transition-colors motion-reduce:transition-none',
+                  'hover:border-ring/50 hover:text-ring/80',
+                  'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                  watchlist.saved && 'border-ring/40 text-ring/80',
+                  legibility.copy,
+                )}
+              >
+                {watchlist.saved
+                  ? ANIME_DESTINATION_COPY.savedWatchlist
+                  : ANIME_DESTINATION_COPY.saveWatchlist}
+              </button>
+            </motion.div>
+            {presented.synopsis ? (
+              <a
+                href="#anime-universe-story"
+                data-slot="anime-universe-enter"
+                className={cn(
+                  'outline-none',
+                  'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                  legibility.copy,
+                )}
+              >
+                {ANIME_DESTINATION_COPY.enterStory}
+              </a>
+            ) : null}
+          </div>
+          </div>
+        </header>
+
+        {presented.synopsis ? (
+          <motion.section
+            id="anime-universe-story"
+            data-slot="anime-universe-section"
+            variants={bodyVariants}
+            initial={reduceMotion ? false : 'hidden'}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.28 }}
+          >
+            <p data-slot="anime-universe-kicker" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.story}
+            </p>
+            <p className={cn(ANIME_DESTINATION_SYNOPSIS, legibility.copy)}>
+              {presented.synopsis}
+            </p>
+          </motion.section>
+        ) : null}
+
+        {showWorld ? (
+          <motion.section
+            id="anime-universe-world"
+            data-slot="anime-universe-section"
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.28 }}
+            transition={{ duration: reduceMotion ? 0 : DURATION.NORMAL }}
+          >
+            <p data-slot="anime-universe-kicker" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.worldSection}
             </p>
             {genres ? (
               <p
                 data-slot="anime-destination-genres"
-                className={cn(ANIME_DESTINATION_GENRES, legibility.copy)}
+                className={cn(
+                  ANIME_DESTINATION_GENRES,
+                  'text-[clamp(1.15rem,3vw,2rem)] tracking-[0.16em]',
+                  legibility.copy,
+                )}
               >
                 {genres}
               </p>
             ) : null}
-          </div>
-          <motion.div
-            variants={actionVariants}
-            initial={reduceMotion ? false : 'hidden'}
-            animate="show"
-            data-slot="anime-destination-actions"
-            className="flex w-full flex-col items-center sm:flex-row lg:justify-start"
-            style={{ gap: spacing.md }}
-          >
-            <button
-              type="button"
-              data-slot="anime-destination-watch-now"
-              disabled={!canWatch}
-              aria-label={
-                canWatch
-                  ? ANIME_DESTINATION_COPY.watchNow
-                  : ANIME_DESTINATION_COPY.watchNowUnavailable
-              }
-              onClick={() => {
-                if (watchUrl) openWatchPath(watchUrl);
-              }}
-              className={cn(
-                canWatch
-                  ? [
-                      ANIME_DESTINATION_WATCH_NOW,
-                      ANIME_DESTINATION_WATCH_NOW_EDGE,
-                      ANIME_DESTINATION_WATCH_NOW_RULE,
-                      ANIME_DESTINATION_WATCH_NOW_CROSSING,
-                    ]
-                  : ANIME_DESTINATION_WATCH_NOW_UNAVAILABLE,
-                legibility.copy,
-              )}
-            >
-              {canWatch ? (
-                <>
-                  {ANIME_DESTINATION_COPY.watchNow}
-                  <span
-                    aria-hidden="true"
-                    data-slot="anime-destination-watch-now-arrow"
-                    className={ANIME_DESTINATION_WATCH_NOW_ARROW}
-                  >
-                    {' '}
-                    →
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    data-slot="anime-destination-watch-now-rule"
-                    className={ANIME_DESTINATION_WATCH_NOW_RULE_MARK}
-                  />
-                </>
-              ) : (
-                ANIME_DESTINATION_COPY.watchNowUnavailable
-              )}
-            </button>
-            <button
-              type="button"
-              aria-pressed={watchlist.saved}
-              aria-label={
-                watchlist.saved
-                  ? ANIME_DESTINATION_COPY.removeWatchlist
-                  : ANIME_DESTINATION_COPY.saveWatchlist
-              }
-              onClick={watchlist.toggle}
-              className={cn(
-                'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground',
-                'border-b border-border/40 pb-0.5',
-                'outline-none motion-safe:transition-colors motion-reduce:transition-none',
-                'hover:border-ring/50 hover:text-ring/80',
-                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                watchlist.saved && 'border-ring/40 text-ring/80',
-                legibility.copy,
-              )}
-            >
-              {watchlist.saved
-                ? ANIME_DESTINATION_COPY.savedWatchlist
-                : ANIME_DESTINATION_COPY.saveWatchlist}
-            </button>
-          </motion.div>
-          <motion.div
-            variants={bodyVariants}
-            initial={reduceMotion ? false : 'hidden'}
-            animate="show"
-            className="flex w-full flex-col items-center lg:items-start"
-            style={{ gap: spacing.md }}
-          >
-            <p
-              className={cn(ANIME_DESTINATION_SYNOPSIS, legibility.copy)}
-            >
-              {presented.synopsis}
-            </p>
             <div
               data-slot="anime-destination-supporting"
-              className={ANIME_DESTINATION_SUPPORTING}
-              style={{ gap: spacing.sm }}
+              className="mt-10 flex max-w-md flex-col"
+              style={{ gap: spacing.md }}
             >
-              <div
-                data-slot="anime-destination-studio"
-                className="flex w-full flex-col items-center lg:items-start"
-                style={{ gap: spacing.xs }}
-              >
-                <p
-                  className={cn(
-                    ANIME_DESTINATION_SUPPORTING_LABEL,
-                    legibility.copy,
-                  )}
-                >
+              <div data-slot="anime-destination-studio" style={{ gap: spacing.xs }}>
+                <p className={cn(ANIME_DESTINATION_SUPPORTING_LABEL, legibility.copy)}>
                   {ANIME_DESTINATION_COPY.studioLabel}
                 </p>
-                <p
-                  className={cn(
-                    ANIME_DESTINATION_SUPPORTING_VALUE,
-                    legibility.copy,
-                  )}
-                >
+                <p className={cn(ANIME_DESTINATION_SUPPORTING_VALUE, 'text-base', legibility.copy)}>
                   {studios}
                 </p>
               </div>
-              <div
-                data-slot="anime-destination-providers"
-                className="flex w-full flex-col items-center lg:items-start"
-                style={{ gap: spacing.sm }}
+            </div>
+          </motion.section>
+        ) : null}
+
+        {showRecord ? (
+          <motion.section
+            id="anime-universe-record"
+            data-slot="anime-universe-section"
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.28 }}
+            transition={{ duration: reduceMotion ? 0 : DURATION.NORMAL }}
+          >
+            <p data-slot="anime-universe-kicker" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.recordSection}
+            </p>
+            {recordLine ? (
+              <p
+                className={cn(
+                  'text-[clamp(1.35rem,3.4vw,2.4rem)] leading-tight text-foreground/85',
+                  legibility.copy,
+                )}
               >
-                <div
-                  className="flex w-full flex-col items-center lg:items-start"
-                  style={{ gap: spacing.xs }}
+                {recordLine}
+              </p>
+            ) : null}
+            <div
+              data-slot="anime-destination-providers"
+              className="mt-10 flex max-w-lg flex-col"
+              style={{ gap: spacing.md }}
+            >
+              <div style={{ gap: spacing.xs }}>
+                <p className={cn(ANIME_DESTINATION_SUPPORTING_LABEL, legibility.copy)}>
+                  {ANIME_DESTINATION_COPY.malLabel}
+                </p>
+                <p
+                  data-slot="anime-destination-mal-score"
+                  className={cn(ANIME_DESTINATION_SUPPORTING_VALUE, 'text-base', legibility.copy)}
                 >
-                  <p
-                    className={cn(
-                      ANIME_DESTINATION_SUPPORTING_LABEL,
-                      legibility.copy,
-                    )}
-                  >
-                    {ANIME_DESTINATION_COPY.malLabel}
-                  </p>
-                  <p
-                    data-slot="anime-destination-mal-score"
-                    className={cn(
-                      ANIME_DESTINATION_SUPPORTING_VALUE,
-                      legibility.copy,
-                    )}
-                  >
-                    {formatMalSupportingLine({
-                      score: presented.score,
-                      rank: presented.rank,
-                      scoredBy: presented.scoredBy,
-                    })}
-                  </p>
-                </div>
-                <div
-                  className="flex w-full flex-col items-center lg:items-start"
-                  style={{ gap: spacing.xs }}
-                >
-                  <p
-                    className={cn(
-                      ANIME_DESTINATION_SUPPORTING_LABEL,
-                      legibility.copy,
-                    )}
-                  >
-                    {ANIME_DESTINATION_COPY.crunchyrollLabel}
-                  </p>
-                  <p
-                    className={cn(
-                      ANIME_DESTINATION_SUPPORTING_VALUE,
-                      legibility.copy,
-                    )}
-                  >
-                    {ANIME_DESTINATION_COPY.crunchyrollUnavailable}
-                  </p>
-                </div>
+                  {malLine}
+                </p>
+              </div>
+              <div style={{ gap: spacing.xs }}>
+                <p className={cn(ANIME_DESTINATION_SUPPORTING_LABEL, legibility.copy)}>
+                  {ANIME_DESTINATION_COPY.crunchyrollLabel}
+                </p>
+                <p className={cn(ANIME_DESTINATION_SUPPORTING_VALUE, 'text-base', legibility.copy)}>
+                  {ANIME_DESTINATION_COPY.crunchyrollUnavailable}
+                </p>
               </div>
             </div>
-            <AnimeDestinationPaths
-              anime={anime}
-              presented={presented}
-              metadata={metadata}
-            />
-          </motion.div>
-        </motion.div>
-      </div>
+          </motion.section>
+        ) : null}
+
+        <div id="anime-universe-paths">
+          <AnimeDestinationPaths
+            anime={anime}
+            presented={presented}
+            metadata={metadata}
+          />
+        </div>
+
+        <section
+          id="anime-universe-beyond"
+          data-slot="anime-universe-section"
+          className="items-center"
+        >
+          <div data-slot="anime-universe-beyond" className="flex flex-col items-center">
+            <p data-slot="anime-universe-kicker" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.beyondEyebrow}
+            </p>
+            <p
+              className={cn(
+                'max-w-xl text-[clamp(1.75rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.03em] text-foreground',
+                legibility.copy,
+              )}
+            >
+              {ANIME_DESTINATION_COPY.beyondTitle}
+            </p>
+            <p
+              className={cn(
+                'mt-4 max-w-md text-sm leading-relaxed text-foreground/65',
+                legibility.copy,
+              )}
+            >
+              {ANIME_DESTINATION_COPY.beyondBody}
+            </p>
+            <p
+              data-slot="anime-universe-infinity"
+              aria-hidden="true"
+            >
+              ∞
+            </p>
+            <button
+              type="button"
+              data-slot="anime-universe-return"
+              onClick={clearAnimeArrival}
+              className={cn(
+                'text-[0.6875rem] uppercase tracking-[0.28em] text-foreground/80',
+                'border-b border-border/40 pb-1',
+                'outline-none motion-safe:transition-colors motion-reduce:transition-none',
+                'hover:border-ring/50 hover:text-ring',
+                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                legibility.copy,
+              )}
+            >
+              {ANIME_DESTINATION_COPY.returnContinuum}
+            </button>
+          </div>
+        </section>
+      </article>
     </motion.div>
   );
 }
-

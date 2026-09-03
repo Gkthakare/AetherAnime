@@ -46,7 +46,7 @@ describe('world transport schedule', () => {
     const schedule = worldTransportSchedule(false);
     assert.equal(schedule.departS, WORLD_TRANSPORT_DEPART_S);
     assert.ok(schedule.urlCommitS > schedule.departS);
-    assert.equal(schedule.totalS, schedule.departS + 1.2);
+    assert.equal(schedule.totalS, schedule.departS + 2.4);
   });
 
   test('reduced motion collapses dwells', () => {

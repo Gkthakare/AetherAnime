@@ -52,7 +52,7 @@ describe('TASK-080 Destination arrival ceremony', () => {
       ANIME_DESTINATION_ARRIVAL_DELAY.body <
         ANIME_DESTINATION_ARRIVAL_DELAY.actions,
     );
-    assert.ok(ANIME_DESTINATION_ARRIVAL_DELAY.actions <= 1.2);
+    assert.ok(ANIME_DESTINATION_ARRIVAL_DELAY.actions <= 2.4);
     assert.equal(delayOf(animeDestinationPoster), ANIME_DESTINATION_ARRIVAL_DELAY.poster);
     assert.equal(
       delayOf(animeDestinationIdentity),
