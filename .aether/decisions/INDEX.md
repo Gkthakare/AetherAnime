@@ -58,6 +58,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-099]] | Universe network | Beyond spatial neighbors from real MAL similar; second-order travel via arriveAnime |
 | [[TASK-100]] | Universe continuity | Ephemeral journeyOrigin residual across A→B hops; no graph or new persistence |
 | [[TASK-101]] | Living universe | Spatial here promotes/recedes environmental fields; no fabricated life |
+| [[TASK-102]] | Capital experience audit II | Destination loop is a distinct anime world (70%); no code; protect & measure |
 
 ## Clusters
 
