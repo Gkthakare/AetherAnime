@@ -427,12 +427,31 @@
   text-align: center;
 }
 
+[data-slot='anime-universe-beyond']:has([data-slot='anime-universe-network']) {
+  min-height: auto;
+  padding-bottom: 4rem;
+}
+
 [data-slot='anime-universe-infinity'] {
   margin: 2.75rem 0 2rem;
   font-size: clamp(5rem, 16vw, 11rem);
   line-height: 1;
   letter-spacing: 0.12em;
   color: color-mix(in oklab, var(--foreground) 42%, transparent);
+}
+
+[data-slot='anime-universe-infinity'][data-network='open'] {
+  margin: 1.5rem 0 1.25rem;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  color: color-mix(in oklab, var(--foreground) 28%, transparent);
+}
+
+[data-universe-depth='beyond']:has([data-slot='anime-universe-network']) [data-slot='anime-universe-kicker'] {
+  margin-bottom: 0.85rem;
+}
+
+[data-universe-depth='beyond']:has([data-slot='anime-universe-network']) [data-slot='anime-universe-beyond'] > p:nth-of-type(2) {
+  font-size: clamp(1.65rem, 4.5vw, 3.25rem);
 }
 
 [data-slot='anime-universe-paths-here'] {
@@ -728,27 +747,22 @@
   opacity: 0.34;
 }
 
-[data-slot='anime-universe-neighbors'] {
-  position: relative;
-  width: 100%;
-  max-width: 42rem;
-  margin-top: 2.75rem;
-  opacity: 0.92;
-}
-
-/**
- * TASK-099 — spatial universe network.
- * Nearby universes, not recommendation cards.
- */
-
 [data-slot='anime-universe-network'] {
   position: relative;
   display: flex;
   width: 100%;
   flex-direction: column;
   align-items: center;
-  gap: 1.75rem;
-  padding: 0.5rem 0 0;
+  gap: 1.25rem;
+  padding: 0.25rem 0 0;
+}
+
+[data-slot='anime-universe-neighbors'] {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  margin-top: 0.75rem;
+  opacity: 0.92;
 }
 
 [data-slot='anime-universe-network-origin'] {
@@ -789,10 +803,11 @@
   width: 100%;
   list-style: none;
   margin: 0;
-  padding: 1.5rem 0 0;
+  padding: 1rem 0 0;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.25rem 1.75rem;
+  align-items: flex-start;
+  gap: 1rem 1.5rem;
 }
 
 [data-slot='anime-universe-network-constellation']::before {
@@ -813,11 +828,11 @@
 }
 
 [data-slot='anime-universe-neighbor'][data-neighbor-index='1'] {
-  margin-top: 1.75rem;
+  margin-top: 0.85rem;
 }
 
 [data-slot='anime-universe-neighbor'][data-neighbor-index='2'] {
-  margin-top: 0.35rem;
+  margin-top: 0.15rem;
 }
 
 [data-slot='anime-universe-neighbor-path'] {
@@ -832,8 +847,8 @@
 [data-slot='anime-universe-neighbor-field'] {
   position: relative;
   display: block;
-  width: 6.5rem;
-  height: 9.25rem;
+  width: 5.75rem;
+  height: 8.25rem;
   overflow: hidden;
   opacity: 0.42;
   mask-image: linear-gradient(

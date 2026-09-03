@@ -15,10 +15,6 @@ const destinationSource = readFileSync(
   join(widgetDir, 'anime-destination.tsx'),
   'utf8',
 );
-const pathsViewSource = readFileSync(
-  join(widgetDir, 'anime-destination-paths.tsx'),
-  'utf8',
-);
 const networkSource = readFileSync(
   join(widgetDir, 'anime-destination-network.tsx'),
   'utf8',

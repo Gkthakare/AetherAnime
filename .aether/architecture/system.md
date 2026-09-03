@@ -73,6 +73,7 @@ WorldScene
 | Story | `anime-destination.paths.ts` (`destinationStoryRecord`) | catalog orientation + already-loaded MAL synopsis. Zero extra requests, no LLM |
 | Signals | `destinationSignalTags` over `shared/anime/anime.semantic-profile.ts` | application-owned semantic evidence, no scores |
 | Kinship | `destinationKinshipAvailable` + `requestAnimeDiscovery({ kind: 'similar' })` | branching candidate paths; at most one request per mounted destination |
+| Universe network | `AnimeUniverseNetwork` + `useNeighboringWorlds` | Beyond spatial neighbors (≤3); catalog or discovered MAL identity; travel via `arriveAnime` |
 
 `AnimeDestinationPaths` remounts an inner instance keyed on `anime.slug` so path state cannot leak between destinations.
 

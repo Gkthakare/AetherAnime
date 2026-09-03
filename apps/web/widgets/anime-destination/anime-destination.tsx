@@ -224,63 +224,75 @@ function UniverseField({
  * AnimeDestination — an arrived anime universe inside AetherAnime.
  *
  * Reads arrivedAnime from WorldScene. WorldLayout places the universe stage.
+ * Remounts per slug so neighboring-world state cannot leak across universes.
  */
 export function AnimeDestination({ className }: AnimeDestinationProps) {
   const { arrivedAnime, arriveAnime, clearAnimeArrival } = useWorldScene();
-  const reduceMotion = useReducedMotion();
-  const metadata = useAnimeMetadata(arrivedAnime?.slug ?? null);
-
-  const anime = arrivedAnime;
-  const watchlist = useLocalWatchlist(
-    anime?.id ?? '',
-    anime?.slug ?? '',
-    anime?.canonicalTitle ?? '',
+  if (!arrivedAnime) return null;
+  return (
+    <AnimeDestinationUniverse
+      key={arrivedAnime.slug}
+      anime={arrivedAnime}
+      arriveAnime={arriveAnime}
+      clearAnimeArrival={clearAnimeArrival}
+      className={className}
+    />
   );
-  const presented = anime
-    ? overlayDiscoveredMetadata(anime, metadata)
-    : null;
+}
+
+function AnimeDestinationUniverse({
+  anime,
+  arriveAnime,
+  clearAnimeArrival,
+  className,
+}: {
+  readonly anime: CanonicalAnime;
+  readonly arriveAnime: (next: CanonicalAnime) => void;
+  readonly clearAnimeArrival: () => void;
+  readonly className?: string;
+}) {
+  const reduceMotion = useReducedMotion();
+  const metadata = useAnimeMetadata(anime.slug);
+
+  const watchlist = useLocalWatchlist(
+    anime.id,
+    anime.slug,
+    anime.canonicalTitle,
+  );
+  const presented = overlayDiscoveredMetadata(anime, metadata);
   const extraStory = destinationStoryRecord(
-    presented?.synopsis ?? '',
+    presented.synopsis,
     metadata?.synopsis ?? null,
   );
   const signalTags = destinationSignalTags({
-    genres: presented?.genres ?? [],
-    synopsis: presented?.synopsis ?? '',
+    genres: presented.genres,
+    synopsis: presented.synopsis,
   });
-  const hasPaths = anime
-    ? destinationAvailablePaths({
-        story: extraStory,
-        signalCount: signalTags.length,
-        kinshipAvailable: destinationKinshipAvailable(anime),
-        copy: ANIME_DESTINATION_COPY,
-      }).length > 0
-    : false;
-  const nav = anime
-    ? destinationUniverseNav({
-        synopsis: presented?.synopsis ?? '',
-        year: anime.year,
-        genres: presented?.genres ?? [],
-        studios: anime.studios,
-        episodeCount: anime.episodeCount,
-        score: presented?.score ?? null,
-        hasPaths,
-      })
-    : [];
+  const hasPaths =
+    destinationAvailablePaths({
+      story: extraStory,
+      signalCount: signalTags.length,
+      kinshipAvailable: destinationKinshipAvailable(anime),
+      copy: ANIME_DESTINATION_COPY,
+    }).length > 0;
+  const nav = destinationUniverseNav({
+    synopsis: presented.synopsis,
+    year: anime.year,
+    genres: presented.genres,
+    studios: anime.studios,
+    episodeCount: anime.episodeCount,
+    score: presented.score ?? null,
+    hasPaths,
+  });
   const here = useUniverseHere(nav.map((entry) => entry.id));
   const [explorePath, setExplorePath] = useState<DestinationPathId | null>(
     null,
   );
-  const kinshipAvailable = anime
-    ? destinationKinshipAvailable(anime)
-    : false;
+  const kinshipAvailable = destinationKinshipAvailable(anime);
   const neighboringEnabled =
     kinshipAvailable &&
-    (here === 'paths' ||
-      here === 'beyond' ||
-      explorePath === 'kinship');
+    (here === 'paths' || here === 'beyond' || explorePath === 'kinship');
   const neighboring = useNeighboringWorlds(anime, neighboringEnabled);
-
-  if (!anime || !presented) return null;
 
   const enterNeighbor = (key: string) => {
     if (neighboring.status !== 'ready') return;
@@ -766,12 +778,6 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
                 ? formatBeyondNetworkLine(networkCandidates.length)
                 : ANIME_DESTINATION_COPY.beyondBody}
             </p>
-            <p
-              data-slot="anime-universe-infinity"
-              aria-hidden="true"
-            >
-              ∞
-            </p>
             {networkOpen ? (
               <div
                 data-slot="anime-universe-neighbors"
@@ -797,12 +803,19 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
                 {ANIME_DESTINATION_COPY.kinshipListening}
               </p>
             ) : null}
+            <p
+              data-slot="anime-universe-infinity"
+              data-network={networkOpen ? 'open' : 'closed'}
+              aria-hidden="true"
+            >
+              ∞
+            </p>
             <button
               type="button"
               data-slot="anime-universe-return"
               onClick={clearAnimeArrival}
               className={cn(
-                'mt-10 text-[0.6875rem] uppercase tracking-[0.28em] text-foreground/80',
+                'text-[0.6875rem] uppercase tracking-[0.28em] text-foreground/80',
                 'border-b border-border/40 pb-1',
                 'outline-none motion-safe:transition-colors motion-reduce:transition-none',
                 'hover:border-ring/50 hover:text-ring',
