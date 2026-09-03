@@ -1,7 +1,8 @@
 /**
  * TASK-097 — Anime Universe visual depth.
+ * TASK-103 — Vertical Chamber Universe (poster-only recomposition).
  *
- * Environmental composition over native document scroll.
+ * Chambers over native document scroll.
  * No wheel hijack, no continuous compositor, no card wall.
  */
 
@@ -47,35 +48,36 @@
   width: 100%;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 22vh 7vw 10vh;
+  padding: 28vh 8vw 12vh;
+  isolation: isolate;
 }
 
 [data-slot='anime-universe-figure'] {
   pointer-events: none;
   position: absolute;
-  inset: 0 0 0 auto;
-  width: min(78vw, 64rem);
+  inset: 0;
+  width: 100%;
   height: 100%;
   overflow: hidden;
-  opacity: 1;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    #000 16%,
-    #000 100%
+  opacity: 0.94;
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 88% at 62% 42%,
+    #000 0%,
+    #000 42%,
+    transparent 78%
   );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    #000 16%,
-    #000 100%
+  mask-image: radial-gradient(
+    ellipse 78% 88% at 62% 42%,
+    #000 0%,
+    #000 42%,
+    transparent 78%
   );
 }
 
 [data-slot='anime-universe-figure'] img {
   object-fit: cover;
-  object-position: 50% 48%;
-  transform: scale(1.04);
+  object-position: 62% 36%;
+  transform: scale(1.06);
 }
 
 [data-slot='anime-universe-figure'][data-figure='seal'] {
@@ -89,10 +91,40 @@
   position: relative;
   z-index: 2;
   display: flex;
-  max-width: 48rem;
+  max-width: min(42rem, 54vw);
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 1.75rem;
+}
+
+[data-slot='anime-universe-hero'] [data-slot='anime-destination-metadata'] {
+  margin-top: 0.35rem;
+  max-width: 22rem;
+  opacity: 0.18;
+  letter-spacing: 0.14em;
+}
+
+[data-slot='anime-universe-hero'] [data-slot='anime-destination-actions'] {
+  margin-top: 1.25rem;
+  opacity: 0.78;
+  min-height: 2.75rem;
+  align-items: center;
+}
+
+[data-slot='anime-universe-hero'] [data-slot='anime-destination-watch-now'],
+[data-slot='anime-universe-hero'] [data-slot='anime-destination-watchlist'] {
+  min-height: 2.75rem;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+[data-slot='anime-universe-hero'] [data-slot='anime-universe-exit'] {
+  opacity: 0.55;
+}
+
+[data-slot='anime-universe-hero'] [data-slot='anime-universe-statement'] {
+  max-width: 22rem;
+  opacity: 0.72;
 }
 
 [data-slot='anime-destination-title'] {
@@ -128,6 +160,7 @@
   z-index: 22;
   display: block;
   transform: translateY(-50%);
+  opacity: 0.34;
 }
 
 [data-slot='anime-universe-index'] ol {
@@ -186,11 +219,12 @@
 [data-slot='anime-universe-section'] {
   position: relative;
   display: flex;
-  min-height: 86dvh;
+  min-height: 100dvh;
   width: 100%;
   flex-direction: column;
   justify-content: center;
-  padding: 14vh 8vw;
+  padding: 16vh 8vw;
+  isolation: isolate;
 }
 
 [data-slot='anime-universe-section']::before {
@@ -207,72 +241,72 @@
 }
 
 [data-universe-depth='story'] {
-  min-height: 96dvh;
+  min-height: 100dvh;
   justify-content: flex-end;
-  padding: 18vh 8vw 16vh;
+  padding: 20vh 8vw 18vh;
 }
 
 [data-universe-depth='story']::before {
   background: linear-gradient(
-    105deg,
-    rgba(2, 4, 10, 0.08) 0%,
-    rgba(2, 4, 10, 0.22) 38%,
-    rgba(2, 4, 10, 0.62) 100%
+    115deg,
+    rgba(2, 4, 10, 0.04) 0%,
+    rgba(2, 4, 10, 0.28) 42%,
+    rgba(2, 4, 10, 0.72) 100%
   );
 }
 
 [data-universe-depth='world'] {
-  min-height: 88dvh;
+  min-height: 100dvh;
 }
 
 [data-universe-depth='world']::before {
   background: linear-gradient(
     180deg,
-    rgba(2, 4, 10, 0.28) 0%,
-    rgba(2, 4, 10, 0.12) 42%,
-    rgba(2, 4, 10, 0.55) 100%
+    rgba(2, 4, 10, 0.42) 0%,
+    rgba(2, 4, 10, 0.08) 38%,
+    rgba(2, 4, 10, 0.62) 100%
   );
 }
 
 [data-universe-depth='record'] {
-  min-height: 78dvh;
-  padding: 12vh 8vw;
+  min-height: 100dvh;
+  padding: 14vh 8vw;
 }
 
 [data-universe-depth='record']::before {
   background: linear-gradient(
     90deg,
-    rgba(2, 4, 10, 0.58) 0%,
-    rgba(2, 4, 10, 0.18) 55%,
-    rgba(2, 4, 10, 0.42) 100%
+    rgba(2, 4, 10, 0.68) 0%,
+    rgba(2, 4, 10, 0.22) 55%,
+    rgba(2, 4, 10, 0.52) 100%
   );
 }
 
 [data-universe-depth='deep'] {
-  min-height: 92dvh;
-  padding: 12vh 8vw 16vh;
+  min-height: 100dvh;
+  padding: 14vh 8vw 18vh;
 }
 
 [data-universe-depth='deep']::before {
   background: linear-gradient(
     180deg,
-    rgba(2, 4, 10, 0.42) 0%,
-    rgba(2, 4, 10, 0.62) 100%
+    rgba(2, 4, 10, 0.48) 0%,
+    rgba(2, 4, 10, 0.7) 100%
   );
 }
 
 [data-universe-depth='beyond'] {
-  min-height: 132dvh;
+  min-height: 118dvh;
   justify-content: center;
-  padding: 28vh 8vw 22vh;
+  padding: 32vh 8vw 26vh;
 }
 
 [data-universe-depth='beyond']::before {
   background: linear-gradient(
     180deg,
-    rgba(2, 4, 10, 0.35) 0%,
-    rgba(2, 4, 10, 0.04) 38%,
-    rgba(2, 4, 10, 0) 100%
+    rgba(2, 4, 10, 0.55) 0%,
+    rgba(2, 4, 10, 0.08) 42%,
+    rgba(2, 4, 10, 0.02) 100%
   );
 }
 
@@ -350,60 +384,60 @@
 }
 
 [data-slot='anime-universe-field'][data-crop='story'] {
-  inset: -8% auto -8% -12%;
-  width: min(58vw, 40rem);
-  height: 116%;
-  opacity: 0.52;
-  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 48%, transparent 100%);
-  mask-image: linear-gradient(90deg, #000 0%, #000 48%, transparent 100%);
+  inset: -12% auto -14% -18%;
+  width: min(72vw, 54rem);
+  height: 124%;
+  opacity: 0.38;
+  -webkit-mask-image: linear-gradient(100deg, #000 0%, #000 42%, transparent 92%);
+  mask-image: linear-gradient(100deg, #000 0%, #000 42%, transparent 92%);
 }
 
 [data-slot='anime-universe-field'][data-crop='story'] img {
-  object-position: 50% 78%;
-  transform: scale(1.28);
+  object-position: 42% 82%;
+  transform: scale(1.42);
 }
 
 [data-slot='anime-universe-field'][data-crop='world'] {
-  inset: auto 0 0 auto;
-  width: min(46vw, 34rem);
-  height: 72%;
-  opacity: 0.34;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 28%, #000 70%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, #000 28%, #000 70%, transparent 100%);
+  inset: auto -8% 0 -4%;
+  width: min(88vw, 68rem);
+  height: 58%;
+  opacity: 0.28;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 68%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 68%, transparent 100%);
 }
 
 [data-slot='anime-universe-field'][data-crop='world'] img {
-  object-position: 52% 18%;
-  transform: scale(1.15);
+  object-position: 48% 12%;
+  transform: scale(1.22);
 }
 
 [data-slot='anime-universe-field'][data-crop='record'] {
-  top: 8%;
-  right: -6%;
-  width: min(38vw, 28rem);
-  height: 84%;
-  opacity: 0.36;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 40%, #000 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 40%, #000 100%);
+  top: 4%;
+  right: -10%;
+  width: min(48vw, 34rem);
+  height: 92%;
+  opacity: 0.3;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 36%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 36%, #000 100%);
 }
 
 [data-slot='anime-universe-field'][data-crop='record'] img {
-  object-position: 82% 40%;
-  transform: scale(1.38);
+  object-position: 88% 38%;
+  transform: scale(1.48);
 }
 
 [data-slot='anime-universe-field'][data-crop='beyond'] {
-  inset: 6% 8% auto auto;
-  width: min(54vw, 42rem);
-  height: 58%;
-  opacity: 0.12;
-  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 72%);
+  inset: 4% 6% auto auto;
+  width: min(62vw, 48rem);
+  height: 52%;
+  opacity: 0.1;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 38%, #000 0%, transparent 68%);
+  mask-image: radial-gradient(ellipse at 50% 38%, #000 0%, transparent 68%);
 }
 
 [data-slot='anime-universe-field'][data-crop='beyond'] img {
-  object-position: 48% 8%;
-  transform: scale(1.12);
+  object-position: 48% 6%;
+  transform: scale(1.18);
 }
 
 [data-slot='anime-universe-kicker'] {
@@ -515,11 +549,12 @@
 
 @media (min-width: 64rem) {
   [data-slot='anime-universe-hero'] {
-    padding: 18vh 9vw 12vh;
+    padding: 24vh 10vw 14vh;
   }
 
   [data-slot='anime-universe-index'] {
     right: 1.35rem;
+    opacity: 0.36;
   }
 
   [data-slot='anime-universe-index'] a {
@@ -530,16 +565,31 @@
   }
 
   [data-slot='anime-universe-figure'] {
-    width: min(68vw, 66rem);
-    inset: 0 -4% 0 auto;
+    inset: 0;
+    width: 100%;
+    opacity: 0.92;
+    -webkit-mask-image: radial-gradient(
+      ellipse 72% 86% at 68% 40%,
+      #000 0%,
+      #000 38%,
+      transparent 76%
+    );
+    mask-image: radial-gradient(
+      ellipse 72% 86% at 68% 40%,
+      #000 0%,
+      #000 38%,
+      transparent 76%
+    );
   }
 
   [data-slot='anime-universe-figure'] img {
-    object-position: 50% 46%;
+    object-position: 68% 34%;
+    transform: scale(1.08);
   }
 
   [data-slot='anime-universe-story-copy'] {
-    margin-left: min(18vw, 12rem);
+    margin-left: min(22vw, 14rem);
+    max-width: 32rem;
   }
 
   [data-slot='anime-universe-path-fork'] > :nth-child(even) {
@@ -547,27 +597,28 @@
   }
 
   [data-slot='anime-universe-field'][data-crop='story'] {
-    width: min(52vw, 46rem);
-    opacity: 0.42;
+    width: min(68vw, 56rem);
+    opacity: 0.34;
   }
 }
 
 @media (min-width: 90rem) {
   [data-slot='anime-universe-hero'] {
-    padding-left: 10vw;
-    padding-right: 8vw;
+    padding-left: 11vw;
+    padding-right: 9vw;
   }
 
   [data-slot='anime-universe-figure'] {
-    width: min(64vw, 72rem);
+    inset: 0;
+    width: 100%;
   }
 
   [data-slot='anime-universe-figure'] img {
-    object-position: 50% 46%;
+    object-position: 64% 38%;
   }
 
   [data-slot='anime-universe-identity'] {
-    max-width: 52rem;
+    max-width: min(48rem, 46vw);
   }
 
   [data-slot='anime-universe-heading'] {
@@ -577,38 +628,43 @@
 
 @media (max-width: 639px) {
   [data-slot='anime-universe-hero'] {
-    padding: 24vh 7vw 11vh;
+    min-height: 100dvh;
+    padding: 30vh 7vw 12vh;
   }
 
   [data-slot='anime-universe-figure'] {
     inset: 0;
     width: 100%;
-    height: 70%;
-    opacity: 0.94;
+    height: 100%;
+    opacity: 0.88;
     -webkit-mask-image: linear-gradient(
       180deg,
       transparent 0%,
-      #000 10%,
-      #000 58%,
-      transparent 100%
+      #000 8%,
+      #000 52%,
+      transparent 92%
     );
     mask-image: linear-gradient(
       180deg,
       transparent 0%,
-      #000 10%,
-      #000 58%,
-      transparent 100%
+      #000 8%,
+      #000 52%,
+      transparent 92%
     );
   }
 
   [data-slot='anime-universe-figure'] img {
-    object-position: 50% 42%;
-    transform: scale(1.06);
+    object-position: 50% 36%;
+    transform: scale(1.12);
+  }
+
+  [data-slot='anime-universe-identity'] {
+    max-width: 100%;
   }
 
   [data-slot='anime-universe-section'] {
-    min-height: 78dvh;
-    padding: 12vh 7vw;
+    min-height: 100dvh;
+    padding: 14vh 7vw;
   }
 
   [data-slot='anime-universe-field'][data-crop='story'],
@@ -616,14 +672,14 @@
   [data-slot='anime-universe-field'][data-crop='record'] {
     inset: 0;
     width: 100%;
-    height: 48%;
-    opacity: 0.28;
+    height: 56%;
+    opacity: 0.32;
   }
 
   [data-slot='anime-universe-field'][data-crop='beyond'] {
     inset: 0 0 auto;
     width: 100%;
-    height: 40%;
+    height: 44%;
   }
 
   [data-slot='world-layout'][data-world-arrival='anime'] [data-slot='world-identity'] {
@@ -718,7 +774,7 @@
 }
 
 [data-universe-explore='story'] [data-slot='anime-universe-field'][data-crop='story'] {
-  opacity: 0.78;
+  opacity: 0.88;
 }
 
 [data-universe-explore='story'] [data-universe-depth='story'] [data-slot='anime-universe-story-copy'] {
@@ -745,6 +801,7 @@
 
 /**
  * TASK-101 — living depth answer.
+ * TASK-103 — consequential chamber ownership (active owns the air).
  * Spatial here (IntersectionObserver) makes the environment answer the
  * traveller's position. Not decorative motion; no new state or data.
  */
@@ -752,29 +809,32 @@
 [data-universe-here='story'] [data-slot='anime-universe-figure'],
 [data-universe-here='world'] [data-slot='anime-universe-figure'],
 [data-universe-here='record'] [data-slot='anime-universe-figure'] {
-  opacity: 0.4;
+  opacity: 0.28;
 }
 
 [data-universe-here='paths'] [data-slot='anime-universe-figure'],
 [data-universe-here='beyond'] [data-slot='anime-universe-figure'] {
-  opacity: 0.18;
+  opacity: 0.1;
 }
 
 [data-universe-here='story'] [data-slot='anime-universe-field'][data-crop='story'] {
-  opacity: 0.78;
+  opacity: 0.88;
 }
 
 [data-universe-here='world'] [data-slot='anime-universe-field'][data-crop='world'] {
-  opacity: 0.62;
+  opacity: 0.78;
 }
 
 [data-universe-here='record'] [data-slot='anime-universe-field'][data-crop='record'] {
-  opacity: 0.58;
+  opacity: 0.72;
 }
 
-[data-universe-here='paths'] [data-slot='anime-universe-field'][data-crop='beyond'],
+[data-universe-here='paths'] [data-slot='anime-universe-field'][data-crop='beyond'] {
+  opacity: 0.28;
+}
+
 [data-universe-here='beyond'] [data-slot='anime-universe-field'][data-crop='beyond'] {
-  opacity: 0.42;
+  opacity: 0.18;
 }
 
 [data-universe-here='story'] [data-slot='anime-universe-field']:not([data-crop='story']),
@@ -782,7 +842,7 @@
 [data-universe-here='record'] [data-slot='anime-universe-field']:not([data-crop='record']),
 [data-universe-here='paths'] [data-slot='anime-universe-field']:not([data-crop='beyond']),
 [data-universe-here='beyond'] [data-slot='anime-universe-field']:not([data-crop='beyond']) {
-  opacity: 0.16;
+  opacity: 0.08;
 }
 
 [data-universe-here='paths'] [data-slot='anime-universe-anchor'],
@@ -826,7 +886,7 @@
 
 /* TASK-098 explore must still win over depth recession on Paths. */
 [data-universe-explore='story'] [data-slot='anime-universe-field'][data-crop='story'] {
-  opacity: 0.78;
+  opacity: 0.88;
 }
 
 [data-universe-claimed='true'][data-universe-here='paths'] [data-slot='anime-universe-anchor'],
@@ -1195,7 +1255,7 @@
   }
 
   [data-universe-explore='story'] [data-slot='anime-universe-field'][data-crop='story'] {
-    opacity: 0.62;
+    opacity: 0.88;
   }
 }
 
@@ -1221,6 +1281,32 @@
 
   [data-universe-claimed='true'] [data-slot='anime-universe-anchor'] {
     opacity: 0.55;
+  }
+
+  /* TASK-103 — mobile chamber answer must remain perceptible */
+  [data-universe-here='story'] [data-slot='anime-universe-field'][data-crop='story'],
+  [data-universe-here='world'] [data-slot='anime-universe-field'][data-crop='world'],
+  [data-universe-here='record'] [data-slot='anime-universe-field'][data-crop='record'] {
+    opacity: 0.82;
+    height: 64%;
+  }
+
+  [data-universe-here='beyond'] [data-slot='anime-universe-field'][data-crop='beyond'] {
+    opacity: 0.2;
+  }
+
+  [data-universe-here='story'] [data-slot='anime-universe-field']:not([data-crop='story']),
+  [data-universe-here='world'] [data-slot='anime-universe-field']:not([data-crop='world']),
+  [data-universe-here='record'] [data-slot='anime-universe-field']:not([data-crop='record']),
+  [data-universe-here='paths'] [data-slot='anime-universe-field']:not([data-crop='beyond']),
+  [data-universe-here='beyond'] [data-slot='anime-universe-field']:not([data-crop='beyond']) {
+    opacity: 0.08;
+  }
+
+  /* TASK-098/103 — explore must still win over mobile depth recession */
+  [data-universe-explore='story'] [data-slot='anime-universe-field'][data-crop='story'] {
+    opacity: 0.82;
+    height: 64%;
   }
 
   [data-slot='anime-universe-neighbors'] {

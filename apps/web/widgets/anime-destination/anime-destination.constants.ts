@@ -219,7 +219,7 @@ export const ANIME_DESTINATION_TITLE =
   'text-[clamp(3rem,14vw,9rem)] md:text-[clamp(3.75rem,9vw,10rem)] lg:text-[clamp(4.5rem,8.4vw,11rem)]' as const;
 
 export const ANIME_DESTINATION_POSTER_SIZES =
-  '(max-width: 767px) 100vw, (max-width: 1279px) 52vw, 640px' as const;
+  '100vw' as const;
 
 export const ANIME_POSTER_EDGE = {
   rest: 'bg-ring/40',

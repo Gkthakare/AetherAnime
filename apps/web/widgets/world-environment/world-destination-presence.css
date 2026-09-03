@@ -179,36 +179,38 @@
 /*
  * TASK-075 — anime artwork present: generic Destination geography becomes
  * framing only. Null/absent artwork keeps the TASK-060 opacities above.
+ * TASK-103 — one atmosphere: poster chambers author the place; geography
+ * subordinates further without a second environment system.
  */
 [data-slot='world-scene'][data-world-anime]
   [data-slot='world-environment'][data-anime-artwork='present']
   [data-slot='world-environment-image'] {
-  opacity: 0.22;
+  opacity: 0.12;
 }
 
 [data-slot='world-scene'][data-world-anime]
   [data-slot='world-environment'][data-anime-artwork='present']
   [data-slot='world-environment-midground-architecture'] {
-  opacity: 0.18;
+  opacity: 0.08;
 }
 
 [data-slot='world-scene'][data-world-anime]
   [data-slot='world-environment'][data-anime-artwork='present']
   [data-slot='world-environment-foreground-architecture'] {
-  opacity: 0.55;
+  opacity: 0.28;
 }
 
 [data-slot='world-scene'][data-world-anime]
   [data-slot='world-environment'][data-anime-artwork='present']
   [data-slot='world-environment-foreground-architecture']
   img {
-  opacity: 0.62;
+  opacity: 0.34;
 }
 
 @media (max-width: 639px) {
   [data-slot='world-scene'][data-world-anime]
     [data-slot='world-environment'][data-anime-artwork='present']
     [data-slot='world-environment-image'] {
-    opacity: 0.26;
+    opacity: 0.14;
   }
 }
