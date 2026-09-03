@@ -77,7 +77,7 @@
 [data-slot='anime-universe-figure'] img {
   object-fit: cover;
   object-position: 62% 36%;
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
 [data-slot='anime-universe-figure'][data-figure='seal'] {
@@ -95,6 +95,12 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 1.75rem;
+}
+
+[data-slot='anime-universe-hero'] [data-slot='anime-destination-title'] {
+  color: color-mix(in oklab, var(--foreground) 88%, transparent);
+  max-width: 14ch;
+  text-wrap: balance;
 }
 
 [data-slot='anime-universe-hero'] [data-slot='anime-destination-metadata'] {
@@ -394,7 +400,7 @@
 
 [data-slot='anime-universe-field'][data-crop='story'] img {
   object-position: 42% 82%;
-  transform: scale(1.42);
+  transform: scale(1.28);
 }
 
 [data-slot='anime-universe-field'][data-crop='world'] {
@@ -408,7 +414,7 @@
 
 [data-slot='anime-universe-field'][data-crop='world'] img {
   object-position: 48% 12%;
-  transform: scale(1.22);
+  transform: scale(1.14);
 }
 
 [data-slot='anime-universe-field'][data-crop='record'] {
@@ -423,7 +429,7 @@
 
 [data-slot='anime-universe-field'][data-crop='record'] img {
   object-position: 88% 38%;
-  transform: scale(1.48);
+  transform: scale(1.32);
 }
 
 [data-slot='anime-universe-field'][data-crop='beyond'] {
@@ -584,7 +590,7 @@
 
   [data-slot='anime-universe-figure'] img {
     object-position: 68% 34%;
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 
   [data-slot='anime-universe-story-copy'] {
@@ -869,9 +875,9 @@
   [data-slot='anime-universe-anchor'],
   [data-slot='anime-universe-anchor'] [data-universe-spine] {
     transition:
-      opacity 0.45s ease,
-      height 0.45s ease,
-      background-color 0.45s ease;
+      opacity 0.32s ease,
+      height 0.32s ease,
+      background-color 0.32s ease;
   }
 }
 

@@ -6,7 +6,7 @@ Confirmed visual shortcomings only. Each entry was observed, not speculated.
 
 
 
-Last verified: TASK-080 (contain field + arrival ceremony shipped)
+Last verified: TASK-103 (Vertical Chamber Universe)
 
 
 
@@ -26,7 +26,7 @@ Last verified: TASK-080 (contain field + arrival ceremony shipped)
 
 
 
-- **Option D field recognizability remains poster-dependent.** [[TASK-080]] `contain` + vignette reduces crop-wall reading; dark/low-chroma posters can still read mainly as color atmosphere in still frames. Not a hierarchy failure; not Class C.
+- **Option D / chamber field recognizability remains poster-dependent.** [[TASK-080]] / [[TASK-103]] crops can read mainly as atmosphere when posters are dark/low-chroma or when figure is sacrificed for chamber volume. Not a hierarchy failure; Class C / dedicated art-asset track remains deferred ([[TASK-103]] ceiling).
 
 
 
@@ -42,4 +42,4 @@ Only add an entry you have actually looked at. "Could be nicer" is not debt. Rem
 
 
 
-[[current-state]] · [[visual-language]] · [[TASK-054]] · [[TASK-055]] · [[TASK-060]] · [[TASK-064]] · [[TASK-069]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-080]]
+[[current-state]] · [[visual-language]] · [[TASK-054]] · [[TASK-055]] · [[TASK-060]] · [[TASK-064]] · [[TASK-069]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-080]] · [[TASK-103]]
