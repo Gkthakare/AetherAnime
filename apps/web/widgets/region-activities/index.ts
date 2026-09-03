@@ -5,4 +5,5 @@
  */
 
 export { RegionActivities } from './region-activities';
+export { RegionContinuumDiscovery } from './region-continuum-discovery';
 

@@ -66,6 +66,12 @@ export {
   resolveWorldRegionActivation,
 } from './world.activation';
 export type { WorldRegionActivationIntent } from './world.activation';
+export {
+  CONTINUUM_DISCOVERY_MAX,
+  CONTINUUM_DISCOVERY_SLUGS,
+  isContinuumDiscoveryRegion,
+  resolveContinuumDiscoveryCandidates,
+} from './world.continuum-discovery';
 export type {
   WorldCapability,
   WorldClimate,
