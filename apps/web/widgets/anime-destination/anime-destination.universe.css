@@ -743,6 +743,97 @@
   opacity: 0.22;
 }
 
+/**
+ * TASK-101 — living depth answer.
+ * Spatial here (IntersectionObserver) makes the environment answer the
+ * traveller's position. Not decorative motion; no new state or data.
+ */
+
+[data-universe-here='story'] [data-slot='anime-universe-figure'],
+[data-universe-here='world'] [data-slot='anime-universe-figure'],
+[data-universe-here='record'] [data-slot='anime-universe-figure'] {
+  opacity: 0.4;
+}
+
+[data-universe-here='paths'] [data-slot='anime-universe-figure'],
+[data-universe-here='beyond'] [data-slot='anime-universe-figure'] {
+  opacity: 0.18;
+}
+
+[data-universe-here='story'] [data-slot='anime-universe-field'][data-crop='story'] {
+  opacity: 0.78;
+}
+
+[data-universe-here='world'] [data-slot='anime-universe-field'][data-crop='world'] {
+  opacity: 0.62;
+}
+
+[data-universe-here='record'] [data-slot='anime-universe-field'][data-crop='record'] {
+  opacity: 0.58;
+}
+
+[data-universe-here='paths'] [data-slot='anime-universe-field'][data-crop='beyond'],
+[data-universe-here='beyond'] [data-slot='anime-universe-field'][data-crop='beyond'] {
+  opacity: 0.42;
+}
+
+[data-universe-here='story'] [data-slot='anime-universe-field']:not([data-crop='story']),
+[data-universe-here='world'] [data-slot='anime-universe-field']:not([data-crop='world']),
+[data-universe-here='record'] [data-slot='anime-universe-field']:not([data-crop='record']),
+[data-universe-here='paths'] [data-slot='anime-universe-field']:not([data-crop='beyond']),
+[data-universe-here='beyond'] [data-slot='anime-universe-field']:not([data-crop='beyond']) {
+  opacity: 0.16;
+}
+
+[data-universe-here='paths'] [data-slot='anime-universe-anchor'],
+[data-universe-here='beyond'] [data-slot='anime-universe-anchor'] {
+  opacity: 0.5;
+}
+
+[data-universe-here='story'] [data-slot='anime-universe-anchor'] [data-universe-spine],
+[data-universe-here='world'] [data-slot='anime-universe-anchor'] [data-universe-spine],
+[data-universe-here='record'] [data-slot='anime-universe-anchor'] [data-universe-spine] {
+  height: 3.4rem;
+  background: color-mix(in oklab, var(--foreground) 36%, transparent);
+}
+
+[data-universe-here='paths'] [data-slot='anime-universe-anchor'] [data-universe-spine],
+[data-universe-here='beyond'] [data-slot='anime-universe-anchor'] [data-universe-spine] {
+  height: 4.2rem;
+  background: color-mix(in oklab, var(--ring) 42%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='anime-universe-figure'],
+  [data-slot='anime-universe-field'],
+  [data-slot='anime-universe-anchor'],
+  [data-slot='anime-universe-anchor'] [data-universe-spine] {
+    transition:
+      opacity 0.45s ease,
+      height 0.45s ease,
+      background-color 0.45s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-universe-here='story'] [data-slot='anime-universe-field'][data-crop='story'],
+  [data-universe-here='world'] [data-slot='anime-universe-field'][data-crop='world'],
+  [data-universe-here='record'] [data-slot='anime-universe-field'][data-crop='record'],
+  [data-universe-here='beyond'] [data-slot='anime-universe-field'][data-crop='beyond'] {
+    transition: none;
+  }
+}
+
+/* TASK-098 explore must still win over depth recession on Paths. */
+[data-universe-explore='story'] [data-slot='anime-universe-field'][data-crop='story'] {
+  opacity: 0.78;
+}
+
+[data-universe-claimed='true'][data-universe-here='paths'] [data-slot='anime-universe-anchor'],
+[data-universe-claimed='true'][data-universe-here='beyond'] [data-slot='anime-universe-anchor'] {
+  opacity: 0.72;
+}
+
 [data-slot='anime-universe-path-fork']:has([aria-expanded='true']) > :not(:has([aria-expanded='true'])) {
   opacity: 0.34;
 }
