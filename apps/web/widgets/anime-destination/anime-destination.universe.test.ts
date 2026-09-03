@@ -92,10 +92,11 @@ describe('TASK-096 anime universe destination', () => {
       studios: solo.studios,
       episodeCount: solo.episodeCount,
       score: null,
+      hasPaths: true,
     });
     assert.deepEqual(
       nav.map((entry) => entry.id),
-      ['overview', 'story', 'world', 'record', 'beyond'],
+      ['overview', 'story', 'world', 'record', 'paths', 'beyond'],
     );
     assert.match(destinationSource, /id="anime-universe-story"/);
     assert.match(destinationSource, /id="anime-universe-world"/);

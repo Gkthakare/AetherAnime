@@ -10,6 +10,7 @@ export type DestinationUniverseNavId =
   | 'story'
   | 'world'
   | 'record'
+  | 'paths'
   | 'beyond';
 
 export type DestinationUniverseNavEntry = {
@@ -25,6 +26,7 @@ export type DestinationUniverseNavInput = {
   readonly studios: ReadonlyArray<string>;
   readonly episodeCount: number | null;
   readonly score: number | null;
+  readonly hasPaths?: boolean;
 };
 
 const LABELS: Record<DestinationUniverseNavId, string> = {
@@ -32,6 +34,7 @@ const LABELS: Record<DestinationUniverseNavId, string> = {
   story: 'Story',
   world: 'World',
   record: 'Record',
+  paths: 'Paths',
   beyond: 'Beyond',
 };
 
@@ -91,6 +94,14 @@ export function destinationUniverseNav(
       id: 'record',
       label: LABELS.record,
       href: '#anime-universe-record',
+    });
+  }
+
+  if (input.hasPaths) {
+    entries.push({
+      id: 'paths',
+      label: LABELS.paths,
+      href: '#anime-universe-paths',
     });
   }
 

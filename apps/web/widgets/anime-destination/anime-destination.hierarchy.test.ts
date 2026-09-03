@@ -103,11 +103,14 @@ describe('destination information hierarchy', () => {
   });
 
   test('genres remain descriptive copy, not filter controls', () => {
-    const genresRender = destinationSource.indexOf('{genres}');
+    const genresRender = destinationSource.indexOf(
+      'data-slot="anime-universe-genre"',
+    );
     const beforeGenres = destinationSource.slice(
       Math.max(0, genresRender - 400),
       genresRender,
     );
+    assert.ok(genresRender > 0);
     assert.doesNotMatch(beforeGenres, /<button/);
     assert.doesNotMatch(destinationSource, /rounded-full/);
   });

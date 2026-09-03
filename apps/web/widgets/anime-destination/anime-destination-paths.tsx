@@ -285,6 +285,15 @@ function DestinationPathsInner({
       style={{ gap: spacing.xs }}
     >
       <p
+        data-slot="anime-universe-paths-here"
+        className={cn(
+          'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground/55',
+          legibility.copy,
+        )}
+      >
+        {ANIME_DESTINATION_COPY.pathsHere}
+      </p>
+      <p
         className={cn(
           'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground/55',
           legibility.copy,
@@ -292,6 +301,7 @@ function DestinationPathsInner({
       >
         {ANIME_DESTINATION_COPY.pathsEyebrow}
       </p>
+      <div data-slot="anime-universe-path-fork">
       {paths.map((path) => {
         const expanded = activePath === path.id;
         const panelId = `${baseId}-${path.id}`;
@@ -344,6 +354,7 @@ function DestinationPathsInner({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

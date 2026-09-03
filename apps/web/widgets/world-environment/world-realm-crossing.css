@@ -45,23 +45,23 @@
 @keyframes aether-warp-distortion {
   0% {
     opacity: 0;
-    transform: scale(1.18);
+    transform: scale(1.22);
   }
   16% {
-    opacity: 0.55;
-    transform: scale(0.92);
+    opacity: 0.62;
+    transform: scale(0.86);
   }
   38% {
-    opacity: 0.82;
-    transform: scale(0.48);
+    opacity: 0.9;
+    transform: scale(0.32);
   }
   58% {
-    opacity: 0.35;
-    transform: scale(1.35);
+    opacity: 0.32;
+    transform: scale(1.55);
   }
   100% {
     opacity: 0;
-    transform: scale(2.4);
+    transform: scale(2.8);
   }
 }
 
@@ -147,13 +147,13 @@
     transform: scale(1) translateY(0);
   }
   16% {
-    transform: scale(1.06) translateY(-6px);
+    transform: scale(1.08) translateY(-8px);
   }
   38% {
-    transform: scale(1.18) translateY(-2px);
+    transform: scale(1.28) translateY(-2px);
   }
   58% {
-    transform: scale(1.42) translateY(0);
+    transform: scale(1.58) translateY(0);
   }
   100% {
     transform: scale(1) translateY(0);
@@ -217,18 +217,18 @@
   -webkit-mask-image: radial-gradient(
     circle at 50% 50%,
     transparent 0%,
-    transparent 31%,
-    #000 36%,
-    #000 46%,
-    transparent 53%
+    transparent 28%,
+    #000 34%,
+    #000 44%,
+    transparent 52%
   );
   mask-image: radial-gradient(
     circle at 50% 50%,
     transparent 0%,
-    transparent 31%,
-    #000 36%,
-    #000 46%,
-    transparent 53%
+    transparent 28%,
+    #000 34%,
+    #000 44%,
+    transparent 52%
   );
 }
 

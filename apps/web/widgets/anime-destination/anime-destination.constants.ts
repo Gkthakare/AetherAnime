@@ -30,6 +30,10 @@ export const ANIME_DESTINATION_COPY = {
   enterStory: 'Enter the story',
   returnContinuum: 'Return to Continuum',
   universeIndex: 'Universe',
+  pathsHere: 'You are here',
+  storyHeading: 'The Story',
+  worldHeading: 'The World',
+  recordHeading: 'The Record',
   worldSection: 'World',
   recordSection: 'Record',
   beyondEyebrow: 'And beyond',
@@ -128,7 +132,7 @@ export const ANIME_DESTINATION_SUPPORTING_VALUE =
   'text-[0.6875rem] text-muted-foreground/70' as const;
 
 export const ANIME_DESTINATION_PATHS =
-  'mt-8 flex w-full flex-col items-center border-t border-border/20 pt-5 lg:items-start' as const;
+  'relative flex w-full max-w-xl flex-col items-start' as const;
 
 export const ANIME_DESTINATION_PATH_BUTTON =
   [
@@ -197,7 +201,7 @@ export const ANIME_DESTINATION_KINSHIP_META =
 
 /** Arrived title — destination identity at universe scale. */
 export const ANIME_DESTINATION_TITLE =
-  'text-[clamp(2.75rem,12vw,8.25rem)] md:text-[clamp(3.25rem,8vw,8.5rem)] lg:text-[clamp(4.5rem,7.2vw,8.75rem)]' as const;
+  'text-[clamp(3rem,14vw,9rem)] md:text-[clamp(3.75rem,9vw,10rem)] lg:text-[clamp(4.5rem,8.4vw,11rem)]' as const;
 
 export const ANIME_DESTINATION_POSTER_SIZES =
   '(max-width: 767px) 100vw, (max-width: 1279px) 52vw, 640px' as const;

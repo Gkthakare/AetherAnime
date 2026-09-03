@@ -74,7 +74,7 @@ describe('destination world thresholds', () => {
     assert.match(pathsHelperSource, /id: 'kinship'/);
     assert.doesNotMatch(pathsViewSource, /data-path="episodes"|data-path="reviews"/);
     assert.match(constantsSource, /pathsEyebrow/);
-    assert.match(destinationSource, /if \(!anime\) return null/);
+    assert.match(destinationSource, /if \(!anime \|\| !presented\) return null/);
     assert.match(
       worldSceneSource,
       /destinationInIdentity && arrivedAnime \? \(/,

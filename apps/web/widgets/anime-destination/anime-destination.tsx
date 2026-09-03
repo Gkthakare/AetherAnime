@@ -25,7 +25,6 @@ import { useWorldScene } from '@/widgets/world-scene/world-scene-context';
 import {
   ANIME_DESTINATION_ALTERNATE,
   ANIME_DESTINATION_COPY,
-  ANIME_DESTINATION_GENRES,
   ANIME_DESTINATION_METADATA,
   ANIME_DESTINATION_POSTER_SIZES,
   ANIME_DESTINATION_STAGE,
@@ -42,7 +41,6 @@ import {
   ANIME_DESTINATION_WATCH_NOW_UNAVAILABLE,
   ANIME_STATUS_LABEL,
   formatMalSupportingLine,
-  formatUniverseRecordLine,
 } from './anime-destination.constants';
 import {
   animeDestinationActions,
@@ -65,6 +63,13 @@ import {
   destinationIdentityStatement,
   destinationUniverseNav,
 } from './anime-destination.universe';
+import {
+  destinationAvailablePaths,
+  destinationKinshipAvailable,
+  destinationSignalTags,
+  destinationStoryRecord,
+} from './anime-destination.paths';
+import { useUniverseHere } from './use-universe-here';
 import { useAnimeMetadata } from './use-anime-metadata';
 import './anime-destination.universe.css';
 
@@ -163,6 +168,7 @@ function UniverseFigure({ anime }: { anime: CanonicalAnime }) {
     <div
       data-slot="anime-universe-figure"
       data-figure={anime.poster ? 'poster' : 'seal'}
+      data-crop="arrival"
       aria-hidden="true"
     >
       {anime.poster ? (
@@ -177,6 +183,32 @@ function UniverseFigure({ anime }: { anime: CanonicalAnime }) {
       ) : (
         <DestinationMark anime={anime} />
       )}
+    </div>
+  );
+}
+
+function UniverseField({
+  poster,
+  crop,
+}: {
+  readonly poster: string | null;
+  readonly crop: 'story' | 'world' | 'record' | 'beyond';
+}) {
+  if (!poster) return null;
+  return (
+    <div
+      data-slot="anime-universe-field"
+      data-crop={crop}
+      aria-hidden="true"
+    >
+      <Image
+        src={poster}
+        alt=""
+        fill
+        loading="lazy"
+        sizes="100vw"
+        className="object-cover"
+      />
     </div>
   );
 }
@@ -197,19 +229,41 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
     anime?.slug ?? '',
     anime?.canonicalTitle ?? '',
   );
-
-  if (!anime) return null;
-
-  const presented = overlayDiscoveredMetadata(anime, metadata);
-  const statement = destinationIdentityStatement(presented.synopsis);
-  const nav = destinationUniverseNav({
-    synopsis: presented.synopsis,
-    year: anime.year,
-    genres: presented.genres,
-    studios: anime.studios,
-    episodeCount: anime.episodeCount,
-    score: presented.score,
+  const presented = anime
+    ? overlayDiscoveredMetadata(anime, metadata)
+    : null;
+  const extraStory = destinationStoryRecord(
+    presented?.synopsis ?? '',
+    metadata?.synopsis ?? null,
+  );
+  const signalTags = destinationSignalTags({
+    genres: presented?.genres ?? [],
+    synopsis: presented?.synopsis ?? '',
   });
+  const hasPaths = anime
+    ? destinationAvailablePaths({
+        story: extraStory,
+        signalCount: signalTags.length,
+        kinshipAvailable: destinationKinshipAvailable(anime),
+        copy: ANIME_DESTINATION_COPY,
+      }).length > 0
+    : false;
+  const nav = anime
+    ? destinationUniverseNav({
+        synopsis: presented?.synopsis ?? '',
+        year: anime.year,
+        genres: presented?.genres ?? [],
+        studios: anime.studios,
+        episodeCount: anime.episodeCount,
+        score: presented?.score ?? null,
+        hasPaths,
+      })
+    : [];
+  const here = useUniverseHere(nav.map((entry) => entry.id));
+
+  if (!anime || !presented) return null;
+
+  const statement = destinationIdentityStatement(presented.synopsis);
   const showWorld = destinationHasWorldSection({
     year: anime.year,
     genres: presented.genres,
@@ -218,10 +272,6 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
   const showRecord = destinationHasRecordSection({
     episodeCount: anime.episodeCount,
     score: presented.score,
-  });
-  const recordLine = formatUniverseRecordLine({
-    episodeCount: anime.episodeCount,
-    status: anime.status,
   });
   const malLine = formatMalSupportingLine({
     score: presented.score,
@@ -247,7 +297,6 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
   const crunchyroll = watchPaths.find((path) => path.provider === 'crunchyroll');
   const studios =
     anime.studios.length > 0 ? anime.studios.join(', ') : 'Unknown studio';
-  const genres = presented.genres.join(' · ');
   const alternate = presented.alternateTitle;
 
   return (
@@ -270,7 +319,7 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           : animeDestinationEnterTransition
       }
     >
-      <article data-slot="anime-universe">
+      <article data-slot="anime-universe" data-universe-here={here}>
         <nav
           data-slot="anime-universe-index"
           aria-label={ANIME_DESTINATION_COPY.universeIndex}
@@ -280,6 +329,8 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
               <li key={entry.id}>
                 <a
                   href={entry.href}
+                  aria-current={here === entry.id ? 'location' : undefined}
+                  data-index={entry.id}
                   className={cn(
                     'block py-1 text-[0.5rem] uppercase tracking-[0.28em] text-muted-foreground/55',
                     'outline-none hover:text-foreground/80',
@@ -297,6 +348,7 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
         <header
           id="anime-universe-hero"
           data-slot="anime-universe-hero"
+          data-universe-depth="arrival"
         >
           <div data-slot="anime-arrival-stage" className="contents">
           <motion.div
@@ -466,15 +518,20 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           <motion.section
             id="anime-universe-story"
             data-slot="anime-universe-section"
+            data-universe-depth="story"
             variants={bodyVariants}
             initial={reduceMotion ? false : 'hidden'}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.28 }}
           >
-            <p data-slot="anime-universe-kicker" className={legibility.copy}>
-              {ANIME_DESTINATION_COPY.story}
-            </p>
-            <p className={cn(ANIME_DESTINATION_SYNOPSIS, legibility.copy)}>
+            <UniverseField poster={anime.poster} crop="story" />
+            <h2 data-slot="anime-universe-heading" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.storyHeading}
+            </h2>
+            <p
+              data-slot="anime-universe-story-copy"
+              className={cn(ANIME_DESTINATION_SYNOPSIS, legibility.copy)}
+            >
               {presented.synopsis}
             </p>
           </motion.section>
@@ -484,24 +541,36 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           <motion.section
             id="anime-universe-world"
             data-slot="anime-universe-section"
+            data-universe-depth="world"
             initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.28 }}
             transition={{ duration: reduceMotion ? 0 : DURATION.NORMAL }}
           >
-            <p data-slot="anime-universe-kicker" className={legibility.copy}>
-              {ANIME_DESTINATION_COPY.worldSection}
-            </p>
-            {genres ? (
-              <p
+            <UniverseField poster={anime.poster} crop="world" />
+            <h2 data-slot="anime-universe-heading" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.worldHeading}
+            </h2>
+            {presented.genres.length > 0 ? (
+              <ul
                 data-slot="anime-destination-genres"
-                className={cn(
-                  ANIME_DESTINATION_GENRES,
-                  'text-[clamp(1.15rem,3vw,2rem)] tracking-[0.16em]',
-                  legibility.copy,
-                )}
+                className="flex flex-col"
+                style={{ gap: spacing.xs }}
               >
-                {genres}
+                {presented.genres.map((genre) => (
+                  <li
+                    key={genre}
+                    data-slot="anime-universe-genre"
+                    className={legibility.copy}
+                  >
+                    {genre}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {anime.year != null ? (
+              <p data-slot="anime-universe-year" className={legibility.copy}>
+                {anime.year}
               </p>
             ) : null}
             <div
@@ -525,24 +594,33 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           <motion.section
             id="anime-universe-record"
             data-slot="anime-universe-section"
+            data-universe-depth="record"
             initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.28 }}
             transition={{ duration: reduceMotion ? 0 : DURATION.NORMAL }}
           >
-            <p data-slot="anime-universe-kicker" className={legibility.copy}>
-              {ANIME_DESTINATION_COPY.recordSection}
-            </p>
-            {recordLine ? (
+            <UniverseField poster={anime.poster} crop="record" />
+            <h2 data-slot="anime-universe-heading" className={legibility.copy}>
+              {ANIME_DESTINATION_COPY.recordHeading}
+            </h2>
+            {anime.episodeCount != null ? (
               <p
-                className={cn(
-                  'text-[clamp(1.35rem,3.4vw,2.4rem)] leading-tight text-foreground/85',
-                  legibility.copy,
-                )}
+                data-slot="anime-universe-record-measure"
+                className={legibility.copy}
               >
-                {recordLine}
+                <span>{anime.episodeCount}</span>
+                <span>
+                  {anime.episodeCount === 1 ? 'episode' : 'episodes'}
+                </span>
               </p>
             ) : null}
+            <p
+              data-slot="anime-universe-record-status"
+              className={legibility.copy}
+            >
+              {ANIME_STATUS_LABEL[anime.status]}
+            </p>
             <div
               data-slot="anime-destination-providers"
               className="mt-10 flex max-w-lg flex-col"
@@ -571,26 +649,34 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           </motion.section>
         ) : null}
 
-        <div id="anime-universe-paths">
-          <AnimeDestinationPaths
-            anime={anime}
-            presented={presented}
-            metadata={metadata}
-          />
-        </div>
+        {hasPaths ? (
+          <section
+            id="anime-universe-paths"
+            data-slot="anime-universe-section"
+            data-universe-depth="deep"
+          >
+            <AnimeDestinationPaths
+              anime={anime}
+              presented={presented}
+              metadata={metadata}
+            />
+          </section>
+        ) : null}
 
         <section
           id="anime-universe-beyond"
           data-slot="anime-universe-section"
+          data-universe-depth="beyond"
           className="items-center"
         >
+          <UniverseField poster={anime.poster} crop="beyond" />
           <div data-slot="anime-universe-beyond" className="flex flex-col items-center">
             <p data-slot="anime-universe-kicker" className={legibility.copy}>
               {ANIME_DESTINATION_COPY.beyondEyebrow}
             </p>
             <p
               className={cn(
-                'max-w-xl text-[clamp(1.75rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.03em] text-foreground',
+                'max-w-xl text-[clamp(2rem,6vw,4.75rem)] leading-[1.02] tracking-[-0.04em] text-foreground',
                 legibility.copy,
               )}
             >
@@ -598,7 +684,7 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
             </p>
             <p
               className={cn(
-                'mt-4 max-w-md text-sm leading-relaxed text-foreground/65',
+                'mt-5 max-w-md text-sm leading-relaxed text-foreground/60',
                 legibility.copy,
               )}
             >
