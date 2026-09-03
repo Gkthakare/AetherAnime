@@ -46,6 +46,12 @@ export type WorldSceneContextValue = {
    * Null when the world has no arrived anime.
    */
   readonly arrivedAnime: CanonicalAnime | null;
+  /**
+   * Ephemeral previous destination from an in-scene hop (A→B).
+   * Not Memory, not persistence, not a journey graph. Null on Continuum
+   * entry, URL hand-off, and clearAnimeArrival.
+   */
+  readonly journeyOrigin: CanonicalAnime | null;
   readonly arriveAnime: (anime: CanonicalAnime) => void;
   readonly clearAnimeArrival: () => void;
   /** Navigator-initiated anime transport phase — idle when not traveling. */

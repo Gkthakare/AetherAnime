@@ -34,6 +34,7 @@ export const ANIME_DESTINATION_COPY = {
   pathsHere: 'You are here',
   neighbors: 'Neighboring worlds',
   networkOrigin: 'This world',
+  journeyFrom: 'From',
   claimed: 'This universe is remembered',
   storyHeading: 'The Story',
   worldHeading: 'The World',

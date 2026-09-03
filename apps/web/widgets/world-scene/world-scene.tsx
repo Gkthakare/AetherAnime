@@ -108,6 +108,9 @@ export function WorldScene({
   const [arrivedAnime, setArrivedAnime] = useState<CanonicalAnime | null>(
     () => initialAnime,
   );
+  const [journeyOrigin, setJourneyOrigin] = useState<CanonicalAnime | null>(
+    null,
+  );
   const [transportPhase, setTransportPhase] =
     useState<WorldTransportPhase>('idle');
 
@@ -170,6 +173,7 @@ export function WorldScene({
         arrivedAnimeRef.current = null;
         lastAnimeArrivalRef.current = null;
         setArrivedAnime(null);
+        setJourneyOrigin(null);
       }
       onRegionActivate?.(intent);
     },
@@ -188,6 +192,11 @@ export function WorldScene({
     (anime: CanonicalAnime) => {
       if (arrivedAnimeRef.current?.id === anime.id) return;
       if (isWorldTransportLocked(transportPhaseRef.current)) return;
+
+      // Ephemeral continuity: remember the place we are leaving for this hop.
+      // Continuum / first arrival leave journeyOrigin cleared.
+      const previous = arrivedAnimeRef.current;
+      setJourneyOrigin(previous);
 
       transportAbortRef.current?.abort();
       const controller = new AbortController();
@@ -243,6 +252,7 @@ export function WorldScene({
     transportAbortRef.current = null;
     transportPhaseRef.current = 'idle';
     setTransportPhase('idle');
+    setJourneyOrigin(null);
     if (!arrivedAnimeRef.current) return;
     arrivedAnimeRef.current = null;
     lastAnimeArrivalRef.current = null;
@@ -253,10 +263,12 @@ export function WorldScene({
   /**
    * Navigation arrival → anime. Distinct from Navigator-driven arriveAnime.
    * Never mutates URL. Validated upstream via resolveInitialAnimeArrival.
+   * URL / Back / Forward are not in-scene hops — clear journey origin.
    */
   const handoffAnimeArrival = useCallback((slug: string | null) => {
     discoveredHydrateRef.current?.abort();
     discoveredHydrateRef.current = null;
+    setJourneyOrigin(null);
 
     if (!slug) {
       arrivedAnimeRef.current = null;
@@ -376,6 +388,7 @@ export function WorldScene({
     clearFocus,
     activateRegion,
     arrivedAnime,
+    journeyOrigin,
     arriveAnime,
     clearAnimeArrival,
     transportPhase,

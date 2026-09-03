@@ -227,7 +227,8 @@ function UniverseField({
  * Remounts per slug so neighboring-world state cannot leak across universes.
  */
 export function AnimeDestination({ className }: AnimeDestinationProps) {
-  const { arrivedAnime, arriveAnime, clearAnimeArrival } = useWorldScene();
+  const { arrivedAnime, arriveAnime, clearAnimeArrival, journeyOrigin } =
+    useWorldScene();
   if (!arrivedAnime) return null;
   return (
     <AnimeDestinationUniverse
@@ -235,6 +236,7 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
       anime={arrivedAnime}
       arriveAnime={arriveAnime}
       clearAnimeArrival={clearAnimeArrival}
+      journeyOrigin={journeyOrigin}
       className={className}
     />
   );
@@ -244,11 +246,13 @@ function AnimeDestinationUniverse({
   anime,
   arriveAnime,
   clearAnimeArrival,
+  journeyOrigin,
   className,
 }: {
   readonly anime: CanonicalAnime;
   readonly arriveAnime: (next: CanonicalAnime) => void;
   readonly clearAnimeArrival: () => void;
+  readonly journeyOrigin: CanonicalAnime | null;
   readonly className?: string;
 }) {
   const reduceMotion = useReducedMotion();
@@ -302,6 +306,11 @@ function AnimeDestinationUniverse({
     if (!candidate) return;
     markArrivalVia('kinship');
     arriveAnime(canonicalizeDiscoveryCandidate(candidate));
+  };
+
+  const returnTowardOrigin = () => {
+    if (!journeyOrigin) return;
+    arriveAnime(journeyOrigin);
   };
 
   const networkCandidates =
@@ -374,6 +383,7 @@ function AnimeDestinationUniverse({
         data-universe-here={here}
         data-universe-explore={explorePath ?? 'none'}
         data-universe-claimed={watchlist.saved ? 'true' : 'false'}
+        data-universe-journey={journeyOrigin ? 'continued' : 'first'}
       >
         <div data-slot="anime-universe-anchor" aria-hidden="true">
           <p>{anime.canonicalTitle}</p>
@@ -778,7 +788,7 @@ function AnimeDestinationUniverse({
                 ? formatBeyondNetworkLine(networkCandidates.length)
                 : ANIME_DESTINATION_COPY.beyondBody}
             </p>
-            {networkOpen ? (
+            {networkOpen || journeyOrigin ? (
               <div
                 data-slot="anime-universe-neighbors"
                 aria-live="polite"
@@ -787,7 +797,9 @@ function AnimeDestinationUniverse({
                 <AnimeUniverseNetwork
                   originTitle={anime.canonicalTitle}
                   candidates={networkCandidates}
+                  journeyOrigin={journeyOrigin}
                   onSelect={enterNeighbor}
+                  onReturn={returnTowardOrigin}
                 />
               </div>
             ) : kinshipAvailable &&
