@@ -91,7 +91,7 @@ Hub: [[decisions/INDEX|decisions index]]
 
 ## Current state
 
-Completed through [[TASK-099]] (Universe Network; neighboring worlds are spatial destinations). Experiment 1 baseline remains active ([[TASK-090]]).
+Completed through [[TASK-100]] (Universe Continuity; ephemeral journey origin across in-scene hops). Experiment 1 baseline remains active ([[TASK-090]]).
 
 Read [[current-state]] before proposing work. Then [[visual-debt]], [[technical-debt]], [[open-questions]] as needed.
 

@@ -74,6 +74,7 @@ WorldScene
 | Signals | `destinationSignalTags` over `shared/anime/anime.semantic-profile.ts` | application-owned semantic evidence, no scores |
 | Kinship | `destinationKinshipAvailable` + `requestAnimeDiscovery({ kind: 'similar' })` | branching candidate paths; at most one request per mounted destination |
 | Universe network | `AnimeUniverseNetwork` + `useNeighboringWorlds` | Beyond spatial neighbors (≤3); catalog or discovered MAL identity; travel via `arriveAnime` |
+| Journey origin | `WorldScene.journeyOrigin` | Ephemeral previous destination for in-scene hops; residual Beyond trace; cleared on Continuum/URL |
 
 `AnimeDestinationPaths` remounts an inner instance keyed on `anime.slug` so path state cannot leak between destinations.
 

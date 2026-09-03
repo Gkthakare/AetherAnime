@@ -56,6 +56,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-097]] | Destination universe visual expansion | Universe is a descending environmental composition; one poster, many crops |
 | [[TASK-098]] | Living anime universe | Destination exploration has environmental consequence; neighbors use arriveAnime |
 | [[TASK-099]] | Universe network | Beyond spatial neighbors from real MAL similar; second-order travel via arriveAnime |
+| [[TASK-100]] | Universe continuity | Ephemeral journeyOrigin residual across A→B hops; no graph or new persistence |
 
 ## Clusters
 
