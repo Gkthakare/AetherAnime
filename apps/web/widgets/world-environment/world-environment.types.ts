@@ -24,6 +24,8 @@ export type WorldEnvironmentProps = {
    * Null when idle, candidate, unknown, or discovered (no local poster).
    */
   readonly poster?: string | null;
+  /** Pause idle living breath during departure before arrival atmosphere. */
+  readonly transportActive?: boolean;
 };
 
 export type EnvironmentDepthProps = {

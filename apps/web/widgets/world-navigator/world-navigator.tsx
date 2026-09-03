@@ -132,7 +132,8 @@ function VoiceGlyph() {
  * Not a chatbot or search panel. The LLM never auto-arrives.
  */
 export function WorldNavigator({ className }: WorldNavigatorProps) {
-  const { arriveAnime, clearAnimeArrival, arrivedAnime } = useWorldScene();
+  const { arriveAnime, clearAnimeArrival, arrivedAnime, isTransportLocked } =
+    useWorldScene();
   const reduceMotion = useReducedMotion();
   const inputId = useId();
   const statusId = useId();
@@ -167,6 +168,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
 
   const commitQuery = useCallback(
     (value: string) => {
+      if (isTransportLocked) return;
       const trimmed = value.trim();
       if (resolveTimerRef.current !== undefined) {
         clearTimeout(resolveTimerRef.current);
@@ -299,7 +301,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
         WORLD_NAVIGATOR_RESOLVE_MS,
       );
     },
-    [arriveAnime, reduceMotion],
+    [arriveAnime, isTransportLocked, reduceMotion],
   );
 
   const arriveReturnedAnime = useCallback(
@@ -347,6 +349,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
 
   const activateContinue = useCallback(
     (candidate: ContinueCandidate) => {
+      if (isTransportLocked) return;
       markArrivalVia('continue');
       if (candidate.arrival.kind === 'catalog') {
         arriveReturnedAnime(candidate.arrival.anime);
@@ -375,7 +378,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
           setState({ phase: 'unknown', query: candidate.entry.slug });
         });
     },
-    [arriveReturnedAnime],
+    [arriveReturnedAnime, isTransportLocked],
   );
 
   useEffect(() => {
@@ -437,6 +440,7 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isTransportLocked) return;
     if (listening) stopVoice();
     commitQuery(query);
   };
@@ -501,8 +505,10 @@ export function WorldNavigator({ className }: WorldNavigatorProps) {
       data-slot="world-navigator"
       data-navigator-phase={state.phase}
       data-voice-state={voice.mode}
+      data-navigator-transport={isTransportLocked ? 'withdrawing' : 'active'}
       className={cn(
-        'flex w-full flex-col items-stretch text-left',
+        'flex w-full flex-col items-stretch text-left transition-opacity duration-300 motion-reduce:transition-none',
+        isTransportLocked && 'pointer-events-none opacity-0',
         className,
       )}
       style={{ gap: spacing.sm }}

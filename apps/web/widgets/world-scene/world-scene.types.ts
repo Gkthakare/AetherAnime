@@ -19,6 +19,7 @@ import type {
   WorldPresence,
   WorldPresenceEvent,
   WorldRegionActivationIntent,
+  WorldTransportPhase,
 } from '@/shared/world';
 import type {
   WorldShellSlots,
@@ -47,6 +48,9 @@ export type WorldSceneContextValue = {
   readonly arrivedAnime: CanonicalAnime | null;
   readonly arriveAnime: (anime: CanonicalAnime) => void;
   readonly clearAnimeArrival: () => void;
+  /** Navigator-initiated anime transport phase — idle when not traveling. */
+  readonly transportPhase: WorldTransportPhase;
+  readonly isTransportLocked: boolean;
   /** Derived visual ambient — observe only. */
   readonly ambient: WorldAmbient;
 };

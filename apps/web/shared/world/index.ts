@@ -29,6 +29,21 @@ export type {
   WorldLifecycleEvent,
 } from './world.lifecycle';
 export {
+  WORLD_TRANSPORT_DEPART_S,
+  WORLD_TRANSPORT_PHASES,
+  isWorldTransportActive,
+  isWorldTransportLocked,
+  reduceWorldTransport,
+  runWorldAnimeTransport,
+  worldTransportSchedule,
+} from './world.transport';
+export type {
+  WorldTransportCallbacks,
+  WorldTransportEvent,
+  WorldTransportPhase,
+  WorldTransportSchedule,
+} from './world.transport';
+export {
   WORLD_PRESENCE_DEFAULT,
   WORLD_PRESENCE_UNKNOWN,
   WORLD_PRESENCES,

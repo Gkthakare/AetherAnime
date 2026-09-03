@@ -78,6 +78,7 @@ export function WorldEnvironment({
   destinationClimate = null,
   atmosphere,
   poster = null,
+  transportActive = false,
 }: Readonly<WorldEnvironmentProps>) {
   const presentation =
     atmosphere ??
@@ -94,6 +95,7 @@ export function WorldEnvironment({
   const living = worldLivingPresence({
     atmosphere: presentation,
     reduceMotion: !!reduceMotion,
+    transportActive,
   });
   return (
     <div

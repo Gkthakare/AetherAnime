@@ -17,14 +17,17 @@ import {
   WORLD_LIFECYCLE_DEFAULT,
   getRegion,
   initialWorldPresence,
+  isWorldTransportLocked,
   reduceWorldFocus,
   reduceWorldLifecycle,
   reduceWorldPresence,
+  runWorldAnimeTransport,
   resolveWorldAmbient,
   resolveWorldRegionActivation,
   type WorldFocusRegion,
   type WorldLifecycleEvent,
   type WorldPresenceEvent,
+  type WorldTransportPhase,
 } from '@/shared/world';
 import { AnimeDestination } from '@/widgets/anime-destination';
 import { WorldClimate } from '@/widgets/world-climate';
@@ -105,6 +108,8 @@ export function WorldScene({
   const [arrivedAnime, setArrivedAnime] = useState<CanonicalAnime | null>(
     () => initialAnime,
   );
+  const [transportPhase, setTransportPhase] =
+    useState<WorldTransportPhase>('idle');
 
   /** Last applied navigation-arrival identity (null = no region query). */
   const lastArrivalRef = useRef<WorldFocusRegion | null>(
@@ -115,6 +120,8 @@ export function WorldScene({
     initialAnime?.slug ?? null,
   );
   const arrivedAnimeRef = useRef<CanonicalAnime | null>(initialAnime);
+  const transportPhaseRef = useRef<WorldTransportPhase>('idle');
+  const transportAbortRef = useRef<AbortController | null>(null);
   const discoveredHydrateRef = useRef<AbortController | null>(null);
   const worldEnteredRef = useRef(false);
 
@@ -169,21 +176,73 @@ export function WorldScene({
     [world, onRegionActivate],
   );
 
-  const arriveAnime = useCallback(
+  const commitAnimeArrivalVisual = useCallback((anime: CanonicalAnime) => {
+    arrivedAnimeRef.current = anime;
+    setArrivedAnime(anime);
+    setFocusedRegion((current) =>
+      reduceWorldFocus(current, { type: 'clear' }),
+    );
+  }, []);
+
+  const beginAnimeTransport = useCallback(
     (anime: CanonicalAnime) => {
       if (arrivedAnimeRef.current?.id === anime.id) return;
-      arrivedAnimeRef.current = anime;
-      lastAnimeArrivalRef.current = anime.slug;
-      setArrivedAnime(anime);
-      setFocusedRegion((current) =>
-        reduceWorldFocus(current, { type: 'clear' }),
-      );
-      onAnimeArrive?.(anime);
+      if (isWorldTransportLocked(transportPhaseRef.current)) return;
+
+      transportAbortRef.current?.abort();
+      const controller = new AbortController();
+      transportAbortRef.current = controller;
+
+      void runWorldAnimeTransport(
+        {
+          onDepart: () => {
+            transportPhaseRef.current = 'departing';
+            setTransportPhase('departing');
+            if (arrivedAnimeRef.current) {
+              arrivedAnimeRef.current = null;
+              setArrivedAnime(null);
+            }
+          },
+          onTransit: () => {
+            transportPhaseRef.current = 'in_transit';
+            setTransportPhase('in_transit');
+            commitAnimeArrivalVisual(anime);
+          },
+          onUrlCommit: () => {
+            lastAnimeArrivalRef.current = anime.slug;
+            onAnimeArrive?.(anime);
+          },
+          onArrive: () => {
+            transportPhaseRef.current = 'arriving';
+            setTransportPhase('arriving');
+          },
+          onSettle: () => {
+            transportPhaseRef.current = 'idle';
+            setTransportPhase('idle');
+            transportAbortRef.current = null;
+          },
+        },
+        { reducedMotion: !!reduceMotion, signal: controller.signal },
+      ).catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        throw error;
+      });
     },
-    [onAnimeArrive],
+    [commitAnimeArrivalVisual, onAnimeArrive, reduceMotion],
+  );
+
+  const arriveAnime = useCallback(
+    (anime: CanonicalAnime) => {
+      beginAnimeTransport(anime);
+    },
+    [beginAnimeTransport],
   );
 
   const clearAnimeArrival = useCallback(() => {
+    transportAbortRef.current?.abort();
+    transportAbortRef.current = null;
+    transportPhaseRef.current = 'idle';
+    setTransportPhase('idle');
     if (!arrivedAnimeRef.current) return;
     arrivedAnimeRef.current = null;
     lastAnimeArrivalRef.current = null;
@@ -264,6 +323,7 @@ export function WorldScene({
 
   useEffect(() => {
     return () => {
+      transportAbortRef.current?.abort();
       discoveredHydrateRef.current?.abort();
     };
   }, []);
@@ -297,7 +357,11 @@ export function WorldScene({
       ? (getRegion(focusedRegion)?.climate ?? null)
       : null,
   });
-  const arrival = worldArrivalPresentation(arrivedAnime != null);
+  const arrival = worldArrivalPresentation(
+    arrivedAnime != null,
+    transportPhase,
+  );
+  const transportLocked = isWorldTransportLocked(transportPhase);
 
   const contextValue: WorldSceneContextValue = {
     slug,
@@ -314,6 +378,8 @@ export function WorldScene({
     arrivedAnime,
     arriveAnime,
     clearAnimeArrival,
+    transportPhase,
+    isTransportLocked: transportLocked,
     ambient,
   };
 
@@ -328,6 +394,7 @@ export function WorldScene({
         data-world-presence={presence}
         data-world-focus={focusedRegion ?? undefined}
         data-world-anime={arrivedAnime?.slug}
+        data-world-transport={transportPhase}
         data-world-ambient-level={ambient.level}
         data-world-ambient-variant={ambient.variant}
         className={cn(
@@ -346,6 +413,7 @@ export function WorldScene({
           <WorldEnvironment
             atmosphere={atmosphere}
             poster={arrivedAnime?.poster ?? null}
+            transportActive={transportLocked || transportPhase === 'departing'}
           />
           <WorldClimate />
           <WorldMemoryHorizon />

@@ -6,6 +6,10 @@
  */
 
 import { spacing } from '@/shared/config/theme';
+import {
+  isWorldTransportActive,
+  type WorldTransportPhase,
+} from '@/shared/world/world.transport';
 
 export const WORLD_ARRIVAL_RECEDE = 0.42;
 
@@ -26,13 +30,20 @@ export type WorldArrivalLayoutGaps = {
 /** Slot intent for the identity-column arrival composition. */
 export function worldArrivalPresentation(
   hasArrivedAnime: boolean,
+  transportPhase: WorldTransportPhase = 'idle',
 ): WorldArrivalPresentation {
+  const departing = transportPhase === 'departing';
+  const showDestination =
+    hasArrivedAnime && transportPhase !== 'departing';
+  const recedeWorldChrome =
+    hasArrivedAnime || isWorldTransportActive(transportPhase);
+
   return {
-    destinationInIdentity: hasArrivedAnime,
+    destinationInIdentity: showDestination,
     kindPresent: true,
     detailsPresent: true,
-    recedeWorldChrome: hasArrivedAnime,
-    identityGap: hasArrivedAnime ? spacing.sm : spacing.xl,
+    recedeWorldChrome,
+    identityGap: showDestination ? spacing.sm : departing ? spacing.md : spacing.xl,
   };
 }
 

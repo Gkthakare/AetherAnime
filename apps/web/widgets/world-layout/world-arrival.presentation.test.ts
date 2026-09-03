@@ -55,6 +55,14 @@ describe('worldArrivalChromeOpacity', () => {
   });
 });
 
+describe('worldArrivalPresentation transport', () => {
+  test('departing transport recedes chrome before destination mounts', () => {
+    const presentation = worldArrivalPresentation(false, 'departing');
+    assert.equal(presentation.destinationInIdentity, false);
+    assert.equal(presentation.recedeWorldChrome, true);
+  });
+});
+
 describe('worldArrivalLayoutGaps', () => {
   test('idle keeps the existing stage and region rhythm', () => {
     const gaps = worldArrivalLayoutGaps(false);

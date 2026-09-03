@@ -52,13 +52,14 @@ export function WorldKind({ className }: WorldKindProps) {
     clearFocus,
     activateRegion,
     arrivedAnime,
+    transportPhase,
   } = useWorldScene();
   const reduceMotion = useReducedMotion();
 
   const mode = resolveWorldKindMode(status, world?.kind);
   const placeholder = WORLD_KIND_PLACEHOLDERS[mode];
   const regions = resolveWorldRegions(status, world);
-  const recede = arrivedAnime != null;
+  const recede = arrivedAnime != null || transportPhase !== 'idle';
   const chromeGap = recede ? spacing.xs : spacing.md;
   const baseOpacity = worldKindOpacity(lifecycle, ambient, recede);
 

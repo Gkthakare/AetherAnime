@@ -266,13 +266,25 @@ describe('world memory arrival wiring', () => {
     );
   });
 
-  test('memory is not wired to onAnimeArrive, which covers one path only', () => {
+  test('memory is not wired to onAnimeArrive at selection time', () => {
+    const transport = block(
+      sceneSource,
+      'const beginAnimeTransport = useCallback(',
+      'const arriveAnime = useCallback(',
+    );
+    assert.match(transport, /onUrlCommit:/);
+    assert.match(transport, /onAnimeArrive\?\.\(anime\)/);
+    assert.doesNotMatch(
+      transport,
+      /onDepart:[\s\S]{0,200}onAnimeArrive/,
+      'URL commit must not fire during depart',
+    );
+
     const arrive = block(
       sceneSource,
       'const arriveAnime = useCallback(',
       'const clearAnimeArrival',
     );
-    assert.match(arrive, /onAnimeArrive\?\.\(anime\);/);
     assert.doesNotMatch(
       arrive,
       /rememberArrival/,
@@ -307,8 +319,8 @@ describe('world memory arrival wiring', () => {
   });
 
   test('protected arrival machinery is unchanged', () => {
+    assert.match(sceneSource, /const commitAnimeArrivalVisual = useCallback/);
     assert.match(sceneSource, /if \(arrivedAnimeRef\.current\?\.id === anime\.id\) return;/);
-    assert.match(sceneSource, /lastAnimeArrivalRef\.current = anime\.slug;/);
     assert.match(sceneSource, /if \(lastAnimeArrivalRef\.current === arrival\) return;/);
     assert.match(sceneSource, /handoffAnimeArrival\(arrival\);/);
     assert.match(sceneSource, /const \[arrivedAnime, setArrivedAnime\] = useState/);

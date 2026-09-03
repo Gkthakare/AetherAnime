@@ -16,12 +16,15 @@ export type WorldLivingPresence = {
 export type WorldLivingPresenceInput = {
   readonly atmosphere: WorldArrivalAtmosphere;
   readonly reduceMotion: boolean;
+  /** Pause idle breath during departure/transit before arrival atmosphere. */
+  readonly transportActive?: boolean;
 };
 
 export function worldLivingPresence(
   input: WorldLivingPresenceInput,
 ): WorldLivingPresence {
-  const active = input.atmosphere.source !== 'arrival';
+  const active =
+    input.atmosphere.source !== 'arrival' && !input.transportActive;
 
   return {
     active,
