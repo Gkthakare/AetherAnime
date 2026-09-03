@@ -52,6 +52,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-094]] | Continuum discovery landmark | Navigator-free explore; catalog candidates → TASK-092 transport |
 | [[TASK-095-A]] | World experience transformation audit | Idle reads as website because UI column outranks environment; Continuum wow next |
 | [[TASK-095]] | Capital experience Idle recomposition | Continuum is the primary place; discovery rises from footing; Navigator is secondary |
+| [[TASK-096]] | Destination universe + spacetime warp | Arrived anime is a long-form universe; crossing is a one-shot black-hole warp |
 
 ## Clusters
 

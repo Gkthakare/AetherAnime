@@ -50,7 +50,7 @@ ENTER → WORLD (quiet location marker + Continuum)
 
 ## Known limitations
 
-- Destination still occupies the identity column (activity-first layout is TASK-096)
+- Destination identity-column presentation superseded by [[TASK-096]]
 - Horizon return signal remains subtle (TASK-057-B non-interactive)
 - Idle FPS not re-measured in production Chromium this task
 

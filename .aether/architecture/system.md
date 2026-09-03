@@ -45,14 +45,14 @@ WorldScene
 ├── world-scene-atmosphere (z-0, aria-hidden)
 │   ├── [[WorldEnvironment]]      artwork, depth, light, poster wash
 │   └── [[WorldClimate]]          scene-wide climate drift
-├── WorldRealmCrossing            crossing treatment
+├── WorldRealmCrossing            one-shot black-hole warp (TASK-092 presentation)
 └── RegionScene (z-10)
     └── WorldShell                permanent destination architecture
         └── WorldLayout           slot placement (idle vs arrival)
-            ├── identity  → WorldIdentity + [[Navigator]] (+ AnimeDestination on arrival)
+            ├── identity  → WorldIdentity (+ Navigator on Idle only)
             ├── presence  → RegionClimate       (subordinate to WorldClimate, stage-scoped)
-            ├── primary   → WorldKind           (region crossings)
-            └── secondary → WorldDetails        (recedes on arrival)
+            ├── primary   → WorldKind on Idle; AnimeDestination universe on arrival
+            └── secondary → WorldDetails        (yields on arrival)
 ```
 
 `WorldShell` is a composition host only — it reads identity metadata from scene context and places slots. It owns no domain state.
@@ -67,7 +67,7 @@ WorldScene
 
 | System | Location | Owns |
 |---|---|---|
-| `AnimeDestination` | `widgets/anime-destination/` | arrived destination identity, poster, preview, path composition |
+| `AnimeDestination` | `widgets/anime-destination/` | arrived universe: environmental hero, data-backed sections, Watch/Watchlist/paths, Beyond |
 | Watch Now | `anime-destination.watch-now.ts` + `shared/anime/anime.watch-path.ts` | the only external threshold; `window.open(url, '_blank', 'noopener,noreferrer')` on an already-verified https URL |
 | Watchlist / Save | `shared/anime/anime.watchlist.ts` | local-first persistence, key `aetheranime.watchlist.v1`, event `aetheranime:watchlist` |
 | Story | `anime-destination.paths.ts` (`destinationStoryRecord`) | catalog orientation + already-loaded MAL synopsis. Zero extra requests, no LLM |
