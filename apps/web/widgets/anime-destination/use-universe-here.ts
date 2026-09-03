@@ -26,13 +26,13 @@ export function useUniverseHere(
   sectionIds: ReadonlyArray<string>,
 ): string {
   const key = sectionIds.join('|');
-  const [here, setHere] = useState(sectionIds[0] ?? 'overview');
+  const fallback = sectionIds[0] ?? 'overview';
+  const [here, setHere] = useState(fallback);
+  const active = sectionIds.includes(here) ? here : fallback;
 
   useEffect(() => {
     const ids = key.length > 0 ? key.split('|') : [];
     if (ids.length === 0) return;
-
-    setHere((current) => (ids.includes(current) ? current : ids[0] ?? 'overview'));
 
     const nodes = ids
       .map((id) => document.getElementById(elementIdFor(id)))
@@ -61,5 +61,5 @@ export function useUniverseHere(
     return () => observer.disconnect();
   }, [key]);
 
-  return here;
+  return active;
 }
