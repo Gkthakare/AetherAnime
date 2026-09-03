@@ -67,7 +67,7 @@ WorldScene
 
 | System | Location | Owns |
 |---|---|---|
-| `AnimeDestination` | `widgets/anime-destination/` | arrived universe: environmental hero, data-backed sections, Watch/Watchlist/paths, Beyond |
+| `AnimeDestination` | `widgets/anime-destination/` | arrived universe: environmental hero, poster recomposition, spatial Story/World/Record, branching Paths, coordinate index, Watch/Watchlist, Beyond |
 | Watch Now | `anime-destination.watch-now.ts` + `shared/anime/anime.watch-path.ts` | the only external threshold; `window.open(url, '_blank', 'noopener,noreferrer')` on an already-verified https URL |
 | Watchlist / Save | `shared/anime/anime.watchlist.ts` | local-first persistence, key `aetheranime.watchlist.v1`, event `aetheranime:watchlist` |
 | Story | `anime-destination.paths.ts` (`destinationStoryRecord`) | catalog orientation + already-loaded MAL synopsis. Zero extra requests, no LLM |

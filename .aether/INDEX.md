@@ -91,7 +91,7 @@ Hub: [[decisions/INDEX|decisions index]]
 
 ## Current state
 
-Completed through [[TASK-096]] (Anime Destination is a universe; crossing is a black-hole warp). Experiment 1 baseline remains active ([[TASK-090]]).
+Completed through [[TASK-097]] (Destination universe visual expansion; Anime Destination remains a universe). Experiment 1 baseline remains active ([[TASK-090]]).
 
 Read [[current-state]] before proposing work. Then [[visual-debt]], [[technical-debt]], [[open-questions]] as needed.
 
