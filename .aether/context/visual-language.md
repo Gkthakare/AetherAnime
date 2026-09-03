@@ -20,7 +20,7 @@ environment  →  place  →  destination  →  interaction  →  supporting met
 
 Read it as a budget. The environment gets the most visual weight; supporting metadata gets the least. A change that promotes metadata above interaction, or interaction above the destination, breaks the hierarchy even if each element looks fine in isolation.
 
-Consequences already frozen: on the world idle surface the world title is a quiet **location marker**, not a hero headline; the Navigator is a **world instrument**, not a centered website search field; region crossings are **places along a path**, not equal-weight UI plates. Arrived anime is a **universe**, not an identity-column details page: environmental artwork, cinematic type, and native scroll as travel deeper. World→anime travel is a **black-hole warp**, not a cyan oval ring ([[TASK-096]]). Destination sections recompose the same `CanonicalAnime.poster` as different environmental crops rather than repeating one plate; the spatial index is a universe coordinate, not a website menu ([[TASK-097]]). Cyan remains the interaction language (Watch Now plate-edge, focus), not the crossing itself.
+Consequences already frozen: on the world idle surface the world title is a quiet **location marker**, not a hero headline; the Navigator is a **world instrument**, not a centered website search field; region crossings are **places along a path**, not equal-weight UI plates. Arrived anime is a **universe**, not an identity-column details page: environmental artwork, cinematic type, and native scroll as travel deeper. World→anime travel is a **black-hole warp**, not a cyan oval ring ([[TASK-096]]). Destination sections recompose the same `CanonicalAnime.poster` as different environmental crops rather than repeating one plate; the spatial index is a universe coordinate, not a website menu ([[TASK-097]]). Destination interaction is **environmental consequence** — path prominence, claimed identity, neighboring worlds — not a hover-effects system ([[TASK-098]]). Cyan remains the interaction language (Watch Now plate-edge, focus), not the crossing itself.
 
 ## Avoid
 
@@ -63,4 +63,4 @@ Concretely: no new full-viewport animated layer, no second atmosphere pipeline, 
 
 ## Related
 
-[[performance-contract]] · [[rendering]] · [[cinematic-ui]] · [[visual-design]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-096]] · [[TASK-097]]
+[[performance-contract]] · [[rendering]] · [[cinematic-ui]] · [[visual-design]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-096]] · [[TASK-097]] · [[TASK-098]]

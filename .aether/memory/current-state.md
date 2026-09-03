@@ -1,10 +1,10 @@
 # Current State
 
-Last verified: TASK-097 (**Capital experience Universe visual expansion**)
+Last verified: TASK-098 (**Living Anime Universe**)
 
 ## Completed
 
-[[TASK-046]] · [[TASK-049]] · [[TASK-050]] · [[TASK-050.1]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-057-A]] · [[TASK-057-B]] · [[TASK-058-E]] · [[TASK-059]] · [[TASK-060]] · [[TASK-061]] · [[TASK-062]] · [[TASK-063]] · [[TASK-064]] · [[TASK-065]] · [[TASK-066]] · [[TASK-067]] · [[TASK-068]] · [[TASK-069]] · [[TASK-070]] · [[TASK-071]] · [[TASK-072]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]] · [[TASK-080]] · [[TASK-081]] · [[TASK-082]] · [[TASK-083]] · [[TASK-084]] · [[TASK-085]] · [[TASK-086]] · [[TASK-087]] · [[TASK-088]] · [[TASK-089]] · [[TASK-090]] · [[TASK-092]] · [[TASK-093]] · [[TASK-094]] · [[TASK-095-A]] · [[TASK-095]] · [[TASK-096]] · [[TASK-097]]
+[[TASK-046]] · [[TASK-049]] · [[TASK-050]] · [[TASK-050.1]] · [[TASK-052]] · [[TASK-053]] · [[TASK-054]] · [[TASK-055]] · [[TASK-057-A]] · [[TASK-057-B]] · [[TASK-058-E]] · [[TASK-059]] · [[TASK-060]] · [[TASK-061]] · [[TASK-062]] · [[TASK-063]] · [[TASK-064]] · [[TASK-065]] · [[TASK-066]] · [[TASK-067]] · [[TASK-068]] · [[TASK-069]] · [[TASK-070]] · [[TASK-071]] · [[TASK-072]] · [[TASK-073]] · [[TASK-074]] · [[TASK-075]] · [[TASK-076]] · [[TASK-077]] · [[TASK-078]] · [[TASK-079]] · [[TASK-080]] · [[TASK-081]] · [[TASK-082]] · [[TASK-083]] · [[TASK-084]] · [[TASK-085]] · [[TASK-086]] · [[TASK-087]] · [[TASK-088]] · [[TASK-089]] · [[TASK-090]] · [[TASK-092]] · [[TASK-093]] · [[TASK-094]] · [[TASK-095-A]] · [[TASK-095]] · [[TASK-096]] · [[TASK-097]] · [[TASK-098]]
 
 ## Phase
 
@@ -20,13 +20,14 @@ Last verified: TASK-097 (**Capital experience Universe visual expansion**)
 
 ## Verified
 
-- TASK-097 related tests 80 pass; tsc/lint/build 0. Full suite not re-run this close.
+- TASK-098 destination tests 71 pass; tsc/lint/build 0. Full suite not re-run this close.
+- Live production-build QA: 390/820/1440/1920; genre→Signals, Kinship neighbors → `arriveAnime` (`solo-leveling` → `discovered-11757` / Sword Art Online); keyboard cyan focus-visible.
 - Production: HTTPS both domains; `/api/events` accepts CORE events; forbidden payloads return 204.
 
 ## Next
 
 - **Exp 1 (ACTIVE):** accumulate 7-day funnel baseline; first readout 2026-09-10T05:00:00+05:30 ([[TASK-090]]).
-- Destination universe visual expansion shipped ([[TASK-097]]); Idle FPS not re-measured in production Chromium; 390 hero artwork remains darker than 1440/1920.
+- Living destination interaction shipped ([[TASK-098]]); Idle/Destination FPS not re-measured in production Chromium; 390 hero artwork remains darker than 1440/1920; catalog synopses remain short.
 - Watch Now still uses cyan plate-edge (interaction language, not the old crossing ring).
 - Operator: confirm CORE custom goals in Plausible UI for `aetheranime.com` if not already done.
 - Legal/privacy review for EU/India traffic if not already done.

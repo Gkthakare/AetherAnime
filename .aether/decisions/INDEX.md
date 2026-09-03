@@ -54,6 +54,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-095]] | Capital experience Idle recomposition | Continuum is the primary place; discovery rises from footing; Navigator is secondary |
 | [[TASK-096]] | Destination universe + spacetime warp | Arrived anime is a long-form universe; crossing is a one-shot black-hole warp |
 | [[TASK-097]] | Destination universe visual expansion | Universe is a descending environmental composition; one poster, many crops |
+| [[TASK-098]] | Living anime universe | Destination exploration has environmental consequence; neighbors use arriveAnime |
 
 ## Clusters
 
