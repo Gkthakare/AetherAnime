@@ -47,6 +47,8 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-088]] | Production analytics enablement | aetheranime.com; server-side Plausible; CORE events live |
 | [[TASK-089]] | Plausible visitor attribution fix | Forward UA + X-Forwarded-For; product page URLs |
 | [[TASK-090]] | Capital Phase Experiment 1 baseline | 7-day discovery funnel; started 2026-09-03T05:00+05:30 |
+| [[TASK-092]] | World→Anime transport ceremony | DEPART→TRANSIT→URL→ARRIVE; deferred URL commit |
+| [[TASK-093]] | Capital Phase experience architecture audit | Places + activities before motion polish; TASK-094 next |
 
 ## Clusters
 
