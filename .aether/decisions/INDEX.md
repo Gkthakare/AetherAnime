@@ -50,6 +50,8 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-092]] | World→Anime transport ceremony | DEPART→TRANSIT→URL→ARRIVE; deferred URL commit |
 | [[TASK-093]] | Capital Phase experience architecture audit | Places + activities before motion polish; TASK-094 next |
 | [[TASK-094]] | Continuum discovery landmark | Navigator-free explore; catalog candidates → TASK-092 transport |
+| [[TASK-095-A]] | World experience transformation audit | Idle reads as website because UI column outranks environment; Continuum wow next |
+| [[TASK-095]] | Capital experience Idle recomposition | Continuum is the primary place; discovery rises from footing; Navigator is secondary |
 
 ## Clusters
 

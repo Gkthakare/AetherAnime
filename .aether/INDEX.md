@@ -71,7 +71,7 @@ Tasks arrive in the compact format defined by [[TASK.template]]; resolve its `RE
 | Surface | Frozen decisions |
 |---|---|
 | Home / arrival | [[TASK-052]] |
-| World idle | [[TASK-053]], [[TASK-054]], [[TASK-055]], [[TASK-057-B]], [[TASK-058-E]], [[TASK-059]], [[TASK-061]], [[TASK-067]], [[TASK-069]] |
+| World idle | [[TASK-053]], [[TASK-054]], [[TASK-055]], [[TASK-057-B]], [[TASK-058-E]], [[TASK-059]], [[TASK-061]], [[TASK-067]], [[TASK-069]], [[TASK-095]] |
 | Destination / arrival atmosphere | [[TASK-046]], [[TASK-055]], [[TASK-060]], [[TASK-068]], [[TASK-075]], [[TASK-076]], [[TASK-080]] |
 | Motion primitives | [[TASK-049]] |
 | Focus / keyboard | [[TASK-050]], [[TASK-050.1]] |
@@ -91,7 +91,7 @@ Hub: [[decisions/INDEX|decisions index]]
 
 ## Current state
 
-Completed through [[TASK-064]] (portrait Idle spatial bands). World idle, Home, Destination, Memory Horizon, Continue, and Navigator-native AI are verified. Optional hygiene from [[TASK-063]] remains non-blocking.
+Completed through [[TASK-095]] (Idle recomposed so Continuum is the primary place). Experiment 1 baseline remains active ([[TASK-090]]).
 
 Read [[current-state]] before proposing work. Then [[visual-debt]], [[technical-debt]], [[open-questions]] as needed.
 
