@@ -151,12 +151,14 @@ function PathReveal({
   story,
   signals,
   kinship,
+  neighborsOpen,
   onKinshipSelect,
 }: {
   readonly pathId: DestinationPathId;
   readonly story: string | null;
   readonly signals: ReadonlyArray<string>;
   readonly kinship: KinshipState;
+  readonly neighborsOpen: boolean;
   readonly onKinshipSelect: (key: string) => void;
 }) {
   if (pathId === 'story' && story) {
@@ -180,6 +182,13 @@ function PathReveal({
     );
   }
   if (pathId === 'kinship') {
+    if (neighborsOpen && kinship.status === 'ready') {
+      return (
+        <p className={cn('text-sm text-muted-foreground/70', legibility.copy)}>
+          {ANIME_DESTINATION_COPY.kinshipAnswered}
+        </p>
+      );
+    }
     return (
       <div aria-live="polite">
         <KinshipReveal kinship={kinship} onSelect={onKinshipSelect} />
@@ -193,6 +202,9 @@ type DestinationPathsProps = {
   readonly anime: CanonicalAnime;
   readonly presented: DestinationMetadataOverlay;
   readonly metadata: AnimeMetadata | null;
+  readonly explorePath: DestinationPathId | null;
+  readonly onExplore: (id: DestinationPathId | null) => void;
+  readonly listen: boolean;
 };
 
 export function AnimeDestinationPaths({
@@ -206,12 +218,15 @@ function DestinationPathsInner({
   anime,
   presented,
   metadata,
+  explorePath,
+  onExplore,
+  listen,
 }: DestinationPathsProps) {
   const { arriveAnime } = useWorldScene();
   const reduceMotion = useReducedMotion();
   const baseId = useId();
   const fetchedSlug = useRef<string | null>(null);
-  const [activePath, setActivePath] = useState<DestinationPathId | null>(null);
+  const activePath = explorePath;
   const [kinship, setKinship] = useState<KinshipState>({ status: 'idle' });
 
   const story = destinationStoryRecord(
@@ -231,7 +246,8 @@ function DestinationPathsInner({
   });
 
   useEffect(() => {
-    if (activePath !== 'kinship' || !kinshipAvailable) return;
+    if (activePath !== 'kinship' && !listen) return;
+    if (!kinshipAvailable) return;
     if (fetchedSlug.current === anime.slug) return;
 
     const controller = new AbortController();
@@ -252,18 +268,32 @@ function DestinationPathsInner({
       });
 
     return () => controller.abort();
-  }, [activePath, anime.slug, kinshipAvailable]);
+  }, [activePath, listen, anime.slug, kinshipAvailable]);
 
   const togglePath = (id: DestinationPathId) => {
     if (activePath === id) {
-      setActivePath(null);
+      onExplore(null);
       return;
     }
-    setActivePath(id);
+    onExplore(id);
     if (id === 'kinship' && fetchedSlug.current !== anime.slug) {
       setKinship({ status: 'loading' });
     }
   };
+
+  const enterNeighbor = (key: string) => {
+    if (kinship.status !== 'ready') return;
+    const candidate = kinship.candidates.find(
+      (item) => `discovered:${item.malId}` === key,
+    );
+    if (!candidate) return;
+    markArrivalVia('kinship');
+    arriveAnime(canonicalizeDiscoveryCandidate(candidate));
+  };
+
+  const showNeighbors =
+    kinshipAvailable &&
+    (listen || activePath === 'kinship' || kinship.status !== 'idle');
 
   if (paths.length === 0) return null;
 
@@ -284,7 +314,7 @@ function DestinationPathsInner({
       className={ANIME_DESTINATION_PATHS}
       style={{ gap: spacing.xs }}
     >
-      <p
+      <h2
         data-slot="anime-universe-paths-here"
         className={cn(
           'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground/55',
@@ -292,7 +322,7 @@ function DestinationPathsInner({
         )}
       >
         {ANIME_DESTINATION_COPY.pathsHere}
-      </p>
+      </h2>
       <p
         className={cn(
           'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground/55',
@@ -338,15 +368,8 @@ function DestinationPathsInner({
                     story={story}
                     signals={signals}
                     kinship={kinship}
-                    onKinshipSelect={(key) => {
-                      if (kinship.status !== 'ready') return;
-                      const candidate = kinship.candidates.find(
-                        (item) => `discovered:${item.malId}` === key,
-                      );
-                      if (!candidate) return;
-                      markArrivalVia('kinship');
-                      arriveAnime(canonicalizeDiscoveryCandidate(candidate));
-                    }}
+                    neighborsOpen={showNeighbors}
+                    onKinshipSelect={enterNeighbor}
                   />
                 </motion.div>
               ) : null}
@@ -355,6 +378,30 @@ function DestinationPathsInner({
         );
       })}
       </div>
+      {showNeighbors ? (
+        <div data-slot="anime-universe-neighbors" aria-live="polite">
+          <h3
+            className={cn(
+              'text-[0.5625rem] uppercase tracking-[0.28em] text-muted-foreground/55',
+              legibility.copy,
+            )}
+          >
+            {ANIME_DESTINATION_COPY.neighbors}
+          </h3>
+          {kinship.status === 'ready' ? (
+            <KinshipConstellation
+              candidates={kinship.candidates.slice(0, 3)}
+              onSelect={enterNeighbor}
+            />
+          ) : (
+            <p className={cn('mt-4 text-sm text-muted-foreground/70', legibility.copy)}>
+              {kinship.status === 'empty'
+                ? ANIME_DESTINATION_COPY.kinshipEmpty
+                : ANIME_DESTINATION_COPY.kinshipListening}
+            </p>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

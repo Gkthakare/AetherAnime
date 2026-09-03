@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useState, useSyncExternalStore } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -68,6 +68,7 @@ import {
   destinationKinshipAvailable,
   destinationSignalTags,
   destinationStoryRecord,
+  type DestinationPathId,
 } from './anime-destination.paths';
 import { useUniverseHere } from './use-universe-here';
 import { useAnimeMetadata } from './use-anime-metadata';
@@ -260,6 +261,9 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
       })
     : [];
   const here = useUniverseHere(nav.map((entry) => entry.id));
+  const [explorePath, setExplorePath] = useState<DestinationPathId | null>(
+    null,
+  );
 
   if (!anime || !presented) return null;
 
@@ -298,6 +302,9 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
   const studios =
     anime.studios.length > 0 ? anime.studios.join(', ') : 'Unknown studio';
   const alternate = presented.alternateTitle;
+  const hereLabel =
+    nav.find((entry) => entry.id === here)?.label ??
+    ANIME_DESTINATION_COPY.universeIndex;
 
   return (
     <motion.div
@@ -319,7 +326,22 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
           : animeDestinationEnterTransition
       }
     >
-      <article data-slot="anime-universe" data-universe-here={here}>
+      <article
+        data-slot="anime-universe"
+        data-universe-here={here}
+        data-universe-explore={explorePath ?? 'none'}
+        data-universe-claimed={watchlist.saved ? 'true' : 'false'}
+      >
+        <div data-slot="anime-universe-anchor" aria-hidden="true">
+          <p>{anime.canonicalTitle}</p>
+          <span data-universe-spine="" />
+          <p>{hereLabel}</p>
+          {watchlist.saved ? (
+            <p data-slot="anime-universe-claimed">
+              {ANIME_DESTINATION_COPY.claimed}
+            </p>
+          ) : null}
+        </div>
         <nav
           data-slot="anime-universe-index"
           aria-label={ANIME_DESTINATION_COPY.universeIndex}
@@ -558,12 +580,28 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
                 style={{ gap: spacing.xs }}
               >
                 {presented.genres.map((genre) => (
-                  <li
-                    key={genre}
-                    data-slot="anime-universe-genre"
-                    className={legibility.copy}
-                  >
-                    {genre}
+                  <li key={genre}>
+                    {hasPaths ? (
+                      <a
+                        href="#anime-universe-paths"
+                        data-slot="anime-universe-genre"
+                        onClick={() => setExplorePath('signals')}
+                        className={cn(
+                          'block min-h-11 outline-none',
+                          'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                          legibility.copy,
+                        )}
+                      >
+                        {genre}
+                      </a>
+                    ) : (
+                      <span
+                        data-slot="anime-universe-genre"
+                        className={legibility.copy}
+                      >
+                        {genre}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -659,6 +697,9 @@ export function AnimeDestination({ className }: AnimeDestinationProps) {
               anime={anime}
               presented={presented}
               metadata={metadata}
+              explorePath={explorePath}
+              onExplore={setExplorePath}
+              listen={here === 'paths'}
             />
           </section>
         ) : null}
