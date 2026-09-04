@@ -47,7 +47,7 @@ export function EnvironmentCrossingFrame({
     <div
       ref={ref}
       data-slot="world-environment-crossing"
-      className="absolute inset-0 origin-center"
+      className="absolute inset-0"
     >
       {children}
     </div>
@@ -91,9 +91,9 @@ function CrossingLayer({
 /**
  * Viewport spacetime warp. Decorative only.
  *
- * TASK-104 cyan event-seam ceremony over the existing transport lifecycle,
- * then recedes onto the Anime Universe destination. Black-hole aperture
- * remains; warm accretion portal identity does not.
+ * TASK-107 unified dimensional rupture over TASK-104…106 cyan
+ * event-seam grammar. Destination poster approaches from deep void
+ * through the hollow tear; one-shot CSS only.
  */
 export function WorldRealmCrossing({
   atmosphere,
@@ -110,6 +110,7 @@ export function WorldRealmCrossing({
 
   const spatial = crossing.spatial;
   const climate = crossing.climate;
+  const poster = atmosphere.poster;
 
   return (
     <div
@@ -118,6 +119,7 @@ export function WorldRealmCrossing({
       data-crossing-key={crossing.key}
       data-crossing-climate={climate ?? 'none'}
       data-crossing-spatial={spatial ? 'true' : 'false'}
+      data-crossing-reveal={poster ? 'poster' : 'none'}
       data-warp="black-hole"
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
@@ -139,7 +141,7 @@ export function WorldRealmCrossing({
       ) : null}
       <CrossingLayer
         slot="world-warp-distortion"
-        className="absolute inset-[-18%] origin-center"
+        className="absolute inset-[-22%] origin-center"
         animation={
           spatial
             ? crossingAnimation('aether-warp-distortion', true)
@@ -148,13 +150,27 @@ export function WorldRealmCrossing({
       />
       <CrossingLayer
         slot="world-warp-accretion"
-        className="absolute inset-[-8%] origin-center"
+        className="absolute inset-[-10%] origin-center"
         animation={
           spatial
             ? crossingAnimation('aether-warp-accretion', true)
             : crossingAnimation('aether-warp-reduced', false)
         }
       />
+      {poster ? (
+        <CrossingLayer
+          slot="world-warp-reveal"
+          className="absolute inset-0 origin-center"
+          style={{
+            backgroundImage: `url("${poster.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}")`,
+          }}
+          animation={
+            spatial
+              ? crossingAnimation('aether-warp-reveal', true)
+              : crossingAnimation('aether-warp-reduced', false)
+          }
+        />
+      ) : null}
       <CrossingLayer
         slot="world-warp-horizon"
         className="absolute inset-0 origin-center"

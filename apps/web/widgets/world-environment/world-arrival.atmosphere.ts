@@ -24,6 +24,8 @@ export type WorldArrivalAtmosphere = {
   readonly identityOpacity: number;
   /** Existing CanonicalAnime slug when arrived; presentation key only. */
   readonly arrivalKey: string | null;
+  /** Validated CanonicalAnime.poster when arrived — ceremony reveal only. */
+  readonly poster: string | null;
 };
 
 export type WorldArrivalAtmosphereInput = {
@@ -76,6 +78,7 @@ export function worldArrivalAtmosphere(
       destinationOpacity: WORLD_ENVIRONMENT_ARRIVAL_LIGHT_OPACITY,
       identityOpacity: WORLD_ENVIRONMENT_ARRIVAL_IDENTITY_OPACITY,
       arrivalKey: input.arrivedAnime.slug,
+      poster: input.arrivedAnime.poster,
     };
   }
 
@@ -86,6 +89,7 @@ export function worldArrivalAtmosphere(
       destinationOpacity: WORLD_ENVIRONMENT_DESTINATION_LIGHT_OPACITY,
       identityOpacity: WORLD_ENVIRONMENT_IDENTITY_ATMOSPHERE_OPACITY,
       arrivalKey: null,
+      poster: null,
     };
   }
 
@@ -95,5 +99,6 @@ export function worldArrivalAtmosphere(
     destinationOpacity: 0,
     identityOpacity: 0,
     arrivalKey: null,
+    poster: null,
   };
 }
