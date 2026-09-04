@@ -72,7 +72,7 @@ Tasks arrive in the compact format defined by [[TASK.template]]; resolve its `RE
 |---|---|
 | Home / arrival | [[TASK-052]] |
 | World idle | [[TASK-053]], [[TASK-054]], [[TASK-055]], [[TASK-057-B]], [[TASK-058-E]], [[TASK-059]], [[TASK-061]], [[TASK-067]], [[TASK-069]], [[TASK-095]] |
-| Destination / arrival atmosphere | [[TASK-046]], [[TASK-055]], [[TASK-060]], [[TASK-068]], [[TASK-075]], [[TASK-076]], [[TASK-080]], [[TASK-092]], [[TASK-096]], [[TASK-097]], [[TASK-098]], [[TASK-099]], [[TASK-100]], [[TASK-101]], [[TASK-103]] |
+| Destination / arrival atmosphere | [[TASK-046]], [[TASK-055]], [[TASK-060]], [[TASK-068]], [[TASK-075]], [[TASK-076]], [[TASK-080]], [[TASK-092]], [[TASK-096]], [[TASK-097]], [[TASK-098]], [[TASK-099]], [[TASK-100]], [[TASK-101]], [[TASK-103]], [[TASK-104]] |
 | Motion primitives | [[TASK-049]] |
 | Focus / keyboard | [[TASK-050]], [[TASK-050.1]] |
 | Any animated full-viewport layer | [[TASK-046]], [[performance-contract]] |
@@ -91,7 +91,7 @@ Hub: [[decisions/INDEX|decisions index]]
 
 ## Current state
 
-Completed through [[TASK-103]] (Vertical Chamber Universe; Destination visual recomposition).
+Completed through [[TASK-104]] (Aether Arrival Ceremony; cyan event-seam warp grammar).
 
 Read [[current-state]] before proposing work. Then [[visual-debt]], [[technical-debt]], [[open-questions]] as needed.
 

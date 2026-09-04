@@ -60,6 +60,7 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-101]] | Living universe | Spatial here promotes/recedes environmental fields; no fabricated life |
 | [[TASK-102]] | Capital experience audit II | Destination loop is a distinct anime world (70%); no code; protect & measure |
 | [[TASK-103]] | Destination chamber universe | Vertical poster-only chambers; consequential depth; one atmosphere |
+| [[TASK-104]] | Aether arrival ceremony | Cyan event-seam / threshold aperture; no warm accretion portal |
 
 ## Clusters
 
