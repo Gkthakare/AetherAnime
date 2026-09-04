@@ -61,6 +61,9 @@ Read a record when your task touches its area. Do not read all of them.
 | [[TASK-102]] | Capital experience audit II | Destination loop is a distinct anime world (70%); no code; protect & measure |
 | [[TASK-103]] | Destination chamber universe | Vertical poster-only chambers; consequential depth; one atmosphere |
 | [[TASK-104]] | Aether arrival ceremony | Cyan event-seam / threshold aperture; no warm accretion portal |
+| [[TASK-105]] | Immersive dimensional traversal | Monumental hollow aperture + poster leak; depth over slit/widget |
+| [[TASK-106]] | Cinematic rift composition | Full-frame rift energy; silhouettes; asymmetric pull; stronger reveal |
+| [[TASK-107]] | Unified dimensional rupture | Void→tear→approaching world as one event; final visual pass |
 
 ## Clusters
 

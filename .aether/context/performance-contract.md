@@ -47,7 +47,7 @@ Net effect: on the large idle surface, **the living light is the only continuous
 | **HOME** | portal + entrance ceremony; `AtmosphereLayer` reuses `WorldEnvironment` and deliberately **omits `WorldClimate`** | one-shot ceremony dominates; not a steady-state idle |
 | **WORLD IDLE** | living light breath (irregular, 19.2s) + a small inset horizon mist (24s, 32s ≤639px) | the only surface with presence motion; climate frozen ≥120rem |
 | **DESTINATION** | poster-derived atmosphere and climate transitions, driven by state changes | idle presence CSS is gated **off** via `:not([data-world-anime])` |
-| **ARRIVAL / crossing** | crossing transition; `data-living='false'` pauses presence loops | ≥55 FPS target, transient |
+| **ARRIVAL / crossing** | crossing transition; `data-living='false'` pauses presence loops | ≥55 FPS is aspirational for the one-shot; measure headed hop — TASK-107 local RC ~23.5 FPS avg during A→B (settled Destination remains high) |
 
 ## Reduced motion
 
