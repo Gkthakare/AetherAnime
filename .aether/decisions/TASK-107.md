@@ -1,11 +1,19 @@
 # TASK-107 — Unified Dimensional Rupture
 
-Status: FROZEN (implementation complete; not deployed)
+Status: FROZEN (deployed to production)
 Area: World → Anime arrival ceremony · final visual unity over TASK-106
 
 ## Decision
 
 **World→Anime travel remains the TASK-104…106 one-shot cyan event-seam ceremony, now choreographed as one physical rupture: deep void first, irregular multi-band tear, distant canonical-poster world that approaches via scale (not a fade), asymmetric off-center env compression, and elongated directional silhouettes (still ≤2 pseudo-elements).** TASK-103 Destination chambers and transport lifecycle remain unchanged.
+
+## Production
+
+- Deployment: `dpl_6GLhgzzRP7EFQR1mH1xhFGsmRkQn`
+- Canonical: https://aetheranime.com
+- Deployed: **2026-09-04T15:12:36+05:30**
+- Git: `c2f5cc3` (impl) · `8c96085` (freeze)
+- Experiment 1 surface transition #3 (after TASK-103 / TASK-104)
 
 ## Why
 

@@ -1,6 +1,6 @@
 # Current State
 
-Last verified: TASK-107 (**Unified Dimensional Rupture**)
+Last verified: TASK-107-DEPLOY (**Unified Dimensional Rupture in production**)
 
 ## Completed
 
@@ -12,7 +12,7 @@ Last verified: TASK-107 (**Unified Dimensional Rupture**)
 
 **Capital Phase:** analytics enabled ([[TASK-088]]); Plausible attribution fixed ([[TASK-089]]); **Experiment 1 baseline ACTIVE** ([[TASK-090]]) — started 2026-09-03T05:00:00+05:30; readout 2026-09-10T05:00:00+05:30
 
-**Capital experience:** Destination Vertical Chamber Universe ([[TASK-103]]) and cyan event-seam ceremony ([[TASK-104]]) are production. TASK-105…107 ceremony immersion/unity RCs are local-verified — **not deployed**. Ceremony visual pass is frozen at TASK-107; further product visual changes should wait for Exp 1 readout unless a defect forces a fix.
+**Capital experience:** Destination Vertical Chamber Universe ([[TASK-103]]), cyan event-seam ([[TASK-104]]), and unified dimensional rupture ceremony ([[TASK-107]], includes 105/106) are **production**. Ceremony visual pass frozen — prefer measurement freeze until Exp 1 readout.
 
 ## Surfaces
 
@@ -22,16 +22,22 @@ Last verified: TASK-107 (**Unified Dimensional Rupture**)
 
 ## Verified
 
-- TASK-107 immersion + crossing suites green; TypeScript/lint/build green (142 scoped tests incl. destination).
-- Local production Chromium QA 390/820/1440/1920: void→tear→approaching Solo Leveling world; Destination chambers unchanged; Continuum→Solo→SAO→Log Horizon→return; reduced motion intact.
-- Headed Chromium: settled Destination ~115 FPS avg; A→B hop ~23.5 FPS avg (p95 ≈121ms). Hop slower than TASK-106 ~30.8 — recorded; one-shot only.
+- TASK-107 deployed: `dpl_6GLhgzzRP7EFQR1mH1xhFGsmRkQn` @ **2026-09-04T15:12:36+05:30** · git `8c96085` / impl `c2f5cc3`.
+- Production smoke (390/820/1440/1920): black-hole cyan rupture; poster reveal mid-ceremony; no warm accretion / conic; warp settles to 0; Destination chambers intact; Continuum→Solo→SAO→Log Horizon→return; reduced motion arrival OK.
+- Production headed Chromium: settled Destination ~161.5 FPS avg; A→B hop ~30 FPS avg (p95 ≈79ms).
 - Experiment 1 remains ACTIVE and unmodified.
-- Production surface transitions already in window: TASK-103 (`2026-09-04T10:45:30+05:30`), TASK-104 (`2026-09-04T11:25:51+05:30`). TASK-105/106/107 not yet production transitions.
+
+## Experiment 1 production surface transitions
+
+1. Exp 1 start: `2026-09-03T05:00:00+05:30`
+2. TASK-103: `2026-09-04T10:45:30+05:30`
+3. TASK-104: `2026-09-04T11:25:51+05:30`
+4. TASK-107: `2026-09-04T15:12:36+05:30`
 
 ## Next
 
-- **Exp 1 (ACTIVE):** readout 2026-09-10T05:00:00+05:30 ([[TASK-090]]). Prefer measurement freeze — no further ceremony visual tasks unless defect.
-- Operator: promote TASK-107 (includes 105/106 deltas) only when ready; document mid-window surface transition if deployed before readout.
+- **Exp 1 (ACTIVE):** readout **2026-09-10T05:00:00+05:30** ([[TASK-090]]). Treat the four timestamps above as heterogeneous production surfaces — do not pretend a single continuous build.
+- Prefer no further product visual changes until readout unless a defect forces a fix.
 
 ## Related
 
