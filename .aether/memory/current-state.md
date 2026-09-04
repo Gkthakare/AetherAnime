@@ -1,6 +1,6 @@
 # Current State
 
-Last verified: TASK-107-DEPLOY (**Unified Dimensional Rupture in production**)
+Last verified: TASK-107-REGRESSION-DEPLOY (**rectangular tiling recovery in production**)
 
 ## Completed
 
@@ -12,7 +12,7 @@ Last verified: TASK-107-DEPLOY (**Unified Dimensional Rupture in production**)
 
 **Capital Phase:** analytics enabled ([[TASK-088]]); Plausible attribution fixed ([[TASK-089]]); **Experiment 1 baseline ACTIVE** ([[TASK-090]]) — started 2026-09-03T05:00:00+05:30; readout 2026-09-10T05:00:00+05:30
 
-**Capital experience:** Destination Vertical Chamber Universe ([[TASK-103]]), cyan event-seam ([[TASK-104]]), and unified dimensional rupture ceremony ([[TASK-107]], includes 105/106) are **production**. Ceremony visual pass frozen — prefer measurement freeze until Exp 1 readout.
+**Capital experience:** Destination Vertical Chamber Universe ([[TASK-103]]), cyan event-seam ([[TASK-104]]), and unified dimensional rupture ceremony ([[TASK-107]], includes 105/106) are **production**. TASK-107 rectangular tiling regression recovered in production (opaque veil void + no `isolation: isolate` + full-bleed silhouettes). Ceremony visual pass frozen — prefer measurement freeze until Exp 1 readout.
 
 ## Surfaces
 
@@ -23,9 +23,10 @@ Last verified: TASK-107-DEPLOY (**Unified Dimensional Rupture in production**)
 ## Verified
 
 - TASK-107 deployed: `dpl_6GLhgzzRP7EFQR1mH1xhFGsmRkQn` @ **2026-09-04T15:12:36+05:30** · git `8c96085` / impl `c2f5cc3`.
-- Production smoke (390/820/1440/1920): black-hole cyan rupture; poster reveal mid-ceremony; no warm accretion / conic; warp settles to 0; Destination chambers intact; Continuum→Solo→SAO→Log Horizon→return; reduced motion arrival OK.
-- Production headed Chromium: settled Destination ~161.5 FPS avg; A→B hop ~30 FPS avg (p95 ≈79ms).
-- Experiment 1 remains ACTIVE and unmodified.
+- TASK-107-REGRESSION recovery deployed: `dpl_2vRE5KcmZDU1iqXzsqpGqNHgVTvC` @ **2026-09-04T16:25:03+05:30** · git `ac6a3d1`. Aliased to `https://aetheranime.com`.
+- Production recovery smoke (390/820/1440/1920): opaque void veil; `isolation: auto` (no isolate); full-bleed silhouettes; no Destination chamber bleed-through / rectangular tiles; cyan seam + hollow aperture + poster reveal intact; warp settles to 0; Destination chambers intact; Continuum→Solo→SAO→Log Horizon→return; reduced motion arrival OK.
+- Production headed Chromium: settled Destination ~150.5 FPS avg; A→B hop ~30.8 FPS avg (p95 ≈78.8ms).
+- Experiment 1 remains ACTIVE and unmodified. This deploy is **REGRESSION RECOVERY**, not a clean new experiment surface.
 
 ## Experiment 1 production surface transitions
 
@@ -33,11 +34,12 @@ Last verified: TASK-107-DEPLOY (**Unified Dimensional Rupture in production**)
 2. TASK-103: `2026-09-04T10:45:30+05:30`
 3. TASK-104: `2026-09-04T11:25:51+05:30`
 4. TASK-107: `2026-09-04T15:12:36+05:30`
+5. TASK-107-REGRESSION recovery: `2026-09-04T16:25:03+05:30`
 
 ## Next
 
-- **Exp 1 (ACTIVE):** readout **2026-09-10T05:00:00+05:30** ([[TASK-090]]). Treat the four timestamps above as heterogeneous production surfaces — do not pretend a single continuous build.
-- Prefer no further product visual changes until readout unless a defect forces a fix.
+- **Exp 1 (ACTIVE):** readout **2026-09-10T05:00:00+05:30** ([[TASK-090]]). Treat the five timestamps above as heterogeneous production surfaces — do not pretend a single continuous build.
+- Prefer no further ceremony visual invention until readout unless another defect forces a fix. No TASK-108.
 
 ## Related
 
