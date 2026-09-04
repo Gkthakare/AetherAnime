@@ -305,4 +305,13 @@ describe('TASK-107 unified dimensional rupture', () => {
     assert.ok(/scaleX\(1\.[4-9]/.test(env), 'scaleX peak');
     assert.ok(/scaleY\(1\.[4-9]/.test(env), 'scaleY peak');
   });
+
+  test('veil keeps an opaque full-viewport void so Destination plates cannot tile through', () => {
+    const veil = crossingCss.match(
+      /\[data-slot='world-warp-veil'\]\s*\{[\s\S]*?\n\}/,
+    )?.[0];
+    assert.ok(veil);
+    assert.match(veil, /#000\s+0%/);
+    assert.doesNotMatch(crossingCss, /isolation:\s*isolate/);
+  });
 });

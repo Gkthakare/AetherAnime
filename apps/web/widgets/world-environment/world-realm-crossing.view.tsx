@@ -150,7 +150,7 @@ export function WorldRealmCrossing({
       />
       <CrossingLayer
         slot="world-warp-accretion"
-        className="absolute inset-[-10%] origin-center"
+        className="absolute inset-[-18%] origin-center"
         animation={
           spatial
             ? crossingAnimation('aether-warp-accretion', true)
@@ -173,7 +173,7 @@ export function WorldRealmCrossing({
       ) : null}
       <CrossingLayer
         slot="world-warp-horizon"
-        className="absolute inset-0 origin-center"
+        className="absolute inset-[-12%] origin-center"
         animation={
           spatial
             ? crossingAnimation('aether-warp-horizon', true)
@@ -182,7 +182,7 @@ export function WorldRealmCrossing({
       />
       <CrossingLayer
         slot="world-warp-emergence"
-        className="absolute inset-0 origin-center"
+        className="absolute inset-[-8%] origin-center"
         animation={
           spatial
             ? crossingAnimation('aether-warp-emergence', true)
