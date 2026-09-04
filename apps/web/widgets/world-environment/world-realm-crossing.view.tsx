@@ -91,8 +91,9 @@ function CrossingLayer({
 /**
  * Viewport spacetime warp. Decorative only.
  *
- * Black-hole ceremony over the existing transport lifecycle, then recedes
- * onto the Anime Universe destination.
+ * TASK-104 cyan event-seam ceremony over the existing transport lifecycle,
+ * then recedes onto the Anime Universe destination. Black-hole aperture
+ * remains; warm accretion portal identity does not.
  */
 export function WorldRealmCrossing({
   atmosphere,

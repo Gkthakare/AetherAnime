@@ -1,8 +1,8 @@
 /**
- * Realm crossing motion — one-shot spacetime warp (TASK-096).
+ * Realm crossing motion — one-shot spacetime warp (TASK-096 / TASK-104).
  *
- * Gravitational pull → black hole → emergence. Transform + opacity only.
- * Local to WorldEnvironment. No loops, no navigation delay.
+ * Environmental compression → dimensional seam → aperture → emergence.
+ * Transform + opacity only. Local to WorldEnvironment. No loops.
  */
 
 import type { Transition } from 'framer-motion';
@@ -16,7 +16,7 @@ export const REALM_CROSSING_SCALE = {
   rest: SCALE.TO,
   anticipate: 1.06,
   travel: 1.18,
-  peak: 1.42,
+  peak: 1.4,
 } as const;
 
 export const realmCrossingTransition: Transition = {
@@ -55,14 +55,14 @@ export function realmCrossingEnvironment(reduceMotion: boolean): {
   };
 }
 
-export const realmCrossingVeilOpacity = [0, 0.42, 0.88, 1, 0] as const;
+export const realmCrossingVeilOpacity = [0, 0.38, 0.82, 0.96, 0] as const;
 
-export const realmCrossingApertureScale = [1.18, 0.92, 0.48, 1.35, 2.4] as const;
+export const realmCrossingApertureScale = [1.18, 0.9, 0.36, 1.45, 2.4] as const;
 
-export const realmCrossingApertureOpacity = [0, 0.55, 0.82, 0.35, 0] as const;
+export const realmCrossingApertureOpacity = [0, 0.55, 0.78, 0.28, 0] as const;
 
-export const realmCrossingGateScale = [0.08, 0.18, 0.32, 1.15, 5.4] as const;
+export const realmCrossingGateScale = [0.1, 0.2, 0.34, 1.05, 4.8] as const;
 
-export const realmCrossingGateOpacity = [0, 0.9, 1, 0.55, 0] as const;
+export const realmCrossingGateOpacity = [0, 0.85, 1, 0.42, 0] as const;
 
-export const realmCrossingClimateOpacity = [0, 0.22, 0.4, 0.18, 0] as const;
+export const realmCrossingClimateOpacity = [0, 0.18, 0.34, 0.16, 0] as const;
